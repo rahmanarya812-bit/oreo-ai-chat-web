@@ -1752,11 +1752,6 @@ try {
 let idToken = null, history = [], convId = null, uid = null;
 let devConvs = JSON.parse(localStorage.getItem("oreo_dev_convs") || "{}");
 let currentQuota = null;
-if(loadedModels.length > 0 && !$("modelSelect").value){
-  const geminiModel = loadedModels.find(m => m.name.toLowerCase().includes("gemini-3.8-flash") || m.name.toLowerCase().includes("gemini"));
-  const defaultModel = geminiModel || loadedModels[0];
-  selectModel(defaultModel.id, defaultModel.name);
-}
 
 const $ = id => document.getElementById(id);
 
