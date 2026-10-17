@@ -390,9 +390,75 @@ function jsonResp(data, status = 200) {
   });
 }
 
-// In-memory quota storage (persists while worker instance is warm)
+// === MANAJEMEN ADMIN & USER STORE ===
+const ADMIN_EMAILS = [
+  'rahmanarya812@gmail.com',
+  'rahmanarya@gmail.com'
+];
+const ADMIN_SECRET = 'oreo-admin-2026';
+
+// In-memory user registry & quota store (persists while worker instance is warm)
 const quotaStore = new Map();
+const userRegistry = new Map();
+const disabledModels = new Set();
+let activeAnnouncement = {
+  title: 'Pengumuman Resmi Oreo AI',
+  message: 'Selamat datang di Oreo AI! Nikmati 150+ model AI tercanggih dengan kecepatan tinggi.',
+  type: 'info', // 'info' | 'warning' | 'update'
+  active: true,
+  updatedAt: Date.now()
+};
+
 const DAILY_LIMIT = 30;
+
+function isUserAdmin(request) {
+  const email = (request.headers.get('X-User-Email') || '').toLowerCase().trim();
+  const secret = (request.headers.get('X-Admin-Secret') || '').trim();
+  const userId = (request.headers.get('X-User-Id') || '').toLowerCase().trim();
+  
+  if (secret && secret === ADMIN_SECRET) return true;
+  if (email && (ADMIN_EMAILS.includes(email) || email.startsWith('rahmanarya'))) return true;
+  if (userId && (userId === 'dev-mode' || userId.includes('rahmanarya'))) return true;
+  return false;
+}
+
+function recordUserActivity(request) {
+  const userKey = getUserKey(request);
+  const email = request.headers.get('X-User-Email') || '';
+  const name = request.headers.get('X-User-Name') || (email ? email.split('@')[0] : 'Pengguna');
+  const isAdmin = isUserAdmin(request);
+  
+  let user = userRegistry.get(userKey);
+  if (!user) {
+    user = {
+      id: userKey,
+      name: name,
+      email: email,
+      role: isAdmin ? 'Admin' : 'User',
+      firstSeen: Date.now(),
+      lastSeen: Date.now(),
+      messageCount: 0
+    };
+    userRegistry.set(userKey, user);
+  } else {
+    user.lastSeen = Date.now();
+    if (email && !user.email) user.email = email;
+    if (name && user.name === 'Pengguna') user.name = name;
+    user.role = isAdmin ? 'Admin' : 'User';
+  }
+  return user;
+}
+
+function getModelCapabilities(modelId) {
+  const m = modelId.toLowerCase();
+  return {
+    image: m.includes('vision') || m.includes('gemini') || m.includes('gpt-5') || m.includes('claude') || m.includes('qwen') || m.includes('glm-5v'),
+    voice: m.includes('voice') || m.includes('audio') || m.includes('speech') || m.includes('terra') || m.includes('gemini-3.6') || m.includes('gemini-2.5-flash'),
+    text: true,
+    code: m.includes('code') || m.includes('deepseek') || m.includes('intern') || m.includes('sol') || m.includes('sonnet') || m.includes('qwen'),
+    reasoning: m.includes('r1') || m.includes('pro') || m.includes('opus') || m.includes('mythos') || m.includes('max') || m.includes('decision')
+  };
+}
 
 function getTodayStr() {
   // Waktu Indonesia Barat (WIB = UTC+7)
@@ -401,7 +467,7 @@ function getTodayStr() {
   return wib.toISOString().slice(0, 10);
 }
 
-function getUserQuota(userKey, clientCount = 0) {
+function getUserQuota(userKey, clientCount = 0, isAdmin = false) {
   const today = getTodayStr();
   let entry = quotaStore.get(userKey);
   if (!entry || entry.date !== today) {
@@ -411,6 +477,19 @@ function getUserQuota(userKey, clientCount = 0) {
     entry.count = clientCount;
   }
   const used = entry.count;
+  
+  if (isAdmin) {
+    return {
+      user_id: userKey,
+      date: today,
+      limit: 'Unlimited',
+      used,
+      remaining: 'Unlimited',
+      is_unlimited: true,
+      is_exceeded: false
+    };
+  }
+
   const remaining = Math.max(0, DAILY_LIMIT - used);
   return {
     user_id: userKey,
@@ -423,8 +502,14 @@ function getUserQuota(userKey, clientCount = 0) {
   };
 }
 
-function consumeQuota(userKey, clientCount = 0) {
-  const quota = getUserQuota(userKey, clientCount);
+function consumeQuota(userKey, clientCount = 0, isAdmin = false) {
+  const quota = getUserQuota(userKey, clientCount, isAdmin);
+  if (isAdmin) {
+    const entry = quotaStore.get(userKey);
+    if (entry) entry.count += 1;
+    return { allowed: true, quota, error: null };
+  }
+
   if (quota.is_exceeded) {
     return {
       allowed: false,
@@ -434,7 +519,7 @@ function consumeQuota(userKey, clientCount = 0) {
   }
   const entry = quotaStore.get(userKey);
   entry.count += 1;
-  const updatedQuota = getUserQuota(userKey);
+  const updatedQuota = getUserQuota(userKey, entry.count, false);
   return { allowed: true, quota: updatedQuota, error: null };
 }
 
@@ -466,13 +551,16 @@ export default {
 
     // API Routes
     if (url.pathname === '/api/models') {
+      const isAdmin = isUserAdmin(request);
       const out = [];
       let total = 0;
       for (const [pkey, p] of Object.entries(PROVIDERS)) {
-        out.push({ provider: pkey, label: p.label, models: p.models });
-        total += p.models.length;
+        // If not admin, only show enabled models
+        const visibleModels = isAdmin ? p.models : p.models.filter(m => !disabledModels.has(m));
+        out.push({ provider: pkey, label: p.label, models: visibleModels });
+        total += visibleModels.length;
       }
-      return jsonResp({ total, providers: out, admin: true });
+      return jsonResp({ total, providers: out, admin: isAdmin });
     }
 
     if (url.pathname === '/api/health') {
@@ -494,8 +582,10 @@ export default {
 
     if (url.pathname === '/api/quota') {
       const userKey = getUserKey(request);
+      const isAdmin = isUserAdmin(request);
+      recordUserActivity(request);
       const clientCount = parseInt(request.headers.get('X-Used-Count') || '0', 10) || 0;
-      return jsonResp({ ok: true, quota: getUserQuota(userKey, clientCount) });
+      return jsonResp({ ok: true, quota: getUserQuota(userKey, clientCount, isAdmin) });
     }
 
     if (url.pathname === '/api/quota/reset') {
@@ -504,7 +594,98 @@ export default {
 
     if (url.pathname === '/api/me') {
       const userKey = getUserKey(request);
-      return jsonResp({ ok: true, uid: userKey, admin: true, quota: getUserQuota(userKey) });
+      const isAdmin = isUserAdmin(request);
+      recordUserActivity(request);
+      return jsonResp({ ok: true, uid: userKey, admin: isAdmin, quota: getUserQuota(userKey, 0, isAdmin) });
+    }
+
+    // Announcement endpoint
+    if (url.pathname === '/api/announcement') {
+      if (request.method === 'POST') {
+        const isAdmin = isUserAdmin(request);
+        if (!isAdmin) return jsonResp({ ok: false, error: 'Akses khusus Admin ditolak' }, 403);
+        try {
+          const body = await request.json();
+          activeAnnouncement = {
+            title: (body.title || '').trim() || 'Pengumuman Oreo AI',
+            message: (body.message || '').trim(),
+            type: body.type || 'info',
+            active: body.active !== undefined ? !!body.active : true,
+            updatedAt: Date.now()
+          };
+          return jsonResp({ ok: true, announcement: activeAnnouncement, message: 'Pengumuman berhasil disiarkan!' });
+        } catch(e) {
+          return jsonResp({ ok: false, error: 'Format data pengumuman tidak valid' }, 400);
+        }
+      }
+      return jsonResp({ ok: true, announcement: activeAnnouncement });
+    }
+
+    // Admin Models capability inspection & toggle
+    if (url.pathname === '/api/admin/models') {
+      const isAdmin = isUserAdmin(request);
+      if (!isAdmin) return jsonResp({ ok: false, error: 'Akses khusus Admin ditolak' }, 403);
+      const allModels = [];
+      for (const [pkey, p] of Object.entries(PROVIDERS)) {
+        p.models.forEach(m => {
+          allModels.push({
+            id: m,
+            provider: p.label,
+            capabilities: getModelCapabilities(m),
+            disabled: disabledModels.has(m)
+          });
+        });
+      }
+      return jsonResp({ ok: true, models: allModels, total: allModels.length });
+    }
+
+    if (url.pathname === '/api/admin/models/toggle' && request.method === 'POST') {
+      const isAdmin = isUserAdmin(request);
+      if (!isAdmin) return jsonResp({ ok: false, error: 'Akses khusus Admin ditolak' }, 403);
+      try {
+        const body = await request.json();
+        const modelId = body.model_id;
+        if (!modelId) return jsonResp({ ok: false, error: 'Model ID harus disertakan' }, 400);
+        let nowDisabled = false;
+        if (disabledModels.has(modelId)) {
+          disabledModels.delete(modelId);
+          nowDisabled = false;
+        } else {
+          disabledModels.add(modelId);
+          nowDisabled = true;
+        }
+        return jsonResp({ ok: true, model_id: modelId, disabled: nowDisabled });
+      } catch(e) {
+        return jsonResp({ ok: false, error: 'Gagal mengubah status model' }, 500);
+      }
+    }
+
+    // Admin Users monitoring
+    if (url.pathname === '/api/admin/users') {
+      const isAdmin = isUserAdmin(request);
+      if (!isAdmin) return jsonResp({ ok: false, error: 'Akses khusus Admin ditolak' }, 403);
+      const userList = Array.from(userRegistry.values()).map(u => {
+        const q = getUserQuota(u.id, 0, u.role === 'Admin');
+        return {
+          ...u,
+          used: q.used,
+          limit: q.limit
+        };
+      });
+      return jsonResp({ ok: true, users: userList, total: userList.length });
+    }
+
+    if (url.pathname === '/api/admin/verify-secret' && request.method === 'POST') {
+      try {
+        const body = await request.json();
+        const secret = (body.secret || '').trim();
+        if (secret === ADMIN_SECRET) {
+          return jsonResp({ ok: true, admin: true, message: 'Akses Admin Terverifikasi!' });
+        }
+        return jsonResp({ ok: false, error: 'PIN / Kunci Rahasia Admin salah!' }, 401);
+      } catch(e) {
+        return jsonResp({ ok: false, error: 'Permintaan tidak valid' }, 400);
+      }
     }
 
     if (url.pathname === '/api/oauth/canva/status') {
@@ -612,8 +793,16 @@ export default {
         }
 
         const userKey = getUserKey(request);
+        const isAdmin = isUserAdmin(request);
+        const userObj = recordUserActivity(request);
+        if (userObj) userObj.messageCount = (userObj.messageCount || 0) + 1;
+
+        if (!isAdmin && disabledModels.has(model)) {
+          return jsonResp({ ok: false, error: `Model "${model}" sedang dinonaktifkan oleh Administrator.` }, 403);
+        }
+
         const clientCount = parseInt(request.headers.get('X-Used-Count') || '0', 10) || 0;
-        const quotaCheck = consumeQuota(userKey, clientCount);
+        const quotaCheck = consumeQuota(userKey, clientCount, isAdmin);
         if (!quotaCheck.allowed) {
           return jsonResp({
             ok: false,

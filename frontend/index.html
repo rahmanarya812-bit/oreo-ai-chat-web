@@ -1856,6 +1856,45 @@ header {
   .custom-modal-desc {
     font-size: 12.5px !important;
   }
+
+  /* Admin Modal & Announcement Banner Mobile */
+  .btn-admin-pill {
+    padding: 4px 8px !important;
+    font-size: 11px !important;
+    border-radius: 8px !important;
+  }
+  .admin-modal-backdrop {
+    padding: 8px !important;
+  }
+  .admin-modal-card {
+    height: 95vh !important;
+    max-height: 95vh !important;
+    border-radius: 16px !important;
+  }
+  .admin-modal-header {
+    padding: 12px 14px !important;
+  }
+  .admin-tabs-nav {
+    padding: 8px 12px !important;
+    gap: 4px !important;
+  }
+  .admin-tab-btn {
+    padding: 6px 10px !important;
+    font-size: 12px !important;
+  }
+  .admin-tab-body {
+    padding: 12px !important;
+  }
+  .admin-stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  .admin-search-input {
+    width: 100% !important;
+  }
+  .announcement-banner {
+    padding: 8px 12px !important;
+    font-size: 12px !important;
+  }
 }
 
 @media(max-width: 480px) {
@@ -2817,7 +2856,481 @@ header {
 .btn-img-action:hover {
   background: rgba(99, 102, 241, 0.2);
   border-color: rgba(99, 102, 241, 0.4);
+/* === ADMIN PANEL & ANNOUNCEMENT STYLING === */
+.btn-admin-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  color: #fbbf24;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 11px;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+}
+.btn-admin-pill:hover {
+  background: rgba(245, 158, 11, 0.22);
+  border-color: rgba(245, 158, 11, 0.6);
+  transform: translateY(-1px);
+}
+.admin-nav-row {
+  background: rgba(245, 158, 11, 0.08) !important;
+  border: 1px solid rgba(245, 158, 11, 0.2) !important;
+  color: #fbbf24 !important;
+}
+.admin-nav-row:hover {
+  background: rgba(245, 158, 11, 0.16) !important;
+  color: #fff !important;
+}
+
+/* Banner Pengumuman Sistem */
+.announcement-banner {
+  background: linear-gradient(90deg, rgba(37, 99, 235, 0.2), rgba(99, 102, 241, 0.14));
+  border-bottom: 1px solid rgba(99, 102, 241, 0.3);
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  z-index: 15;
+  flex-shrink: 0;
+  animation: slideDownBanner 0.25s ease-out;
+}
+.announcement-banner.hidden { display: none !important; }
+.announcement-banner.warning {
+  background: linear-gradient(90deg, rgba(245, 158, 11, 0.2), rgba(217, 119, 6, 0.14));
+  border-bottom-color: rgba(245, 158, 11, 0.35);
+}
+.announcement-banner.update {
+  background: linear-gradient(90deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.14));
+  border-bottom-color: rgba(16, 185, 129, 0.35);
+}
+@keyframes slideDownBanner {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.announcement-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+.announcement-tag {
+  background: rgba(99, 102, 241, 0.25);
+  border: 1px solid rgba(99, 102, 241, 0.4);
+  color: #c7d2fe;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+.announcement-banner.warning .announcement-tag {
+  background: rgba(245, 158, 11, 0.25);
+  border-color: rgba(245, 158, 11, 0.45);
+  color: #fde68a;
+}
+.announcement-banner.update .announcement-tag {
+  background: rgba(16, 185, 129, 0.25);
+  border-color: rgba(16, 185, 129, 0.45);
+  color: #a7f3d0;
+}
+.announcement-body {
+  font-size: 13px;
+  color: #e2e8f0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.announcement-body strong { color: #fff; }
+.announcement-close {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  line-height: 1;
+  transition: all 0.2s;
+}
+.announcement-close:hover {
   color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Modal Pengaturan Admin */
+.admin-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100;
+  padding: 16px;
+  transition: opacity 0.2s ease;
+}
+.admin-modal-backdrop.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+.admin-modal-card {
+  background: #11141e;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 22px;
+  width: 100%;
+  max-width: 900px;
+  height: 85vh;
+  max-height: 740px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.8), 0 0 35px rgba(245, 158, 11, 0.12);
+  overflow: hidden;
+  animation: adminModalZoom 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes adminModalZoom {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+.admin-modal-header {
+  padding: 16px 22px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(255, 255, 255, 0.02);
+}
+.admin-modal-title-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.admin-modal-icon { font-size: 24px; }
+.admin-modal-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: #fff;
+}
+.admin-modal-subtitle {
+  font-size: 12px;
+  color: #94a3b8;
+  margin-top: 2px;
+}
+.admin-modal-close-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border: none;
+  color: #cbd5e1;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  transition: all 0.2s;
+}
+.admin-modal-close-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+}
+.admin-tabs-nav {
+  display: flex;
+  gap: 6px;
+  padding: 10px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.2);
+  overflow-x: auto;
+}
+.admin-tab-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  color: #94a3b8;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 7px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.admin-tab-btn:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.05);
+}
+.admin-tab-btn.active {
+  background: rgba(245, 158, 11, 0.15);
+  border-color: rgba(245, 158, 11, 0.4);
+  color: #fbbf24;
+}
+.admin-tab-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 18px 22px;
+}
+.admin-tab-pane { display: none; }
+.admin-tab-pane.active { display: block; }
+
+/* Admin Model Cards & Capabilities */
+.admin-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.admin-stat-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 12px;
+  padding: 10px 12px;
+  text-align: center;
+}
+.admin-stat-val {
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+}
+.admin-stat-lbl {
+  font-size: 11px;
+  color: #94a3b8;
+  margin-top: 2px;
+}
+.admin-filter-bar {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+.admin-filter-chips {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  flex: 1;
+  min-width: 240px;
+}
+.admin-chip {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  color: #cbd5e1;
+  font-size: 12px;
+  padding: 5px 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+.admin-chip:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+.admin-chip.active {
+  background: #2563eb;
+  border-color: #3b82f6;
+  color: #fff;
+}
+.admin-search-input {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #fff;
+  border-radius: 10px;
+  padding: 7px 12px;
+  font-size: 13px;
+  outline: none;
+  width: 220px;
+  transition: all 0.2s;
+}
+.admin-search-input:focus {
+  border-color: #3b82f6;
+}
+.admin-models-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.admin-model-item {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 12px;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  transition: all 0.2s;
+}
+.admin-model-item.disabled {
+  opacity: 0.6;
+  background: rgba(239, 68, 68, 0.04);
+  border-color: rgba(239, 68, 68, 0.2);
+}
+.admin-model-item-left {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.admin-model-name {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.admin-model-prov {
+  font-size: 11px;
+  color: #94a3b8;
+}
+.admin-caps-row {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+  margin-top: 2px;
+}
+.admin-cap-badge {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.06);
+  color: #94a3b8;
+}
+.admin-cap-badge.image { background: rgba(59, 130, 246, 0.18); color: #93c5fd; }
+.admin-cap-badge.voice { background: rgba(168, 85, 247, 0.18); color: #d8b4fe; }
+.admin-cap-badge.code { background: rgba(16, 185, 129, 0.18); color: #6ee7b7; }
+.admin-cap-badge.reasoning { background: rgba(245, 158, 11, 0.18); color: #fde68a; }
+.btn-toggle-model {
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+}
+.btn-toggle-model.active {
+  background: rgba(16, 185, 129, 0.18);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  color: #34d399;
+}
+.btn-toggle-model.inactive {
+  background: rgba(239, 68, 68, 0.18);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  color: #f87171;
+}
+
+/* Admin Users List */
+.admin-users-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.admin-user-item {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 12px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.admin-user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.admin-user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #3b82f6, #6366f1);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+}
+.admin-user-name {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #fff;
+}
+.admin-user-email {
+  font-size: 11.5px;
+  color: #94a3b8;
+}
+.admin-role-badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 8px;
+}
+.admin-role-badge.admin {
+  background: rgba(245, 158, 11, 0.2);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.4);
+}
+.admin-role-badge.user {
+  background: rgba(255, 255, 255, 0.08);
+  color: #cbd5e1;
+}
+
+/* Announcement Form */
+.admin-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+.admin-form-label {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #cbd5e1;
+}
+.admin-form-input, .admin-form-textarea, .admin-form-select {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #fff;
+  border-radius: 10px;
+  padding: 9px 12px;
+  font-size: 13px;
+  outline: none;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+.admin-form-input:focus, .admin-form-textarea:focus, .admin-form-select:focus {
+  border-color: #3b82f6;
+}
+.admin-form-textarea { resize: vertical; min-height: 80px; }
+.btn-save-admin {
+  background: linear-gradient(135deg, #2563eb, #4f46e5);
+  border: none;
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-save-admin:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
 }
 </style>
 </head>
@@ -2835,6 +3348,10 @@ header {
   </div>
 
   <div class="header-spacer"></div>
+
+  <button id="btnAdminSettings" class="btn-admin-pill" style="display:none;" title="Pengaturan Admin & Kontrol Model">
+    ⚙️ Pengaturan
+  </button>
 
   <div id="quotaBadge" class="quota-badge" style="display:none;" title="Batas kuota harian. Di-reset otomatis setiap hari pukul 00:00. Klik untuk detail.">
     <span id="quotaText">⚡ Kuota: --/--</span>
@@ -2925,6 +3442,165 @@ header {
   </div>
 </div>
 
+<!-- Modal Pengaturan Admin (Kontrol Model, Pantau User, Pengumuman) -->
+<div id="adminSettingsModal" class="admin-modal-backdrop hidden">
+  <div class="admin-modal-card">
+    <div class="admin-modal-header">
+      <div class="admin-modal-title-row">
+        <span class="admin-modal-icon">⚙️</span>
+        <div>
+          <div class="admin-modal-title">Pengaturan & Kontrol Admin</div>
+          <div class="admin-modal-subtitle">Kelola kemampuan model AI, pantau aktivitas pengguna, dan buat pengumuman</div>
+        </div>
+      </div>
+      <button type="button" class="admin-modal-close-btn" id="btnCloseAdminModal" title="Tutup Panel Admin">✕</button>
+    </div>
+
+    <!-- Tab Navigasi -->
+    <div class="admin-tabs-nav">
+      <button type="button" class="admin-tab-btn active" data-tab="models" id="tabAdminModels">
+        <span>✨ Kontrol Model AI</span>
+        <span class="admin-tab-badge" id="adminModelCountBadge">0</span>
+      </button>
+      <button type="button" class="admin-tab-btn" data-tab="users" id="tabAdminUsers">
+        <span>👥 Pantau Pengguna</span>
+        <span class="admin-tab-badge" id="adminUserCountBadge">0</span>
+      </button>
+      <button type="button" class="admin-tab-btn" data-tab="announcement" id="tabAdminAnnouncement">
+        <span>📢 Pengumuman Sistem</span>
+      </button>
+      <button type="button" class="admin-tab-btn" data-tab="secret" id="tabAdminSecret">
+        <span>🔑 Hak Akses & PIN</span>
+      </button>
+    </div>
+
+    <!-- Body Tab -->
+    <div class="admin-tab-body">
+      <!-- 1. Tab Models -->
+      <div class="admin-tab-pane active" id="paneAdminModels">
+        <div class="admin-stats-grid">
+          <div class="admin-stat-card">
+            <div class="admin-stat-val" id="adminStatTotalModels">0</div>
+            <div class="admin-stat-lbl">Total Model</div>
+          </div>
+          <div class="admin-stat-card">
+            <div class="admin-stat-val" id="adminStatImageModels" style="color:#93c5fd;">0</div>
+            <div class="admin-stat-lbl">🖼️ Support Gambar</div>
+          </div>
+          <div class="admin-stat-card">
+            <div class="admin-stat-val" id="adminStatVoiceModels" style="color:#d8b4fe;">0</div>
+            <div class="admin-stat-lbl">🎙️ Support Voice</div>
+          </div>
+          <div class="admin-stat-card">
+            <div class="admin-stat-val" id="adminStatDisabledModels" style="color:#f87171;">0</div>
+            <div class="admin-stat-lbl">🚫 Dinonaktifkan</div>
+          </div>
+        </div>
+
+        <div class="admin-filter-bar">
+          <div class="admin-filter-chips" id="adminModelFilters">
+            <button type="button" class="admin-chip active" data-filter="all">Semua</button>
+            <button type="button" class="admin-chip" data-filter="image">🖼️ Gambar</button>
+            <button type="button" class="admin-chip" data-filter="voice">🎙️ Suara (Voice)</button>
+            <button type="button" class="admin-chip" data-filter="code">💻 Coding</button>
+            <button type="button" class="admin-chip" data-filter="reasoning">🧠 Reasoning</button>
+            <button type="button" class="admin-chip" data-filter="disabled">🚫 Dinonaktifkan</button>
+          </div>
+          <input type="text" id="adminModelSearch" class="admin-search-input" placeholder="Cari nama atau ID model...">
+        </div>
+
+        <div class="admin-models-list" id="adminModelsList">
+          <div style="text-align:center; padding:24px; color:#94a3b8; font-size:13px;">Memuat daftar model...</div>
+        </div>
+      </div>
+
+      <!-- 2. Tab Users -->
+      <div class="admin-tab-pane" id="paneAdminUsers">
+        <div class="admin-stats-grid">
+          <div class="admin-stat-card">
+            <div class="admin-stat-val" id="adminStatTotalUsers">0</div>
+            <div class="admin-stat-lbl">Total Pengguna</div>
+          </div>
+          <div class="admin-stat-card">
+            <div class="admin-stat-val" id="adminStatActiveToday" style="color:#34d399;">0</div>
+            <div class="admin-stat-lbl">Aktif Hari Ini</div>
+          </div>
+          <div class="admin-stat-card">
+            <div class="admin-stat-val" id="adminStatTotalChats" style="color:#fbbf24;">0</div>
+            <div class="admin-stat-lbl">Total Pesan</div>
+          </div>
+        </div>
+
+        <div class="admin-users-list" id="adminUsersList">
+          <div style="text-align:center; padding:24px; color:#94a3b8; font-size:13px;">Memuat daftar pengguna...</div>
+        </div>
+      </div>
+
+      <!-- 3. Tab Announcement -->
+      <div class="admin-tab-pane" id="paneAdminAnnouncement">
+        <div style="max-width: 600px; margin: 0 auto;">
+          <div class="admin-form-group">
+            <label class="admin-form-label" style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+              <input type="checkbox" id="announcementActiveCheck" style="width:18px; height:18px; cursor:pointer;">
+              <span><strong>Aktifkan Pengumuman</strong> (Ditampilkan di atas ruang obrolan untuk semua user)</span>
+            </label>
+          </div>
+
+          <div style="display:flex; gap:12px;">
+            <div class="admin-form-group" style="width:160px;">
+              <label class="admin-form-label" for="announcementTagInput">Tag / Label</label>
+              <input type="text" id="announcementTagInput" class="admin-form-input" placeholder="📢 PENGUMUMAN" value="📢 PENGUMUMAN">
+            </div>
+            <div class="admin-form-group" style="flex:1;">
+              <label class="admin-form-label" for="announcementTitleInput">Judul Pengumuman</label>
+              <input type="text" id="announcementTitleInput" class="admin-form-input" placeholder="Contoh: Pembaruan Sistem Oreo AI">
+            </div>
+          </div>
+
+          <div class="admin-form-group">
+            <label class="admin-form-label" for="announcementMsgInput">Isi Pesan Pengumuman</label>
+            <textarea id="announcementMsgInput" class="admin-form-textarea" placeholder="Tuliskan pesan pemberitahuan untuk semua pengguna..." rows="4"></textarea>
+          </div>
+
+          <div style="display:flex; align-items:center; gap:12px; margin-top:16px;">
+            <button type="button" class="btn-save-admin" id="btnSaveAnnouncement">
+              💾 Simpan & Publikasikan Pengumuman
+            </button>
+            <span id="announcementSaveStatus" style="font-size:12.5px; color:#34d399;"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. Tab Secret & PIN -->
+      <div class="admin-tab-pane" id="paneAdminSecret">
+        <div style="max-width: 520px; margin: 0 auto; background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.08); border-radius:14px; padding:18px;">
+          <div style="font-size:14px; font-weight:700; color:#fff; margin-bottom:6px;">🔑 Verifikasi Hak Akses Admin</div>
+          <div style="font-size:12.5px; color:#94a3b8; line-height:1.5; margin-bottom:14px;">
+            Akun admin utama otomatis terdeteksi untuk email <code>rahmanarya812@gmail.com</code>.<br>
+            Jika Anda masuk via akun Google lain atau mode pengembang, masukkan PIN Rahasia Admin untuk membuka kontrol penuh.
+          </div>
+
+          <div class="admin-form-group">
+            <label class="admin-form-label" for="inputAdminSecret">PIN Rahasia Admin</label>
+            <input type="password" id="inputAdminSecret" class="admin-form-input" placeholder="Masukkan PIN Rahasia Admin...">
+          </div>
+
+          <div style="display:flex; align-items:center; gap:10px; margin-top:12px;">
+            <button type="button" class="btn-save-admin" id="btnVerifyAdminSecret">
+              🔓 Verifikasi PIN
+            </button>
+            <button type="button" class="btn-toggle-model inactive" id="btnRevokeAdminSecret" style="display:none;">
+              🔒 Lepas Akses
+            </button>
+            <span id="adminSecretStatus" style="font-size:12.5px;"></span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
 <!-- Halaman Login -->
 <div id="loginBox">
   <div class="login-card">
@@ -2983,6 +3659,12 @@ header {
         </span>
         <span class="gemini-nav-text">Ekspor Obrolan</span>
       </button>
+
+      <!-- 4. Pengaturan Admin (Hanya muncul untuk Admin) -->
+      <button id="btnNavAdmin" class="gemini-nav-row admin-nav-row" style="display:none;" type="button">
+        <span class="gemini-nav-icon">⚙️</span>
+        <span class="gemini-nav-text">Pengaturan Admin</span>
+      </button>
     </div>
 
     <!-- Judul Seksi Riwayat Obrolan dengan Ikon Filter -->
@@ -3000,6 +3682,17 @@ header {
   </aside>
 
   <main id="chatBox">
+    <!-- Banner Pengumuman Sistem -->
+    <div id="announcementBanner" class="announcement-banner hidden">
+      <div class="announcement-left">
+        <span class="announcement-tag" id="announcementTag">📢 PENGUMUMAN</span>
+        <div class="announcement-body">
+          <strong id="announcementTitle">Pemberitahuan Sistem</strong>: <span id="announcementMsg"></span>
+        </div>
+      </div>
+      <button type="button" class="announcement-close" id="btnCloseAnnouncement" title="Tutup Pengumuman">✕</button>
+    </div>
+
     <div id="messages">
       <!-- Hero State / Tampilan Awal -->
       <div id="heroState">
@@ -3613,6 +4306,451 @@ inputEl.addEventListener("input", function() {
   this.style.height = Math.min(this.scrollHeight, 160) + "px";
 });
 
+// === AUTH & HAK AKSES SISTEM (ADMIN VS REGULAR USER) ===
+let isCurrentUserAdmin = false;
+
+function getCurrentUserSession(){
+  try {
+    return JSON.parse(localStorage.getItem("oreo_user_session") || "{}");
+  } catch(e){
+    return {};
+  }
+}
+
+function getAdminSecret(){
+  return localStorage.getItem("oreo_admin_secret") || "";
+}
+
+function getAuthHeaders(extra = {}){
+  const sess = getCurrentUserSession();
+  const headers = {
+    "Authorization": "Bearer " + (idToken || sess.idToken || "dev-token"),
+    "X-Client-Id": getClientId(),
+    "X-User-Id": uid || sess.uid || getClientId(),
+    "X-User-Email": sess.email || "",
+    "X-User-Name": sess.name || $("userName")?.textContent || "Pengguna",
+    "X-Admin-Secret": getAdminSecret(),
+    ...extra
+  };
+  return headers;
+}
+
+function setAdminMode(isAdmin){
+  isCurrentUserAdmin = !!isAdmin;
+  
+  // 1. Badge Admin di Header & Sidebar - HANYA tampil jika isAdmin === true
+  const wraps = document.querySelectorAll("#adminBadgeWrap");
+  wraps.forEach(wrap => {
+    wrap.innerHTML = "";
+    if(isCurrentUserAdmin){
+      const badge = document.createElement("span");
+      badge.id = "adminBadge";
+      badge.className = "badge-admin";
+      badge.textContent = "ADMIN";
+      wrap.appendChild(badge);
+    }
+  });
+
+  // 2. Tombol Pengaturan Admin di Header & Sidebar
+  const btnHeader = $("btnAdminSettings");
+  if(btnHeader){
+    btnHeader.style.display = isCurrentUserAdmin ? "inline-flex" : "none";
+  }
+  const btnNav = $("btnNavAdmin");
+  if(btnNav){
+    btnNav.style.display = isCurrentUserAdmin ? "flex" : "none";
+  }
+
+  // 3. Status tombol lepas PIN
+  const btnRevoke = $("btnRevokeAdminSecret");
+  if(btnRevoke){
+    const hasSecret = !!localStorage.getItem("oreo_admin_secret");
+    btnRevoke.style.display = (isCurrentUserAdmin && hasSecret) ? "inline-block" : "none";
+  }
+}
+
+// === PENGUMUMAN SISTEM (ANNOUNCEMENT) ===
+let latestAnnouncementTime = 0;
+
+async function loadAnnouncement(){
+  try {
+    const r = await fetch(API_BASE + "/api/announcement");
+    const d = await r.json();
+    if(d.ok && d.announcement){
+      const a = d.announcement;
+      latestAnnouncementTime = a.updatedAt || 0;
+      const banner = $("announcementBanner");
+      if(!banner) return;
+
+      const dismissedTime = sessionStorage.getItem("oreo_announcement_dismissed");
+      if(a.active && a.message && String(a.updatedAt) !== dismissedTime){
+        if($("announcementTag")) $("announcementTag").textContent = a.tag || "📢 PENGUMUMAN";
+        if($("announcementTitle")) $("announcementTitle").textContent = a.title || "Pemberitahuan Sistem";
+        if($("announcementMsg")) $("announcementMsg").textContent = a.message;
+        banner.classList.remove("hidden");
+      } else {
+        banner.classList.add("hidden");
+      }
+    }
+  } catch(e){
+    console.warn("Gagal memuat pengumuman:", e);
+  }
+}
+
+if($("btnCloseAnnouncement")){
+  $("btnCloseAnnouncement").onclick = () => {
+    const banner = $("announcementBanner");
+    if(banner) banner.classList.add("hidden");
+    if(latestAnnouncementTime){
+      sessionStorage.setItem("oreo_announcement_dismissed", String(latestAnnouncementTime));
+    }
+  };
+}
+
+// === CONTROLLER MODAL PENGATURAN ADMIN ===
+let adminAllModels = [];
+let adminModelFilter = "all";
+
+function openAdminSettingsModal(){
+  const modal = $("adminSettingsModal");
+  if(!modal) return;
+  modal.classList.remove("hidden");
+  switchAdminTab("models");
+  loadAdminModels();
+  loadAdminUsers();
+  loadAdminAnnouncementData();
+}
+
+function closeAdminSettingsModal(){
+  const modal = $("adminSettingsModal");
+  if(modal) modal.classList.add("hidden");
+}
+
+function switchAdminTab(tabName){
+  document.querySelectorAll(".admin-tab-btn").forEach(btn => {
+    if(btn.dataset.tab === tabName) btn.classList.add("active");
+    else btn.classList.remove("active");
+  });
+  document.querySelectorAll(".admin-tab-pane").forEach(pane => {
+    pane.classList.remove("active");
+  });
+  const activePane = $("paneAdmin" + tabName.charAt(0).toUpperCase() + tabName.slice(1));
+  if(activePane) activePane.classList.add("active");
+}
+
+document.querySelectorAll(".admin-tab-btn").forEach(btn => {
+  btn.onclick = () => {
+    switchAdminTab(btn.dataset.tab);
+  };
+});
+
+if($("btnCloseAdminModal")){
+  $("btnCloseAdminModal").onclick = closeAdminSettingsModal;
+}
+if($("adminSettingsModal")){
+  $("adminSettingsModal").onclick = (e) => {
+    if(e.target === $("adminSettingsModal")) closeAdminSettingsModal();
+  };
+}
+if($("btnAdminSettings")){
+  $("btnAdminSettings").onclick = openAdminSettingsModal;
+}
+if($("btnNavAdmin")){
+  $("btnNavAdmin").onclick = (e) => {
+    e.preventDefault();
+    openAdminSettingsModal();
+  };
+}
+
+// 1. Model Management di Admin Panel
+async function loadAdminModels(){
+  const listEl = $("adminModelsList");
+  if(!listEl) return;
+  listEl.innerHTML = `<div style="text-align:center; padding:24px; color:#94a3b8; font-size:13px;">⏳ Memeriksa seluruh kapabilitas model AI...</div>`;
+  
+  try {
+    const r = await fetch(API_BASE + "/api/admin/models", {
+      headers: getAuthHeaders()
+    });
+    const d = await r.json();
+    if(!d.ok){
+      listEl.innerHTML = `<div style="text-align:center; padding:24px; color:#f87171; font-size:13px;">⚠️ ${escapeHtml(d.error || "Gagal memuat model")}</div>`;
+      return;
+    }
+
+    adminAllModels = d.models || [];
+    const total = adminAllModels.length;
+    const imgCount = adminAllModels.filter(m => m.capabilities?.image).length;
+    const voiceCount = adminAllModels.filter(m => m.capabilities?.voice).length;
+    const disabledCount = adminAllModels.filter(m => m.disabled).length;
+
+    if($("adminStatTotalModels")) $("adminStatTotalModels").textContent = total;
+    if($("adminStatImageModels")) $("adminStatImageModels").textContent = imgCount;
+    if($("adminStatVoiceModels")) $("adminStatVoiceModels").textContent = voiceCount;
+    if($("adminStatDisabledModels")) $("adminStatDisabledModels").textContent = disabledCount;
+    if($("adminModelCountBadge")) $("adminModelCountBadge").textContent = total;
+
+    renderAdminModelsList();
+  } catch(e){
+    listEl.innerHTML = `<div style="text-align:center; padding:24px; color:#f87171; font-size:13px;">⚠️ Terjadi kesalahan koneksi saat memuat model: ${escapeHtml(e.message)}</div>`;
+  }
+}
+
+function renderAdminModelsList(){
+  const listEl = $("adminModelsList");
+  if(!listEl) return;
+  const q = ($("adminModelSearch")?.value || "").toLowerCase().trim();
+  
+  const filtered = adminAllModels.filter(m => {
+    if(adminModelFilter === "image" && !m.capabilities?.image) return false;
+    if(adminModelFilter === "voice" && !m.capabilities?.voice) return false;
+    if(adminModelFilter === "code" && !m.capabilities?.code) return false;
+    if(adminModelFilter === "reasoning" && !m.capabilities?.reasoning) return false;
+    if(adminModelFilter === "disabled" && !m.disabled) return false;
+    if(q){
+      const matchName = m.name?.toLowerCase().includes(q);
+      const matchId = m.id?.toLowerCase().includes(q);
+      const matchProv = m.provider?.toLowerCase().includes(q);
+      if(!matchName && !matchId && !matchProv) return false;
+    }
+    return true;
+  });
+
+  if(filtered.length === 0){
+    listEl.innerHTML = `<div style="text-align:center; padding:32px; color:#94a3b8; font-size:13px;">🔍 Tidak ada model yang cocok dengan filter atau pencarian saat ini.</div>`;
+    return;
+  }
+
+  listEl.innerHTML = "";
+  filtered.forEach(m => {
+    const item = document.createElement("div");
+    item.className = "admin-model-item" + (m.disabled ? " disabled" : "");
+
+    const capBadges = [];
+    if(m.capabilities?.image) capBadges.push(`<span class="admin-cap-badge image">🖼️ Gambar</span>`);
+    if(m.capabilities?.voice) capBadges.push(`<span class="admin-cap-badge voice">🎙️ Suara</span>`);
+    if(m.capabilities?.text) capBadges.push(`<span class="admin-cap-badge">📝 Teks</span>`);
+    if(m.capabilities?.code) capBadges.push(`<span class="admin-cap-badge code">💻 Coding</span>`);
+    if(m.capabilities?.reasoning) capBadges.push(`<span class="admin-cap-badge reasoning">🧠 Reasoning</span>`);
+
+    item.innerHTML = `
+      <div class="admin-model-item-left">
+        <div class="admin-model-name">${escapeHtml(m.name || m.id)}</div>
+        <div class="admin-model-prov">${escapeHtml(m.id)} · Provider: ${escapeHtml(m.provider || "Polli/CF")}</div>
+        <div class="admin-caps-row">${capBadges.join("")}</div>
+      </div>
+      <div>
+        <button type="button" class="btn-toggle-model ${m.disabled ? 'inactive' : 'active'}" data-model-id="${m.id}" data-disabled="${m.disabled ? 'true' : 'false'}">
+          ${m.disabled ? '🚫 Dinonaktifkan (Aktifkan)' : '✅ Aktif (Matikan)'}
+        </button>
+      </div>
+    `;
+
+    const toggleBtn = item.querySelector(".btn-toggle-model");
+    if(toggleBtn){
+      toggleBtn.onclick = () => toggleModelStatus(m.id, !m.disabled);
+    }
+
+    listEl.appendChild(item);
+  });
+}
+
+async function toggleModelStatus(modelId, shouldDisable){
+  try {
+    const r = await fetch(API_BASE + "/api/admin/models/toggle", {
+      method: "POST",
+      headers: getAuthHeaders({ "Content-Type": "application/json" }),
+      body: JSON.stringify({ modelId, disabled: shouldDisable })
+    });
+    const d = await r.json();
+    if(d.ok){
+      showToast(shouldDisable ? `Model ${modelId} dinonaktifkan untuk pengguna` : `Model ${modelId} diaktifkan kembali`, "info");
+      const found = adminAllModels.find(m => m.id === modelId);
+      if(found) found.disabled = shouldDisable;
+      renderAdminModelsList();
+      loadModels();
+    } else {
+      showToast(d.error || "Gagal mengubah status model", "error");
+    }
+  } catch(e){
+    showToast("Error koneksi: " + e.message, "error");
+  }
+}
+
+document.querySelectorAll("#adminModelFilters .admin-chip").forEach(chip => {
+  chip.onclick = () => {
+    document.querySelectorAll("#adminModelFilters .admin-chip").forEach(c => c.classList.remove("active"));
+    chip.classList.add("active");
+    adminModelFilter = chip.dataset.filter || "all";
+    renderAdminModelsList();
+  };
+});
+
+if($("adminModelSearch")){
+  $("adminModelSearch").oninput = renderAdminModelsList;
+}
+
+// 2. User Monitoring di Admin Panel
+async function loadAdminUsers(){
+  const listEl = $("adminUsersList");
+  if(!listEl) return;
+  listEl.innerHTML = `<div style="text-align:center; padding:24px; color:#94a3b8; font-size:13px;">⏳ Memuat riwayat aktivitas pengguna...</div>`;
+  
+  try {
+    const r = await fetch(API_BASE + "/api/admin/users", {
+      headers: getAuthHeaders()
+    });
+    const d = await r.json();
+    if(!d.ok){
+      listEl.innerHTML = `<div style="text-align:center; padding:24px; color:#f87171; font-size:13px;">⚠️ ${escapeHtml(d.error || "Gagal memuat pengguna")}</div>`;
+      return;
+    }
+
+    const users = d.users || [];
+    const totalUsers = d.total || users.length;
+    const activeToday = d.activeToday || 0;
+    const totalChats = users.reduce((acc, u) => acc + (u.totalRequests || 0), 0);
+
+    if($("adminStatTotalUsers")) $("adminStatTotalUsers").textContent = totalUsers;
+    if($("adminStatActiveToday")) $("adminStatActiveToday").textContent = activeToday;
+    if($("adminStatTotalChats")) $("adminStatTotalChats").textContent = totalChats;
+    if($("adminUserCountBadge")) $("adminUserCountBadge").textContent = totalUsers;
+
+    if(users.length === 0){
+      listEl.innerHTML = `<div style="text-align:center; padding:32px; color:#94a3b8; font-size:13px;">Belum ada riwayat aktivitas pengguna yang tercatat.</div>`;
+      return;
+    }
+
+    listEl.innerHTML = "";
+    users.forEach(u => {
+      const item = document.createElement("div");
+      item.className = "admin-user-item";
+
+      const initials = (u.name || u.email || "User").substring(0,2).toUpperCase();
+      const lastActiveStr = u.lastActive ? new Date(u.lastActive).toLocaleString("id-ID", { dateStyle:"medium", timeStyle:"short" }) : "-";
+      const isUnlimited = u.isAdmin;
+      const quotaStr = isUnlimited ? "Unlimited (Admin)" : `${u.usedCountToday || 0} / 30 pesan`;
+
+      item.innerHTML = `
+        <div class="admin-user-info">
+          <div class="admin-user-avatar">${escapeHtml(initials)}</div>
+          <div>
+            <div class="admin-user-name">${escapeHtml(u.name || "Pengguna")}</div>
+            <div class="admin-user-email">${escapeHtml(u.email || u.id || "Anonim")}</div>
+          </div>
+        </div>
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div style="text-align:right;">
+            <div style="font-size:12px; color:#f1f5f9; font-weight:600;">Kuota: ${quotaStr}</div>
+            <div style="font-size:11px; color:#94a3b8;">Aktif: ${escapeHtml(lastActiveStr)}</div>
+          </div>
+          <span class="admin-role-badge ${u.isAdmin ? 'admin' : 'user'}">
+            ${u.isAdmin ? '👑 ADMIN' : '👤 USER'}
+          </span>
+        </div>
+      `;
+      listEl.appendChild(item);
+    });
+  } catch(e){
+    listEl.innerHTML = `<div style="text-align:center; padding:24px; color:#f87171; font-size:13px;">⚠️ Error koneksi: ${escapeHtml(e.message)}</div>`;
+  }
+}
+
+// 3. Announcement System di Admin Panel
+async function loadAdminAnnouncementData(){
+  try {
+    const r = await fetch(API_BASE + "/api/announcement");
+    const d = await r.json();
+    if(d.ok && d.announcement){
+      const a = d.announcement;
+      if($("announcementActiveCheck")) $("announcementActiveCheck").checked = !!a.active;
+      if($("announcementTagInput")) $("announcementTagInput").value = a.tag || "📢 PENGUMUMAN";
+      if($("announcementTitleInput")) $("announcementTitleInput").value = a.title || "";
+      if($("announcementMsgInput")) $("announcementMsgInput").value = a.message || "";
+    }
+  } catch(e){
+    console.warn("Gagal load announcement data:", e);
+  }
+}
+
+if($("btnSaveAnnouncement")){
+  $("btnSaveAnnouncement").onclick = async () => {
+    const statusEl = $("announcementSaveStatus");
+    if(statusEl) statusEl.textContent = "Menyimpan...";
+    try {
+      const active = $("announcementActiveCheck")?.checked || false;
+      const tag = $("announcementTagInput")?.value || "📢 PENGUMUMAN";
+      const title = $("announcementTitleInput")?.value || "";
+      const message = $("announcementMsgInput")?.value || "";
+
+      const r = await fetch(API_BASE + "/api/announcement", {
+        method: "POST",
+        headers: getAuthHeaders({ "Content-Type": "application/json" }),
+        body: JSON.stringify({ active, tag, title, message })
+      });
+      const d = await r.json();
+      if(d.ok){
+        if(statusEl) statusEl.textContent = "✅ Pengumuman berhasil disimpan & disiarkan!";
+        showToast("Pengumuman berhasil diperbarui untuk semua pengguna!", "info");
+        loadAnnouncement();
+        setTimeout(() => { if(statusEl) statusEl.textContent = ""; }, 4000);
+      } else {
+        if(statusEl) statusEl.textContent = "⚠️ " + (d.error || "Gagal menyimpan");
+      }
+    } catch(e){
+      if(statusEl) statusEl.textContent = "⚠️ Error: " + e.message;
+    }
+  };
+}
+
+// 4. Secret & PIN Management di Admin Panel
+if($("btnVerifyAdminSecret")){
+  $("btnVerifyAdminSecret").onclick = async () => {
+    const secretInput = $("inputAdminSecret");
+    const statusEl = $("adminSecretStatus");
+    const secret = secretInput ? secretInput.value.trim() : "";
+    if(!secret){
+      if(statusEl){ statusEl.style.color = "#f87171"; statusEl.textContent = "Masukkan PIN Rahasia"; }
+      return;
+    }
+    if(statusEl){ statusEl.style.color = "#93c5fd"; statusEl.textContent = "Memverifikasi..."; }
+
+    try {
+      const r = await fetch(API_BASE + "/api/admin/verify-secret", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ secret })
+      });
+      const d = await r.json();
+      if(d.ok && d.admin){
+        localStorage.setItem("oreo_admin_secret", secret);
+        if(statusEl){ statusEl.style.color = "#34d399"; statusEl.textContent = "✅ Hak akses Admin berhasil diaktifkan!"; }
+        showToast("Hak akses Admin berhasil diverifikasi!", "info");
+        setAdminMode(true);
+        loadModels();
+        loadQuota();
+        loadAdminModels();
+        loadAdminUsers();
+      } else {
+        if(statusEl){ statusEl.style.color = "#f87171"; statusEl.textContent = "❌ " + (d.error || "PIN Salah"); }
+      }
+    } catch(e){
+      if(statusEl){ statusEl.style.color = "#f87171"; statusEl.textContent = "⚠️ Error: " + e.message; }
+    }
+  };
+}
+
+if($("btnRevokeAdminSecret")){
+  $("btnRevokeAdminSecret").onclick = () => {
+    localStorage.removeItem("oreo_admin_secret");
+    setAdminMode(false);
+    showToast("Hak akses Admin dilepas", "info");
+    closeAdminSettingsModal();
+    loadModels();
+    loadQuota();
+  };
+}
+
 async function refreshToken(){
   if(auth && auth.currentUser) idToken = await auth.currentUser.getIdToken();
   else if(uid === "dev-mode") idToken = "dev-token";
@@ -3669,16 +4807,16 @@ async function loadQuota(){
     const today = getTodayStr();
     const usedCount = (stored && stored.date === today) ? (stored.used || 0) : 0;
     const r = await fetch(API_BASE + "/api/quota", {
-      headers: {
-        "Authorization": "Bearer " + (idToken || "dev-token"),
-        "X-Client-Id": getClientId(),
-        "X-User-Id": uid || getClientId(),
+      headers: getAuthHeaders({
         "X-Used-Count": String(usedCount)
-      }
+      })
     });
     const d = await r.json();
     if(d.ok && d.quota){
       updateQuotaDisplay(d.quota, true);
+    }
+    if(typeof d.admin === "boolean"){
+      setAdminMode(d.admin);
     }
   } catch(e) {
     console.warn("Gagal memuat info kuota:", e);
@@ -4617,10 +5755,7 @@ async function loadModels(){
   await refreshToken();
   try {
     const r = await fetch(API_BASE+"/api/models",{
-      headers:{
-        "Authorization":"Bearer "+(idToken||"dev-token"),
-        "X-Client-Id": getClientId()
-      }
+      headers: getAuthHeaders()
     });
     const d = await r.json();
     const seenNames = new Set();
@@ -4649,12 +5784,8 @@ async function loadModels(){
       renderPopoverList();
     }
 
-    if(d.admin && !document.getElementById("adminBadge")){
-      const badge = document.createElement("span");
-      badge.id = "adminBadge";
-      badge.className = "badge-admin";
-      badge.textContent = "ADMIN";
-      const wrap = document.getElementById("adminBadgeWrap"); if(wrap){ wrap.innerHTML = ""; wrap.appendChild(badge); } else { document.querySelector(".brand").appendChild(badge); }
+    if(typeof d.admin === "boolean"){
+      setAdminMode(d.admin);
     }
   } catch(e) {
     console.error("Gagal load models:", e);
@@ -5278,13 +6409,10 @@ async function send(){
     const usedCount = (stored && stored.date === getTodayStr()) ? (stored.used || 0) : 0;
     const r = await fetch(API_BASE+"/api/chat",{
       method:"POST",
-      headers:{
+      headers: getAuthHeaders({
         "Content-Type":"application/json",
-        "Authorization":"Bearer "+(idToken||"dev-token"),
-        "X-Client-Id": getClientId(),
-        "X-User-Id": uid || getClientId(),
         "X-Used-Count": String(usedCount)
-      },
+      }),
       body: JSON.stringify({
         model, 
         persona: "auto",
@@ -5296,6 +6424,9 @@ async function send(){
     if(d.quota){
       updateQuotaDisplay(d.quota);
     }
+    if(typeof d.admin === "boolean"){
+      setAdminMode(d.admin);
+    }
     if(d.ok){
       const cleanName = formatModelName(d.model);
       const meta = cleanName + " · " + d.elapsed + "s";
@@ -5304,7 +6435,7 @@ async function send(){
       saveConv();
     } else {
       if(d.quota_exceeded){
-        addMsg("ai", `⛔ **Batas Kuota Harian Habis**\n\n${d.error}\n\n*Catatan: Kuota di-reset otomatis setiap hari pada pukul 00:00. Anda juga bisa mengklik indikator kuota di atas untuk menguji fitur reset.*`);
+        addMsg("ai", `⛔ **Batas Kuota Harian Habis**\n\n${d.error}\n\n*Catatan: Kuota di-reset otomatis setiap hari pada pukul 00:00 WIB.*`);
       } else {
         addMsg("ai", "⚠️ " + (d.error || "Gagal memproses respons"));
       }
@@ -5330,6 +6461,9 @@ $("input").onkeydown = e => {
     send();
   }
 };
+
+// Muat pengumuman sistem
+loadAnnouncement();
 
 // Pulihkan data dan inisialisasi aplikasi jika sudah ada sesi tersimpan
 if(restoreCachedSession(true)){
