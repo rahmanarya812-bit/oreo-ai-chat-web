@@ -1537,24 +1537,312 @@ header {
     max-width: 90%;
   }
 }
+
+/* === Custom Modern Modal (Hapus Obrolan & Logout) === */
+.custom-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  opacity: 1;
+  transition: opacity 0.2s ease;
+}
+.custom-modal-backdrop.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+.custom-modal-card {
+  width: 90%;
+  max-width: 380px;
+  background: #14161d;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 22px;
+  padding: 26px 22px 22px;
+  text-align: center;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  animation: modalScaleUp 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes modalScaleUp {
+  from { opacity: 0; transform: scale(0.92); }
+  to { opacity: 1; transform: scale(1); }
+}
+.custom-modal-icon-wrap {
+  width: 54px;
+  height: 54px;
+  margin: 0 auto 16px;
+  border-radius: 18px;
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+}
+.custom-modal-icon-wrap.logout {
+  background: rgba(99, 102, 241, 0.12);
+  border-color: rgba(99, 102, 241, 0.25);
+}
+.custom-modal-title {
+  margin: 0 0 8px;
+  font-size: 17px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.3px;
+}
+.custom-modal-desc {
+  margin: 0 0 24px;
+  font-size: 13px;
+  color: #9499ab;
+  line-height: 1.5;
+}
+.custom-modal-actions {
+  display: flex;
+  gap: 10px;
+}
+.btn-modal-cancel {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #d1d5db;
+  padding: 11px 16px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-modal-cancel:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+.btn-modal-confirm {
+  flex: 1;
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  border: none;
+  color: #fff;
+  padding: 11px 16px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+  transition: all 0.2s;
+}
+.btn-modal-confirm:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
+}
+.btn-modal-confirm.logout {
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+/* === Modern Sleek Buttons & Badges === */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  background: none !important;
+  -webkit-text-fill-color: initial !important;
+}
+.brand-text {
+  background: linear-gradient(135deg, #a5b4fc 0%, #c084fc 50%, #f472b6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.badge-admin {
+  background: rgba(245, 158, 11, 0.15) !important;
+  border: 1px solid rgba(245, 158, 11, 0.35) !important;
+  color: #fbbf24 !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  padding: 2px 7px !important;
+  border-radius: 6px !important;
+  letter-spacing: 0.8px !important;
+  text-transform: uppercase !important;
+  -webkit-text-fill-color: #fbbf24 !important;
+  -webkit-background-clip: initial !important;
+  box-shadow: none !important;
+  display: inline-block !important;
+  vertical-align: middle !important;
+}
+
+.btn-new-chat {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.05) !important;
+  color: #f1f3f9 !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 12px !important;
+  padding: 9px 14px !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  box-shadow: none !important;
+}
+.btn-new-chat:hover {
+  background: rgba(255, 255, 255, 0.09) !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+  transform: translateY(-1px);
+}
+.btn-export-chat {
+  width: 38px;
+  height: 38px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #9499ab;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+.btn-export-chat:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.user-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #e2e8f0;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 4px 10px 4px 4px;
+  border-radius: 20px;
+}
+.user-avatar {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+}
+.btn-logout-sleek {
+  background: rgba(255, 255, 255, 0.04);
+  color: #9499ab;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-logout-sleek:hover {
+  background: rgba(239, 68, 68, 0.12);
+  color: #fca5a5;
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+.hero-cookie-badge {
+  width: 64px;
+  height: 64px;
+  border-radius: 22px;
+  background: radial-gradient(circle at 30% 30%, rgba(99, 102, 241, 0.25), rgba(139, 92, 246, 0.1));
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4), 0 0 24px rgba(99, 102, 241, 0.2);
+}
+.hero-cookie-icon {
+  font-size: 32px;
+  filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3));
+}
+.hero-title {
+  font-size: 28px !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.6px !important;
+  margin-bottom: 8px !important;
+  color: #f1f3f9 !important;
+  background: none !important;
+  -webkit-text-fill-color: initial !important;
+}
+.hero-desc {
+  font-size: 14px !important;
+  color: #8b92a5 !important;
+  max-width: 520px !important;
+  line-height: 1.5 !important;
+  margin-bottom: 30px !important;
+}
+.suggestions-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  width: 100%;
+  max-width: 700px;
+}
+.sug-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 16px;
+  padding: 16px 18px;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.sug-card:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(99, 102, 241, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+.sug-card .sug-head {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #f1f3f9;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.sug-card .sug-sub {
+  font-size: 12px;
+  color: #8b92a5;
+  line-height: 1.4;
+}
+
 </style>
 </head>
 <body>
 
-<header>
-  <button id="btnToggleSidebar" class="icon-btn" title="Toggle Sidebar">☰</button>
+<header id="topbar">
+  <button id="btnToggleSidebar" class="icon-btn" title="Toggle Sidebar">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+  </button>
   <div class="brand">
-    <span class="emoji">✨</span>
-    <span>Oreo AI</span>
+    <span class="emoji">🍪</span>
+    <span class="brand-text">Oreo AI</span>
+    <span id="adminBadgeWrap"></span>
   </div>
 
   <div class="header-spacer"></div>
-
-  <button id="btnOpenConnectors" class="btn-connectors-pill" title="Konektor Aplikasi (Canva, Google, GitHub, Zoom, dll)">
-    <span>🔌</span>
-    <span>Konektor</span>
-    <span id="connCountBadge" class="conn-count-badge" style="display:none;">0</span>
-  </button>
 
   <div id="quotaBadge" class="quota-badge" style="display:none;" title="Batas kuota harian. Di-reset otomatis setiap hari pukul 00:00. Klik untuk detail.">
     <span id="quotaText">⚡ Kuota: --/--</span>
@@ -1566,32 +1854,21 @@ header {
   </div>
 
   <button id="btnAuth" class="btn-secondary" style="display:none">Login</button>
-  <button id="btnLogout" class="btn-secondary" style="display:none">Keluar</button>
+  <button id="btnLogout" class="btn-logout-sleek" style="display:none">Keluar</button>
 </header>
 
-<!-- Modal Konektor Aplikasi (Persis Screenshot User) -->
-<div id="connectorModal" class="connector-modal-backdrop hidden">
-  <div class="connector-modal-card">
-    <div class="conn-modal-header">
-      <div class="conn-modal-title">Konektor</div>
-      <button id="btnCloseConnectors" class="conn-close-btn" type="button" title="Tutup">✕</button>
+<!-- Modal Konfirmasi Estetik (Hapus Obrolan & Logout) -->
+<div id="customConfirmModal" class="custom-modal-backdrop hidden">
+  <div class="custom-modal-card">
+    <div class="custom-modal-icon-wrap" id="modalIconWrap">
+      <span id="modalIcon">⚠️</span>
     </div>
-
-    <div class="conn-search-wrap">
-      <div class="conn-search-box">
-        <span style="font-size:14px; color:#9ca3af;">🔍</span>
-        <input type="text" id="connSearchInput" placeholder="Mencari" autocomplete="off">
-      </div>
+    <h3 class="custom-modal-title" id="modalTitle">Konfirmasi</h3>
+    <p class="custom-modal-desc" id="modalDesc">Apakah Anda yakin?</p>
+    <div class="custom-modal-actions">
+      <button type="button" class="btn-modal-cancel" id="btnModalCancel">Batal</button>
+      <button type="button" class="btn-modal-confirm" id="btnModalConfirm">Lanjutkan</button>
     </div>
-
-    <div class="conn-tabs-wrap">
-      <div class="conn-tabs">
-        <button id="tabConnTersedia" class="conn-tab-btn active" type="button">Tersedia</button>
-        <button id="tabConnTerhubung" class="conn-tab-btn" type="button">Terhubung</button>
-      </div>
-    </div>
-
-    <div class="conn-modal-body" id="connModalBody"></div>
   </div>
 </div>
 
@@ -1612,12 +1889,13 @@ header {
 <!-- Tampilan Utama Chat -->
 <div id="main">
   <aside id="sidebar">
-    <div class="sidebar-header" style="display:flex; gap:8px;">
-      <button id="btnNew" class="btn-new-chat" style="flex:1;">
-        <span>+</span> Obrolan Baru
+    <div class="sidebar-header">
+      <button id="btnNew" class="btn-new-chat">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        <span>Obrolan Baru</span>
       </button>
-      <button id="btnExportChat" class="icon-btn" title="Unduh / Ekspor Percakapan (Markdown)" style="background:rgba(255,255,255,0.06); border-radius:12px;">
-        📥
+      <button id="btnExportChat" class="btn-export-chat" title="Unduh Percakapan (Markdown)">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
       </button>
     </div>
     <div class="sidebar-section-title">Riwayat Obrolan</div>
@@ -1628,9 +1906,11 @@ header {
     <div id="messages">
       <!-- Hero State / Tampilan Awal -->
       <div id="heroState">
-        <div class="hero-glow">✨</div>
+        <div class="hero-cookie-badge">
+          <span class="hero-cookie-icon">🍪</span>
+        </div>
         <h2 class="hero-title" id="heroTitle">Ada yang bisa saya bantu hari ini?</h2>
-        <p class="hero-desc" id="heroDesc">Pilih model dan mode keahlian di bawah untuk memulai percakapan atau pilih ide topik berikut.</p>
+        <p class="hero-desc" id="heroDesc">Mulai percakapan baru, tanyakan konsep, analisis ide, tulis kode, atau minta bantuan apa saja.</p>
         <div class="suggestions-grid" id="suggestionsGrid"></div>
       </div>
     </div>
@@ -1756,6 +2036,46 @@ let devConvs = JSON.parse(localStorage.getItem("oreo_dev_convs") || "{}");
 let currentQuota = null;
 
 const $ = id => document.getElementById(id);
+// === MODAL KONFIRMASI ESTETIK ===
+let modalConfirmCallback = null;
+
+function showModalConfirm({ icon = "⚠️", title, desc, confirmText = "Lanjutkan", isDanger = true, onConfirm }){
+  const modal = $("customConfirmModal");
+  const iconEl = $("modalIcon");
+  const iconWrap = $("modalIconWrap");
+  const titleEl = $("modalTitle");
+  const descEl = $("modalDesc");
+  const confirmBtn = $("btnModalConfirm");
+
+  iconEl.textContent = icon;
+  titleEl.textContent = title;
+  descEl.textContent = desc;
+  confirmBtn.textContent = confirmText;
+
+  if(isDanger){
+    iconWrap.className = "custom-modal-icon-wrap";
+    confirmBtn.className = "btn-modal-confirm";
+  } else {
+    iconWrap.className = "custom-modal-icon-wrap logout";
+    confirmBtn.className = "btn-modal-confirm logout";
+  }
+
+  modalConfirmCallback = onConfirm;
+  modal.classList.remove("hidden");
+}
+
+function hideModalConfirm(){
+  const modal = $("customConfirmModal");
+  if(modal) modal.classList.add("hidden");
+  modalConfirmCallback = null;
+}
+
+$("btnModalCancel").onclick = hideModalConfirm;
+$("btnModalConfirm").onclick = () => {
+  if(modalConfirmCallback) modalConfirmCallback();
+  hideModalConfirm();
+};
+
 
 // Generate atau ambil ID browser perangkat yang unik & persisten
 function getClientId(){
@@ -1831,42 +2151,53 @@ function updateQuotaDisplay(q){
 }
 
 async function devResetQuota(){
-  if(!confirm("Reset kuota harian Anda kembali penuh (untuk pengujian)?")){
-    return;
-  }
-  try {
-    await refreshToken();
-    const r = await fetch(API_BASE + "/api/quota/reset", {
-      method: "POST",
-      headers: {
-        "Authorization": "Bearer " + (idToken || "dev-token"),
-        "X-Client-Id": getClientId()
+  showModalConfirm({
+    icon: "⚡",
+    title: "Reset Kuota Harian?",
+    desc: "Ingin mengembalikan kuota pesan Anda menjadi 30/30 penuh untuk pengujian hari ini?",
+    confirmText: "Reset Kuota",
+    isDanger: false,
+    onConfirm: async () => {
+      try {
+        await refreshToken();
+        const r = await fetch(API_BASE + "/api/quota/reset", {
+          method: "POST",
+          headers: {
+            "Authorization": "Bearer " + (idToken || "dev-token"),
+            "X-Client-Id": getClientId()
+          }
+        });
+        const d = await r.json();
+        if(d.ok && d.quota){
+          updateQuotaDisplay(d.quota);
+        }
+      } catch(e) {
+        console.warn("Gagal reset kuota:", e);
       }
-    });
-    const d = await r.json();
-    if(d.ok && d.quota){
-      updateQuotaDisplay(d.quota);
-      alert("✅ Kuota harian berhasil di-reset kembali!");
     }
-  } catch(e) {
-    alert("Gagal reset kuota: " + e.message);
-  }
+  });
 }
 
 $("quotaBadge").onclick = () => {
   if(!currentQuota) return;
   if(currentQuota.is_unlimited){
-    alert("⚡ Akun Anda memiliki akses Kuota Unlimited (Admin).\nTidak ada batasan jumlah pesan per hari.");
+    showModalConfirm({
+      icon: "⚡",
+      title: "Kuota Unlimited",
+      desc: "Akun Anda memiliki hak akses Admin tanpa batasan kuota pesan per hari.",
+      confirmText: "Tutup",
+      isDanger: false,
+      onConfirm: () => {}
+    });
   } else {
-    const msg = `⚡ Info Kuota Harian Oreo AI:\n\n` +
-      `• Pesan terpakai hari ini: ${currentQuota.used} pesan\n` +
-      `• Sisa kuota hari ini: ${currentQuota.remaining} pesan\n` +
-      `• Batas kuota per hari: ${currentQuota.limit} pesan\n` +
-      `• Reset otomatis: Setiap hari pukul 00:00 (pergantian hari)\n\n` +
-      `Ingin me-reset kuota sekarang untuk pengujian?`;
-    if(confirm(msg)){
-      devResetQuota();
-    }
+    showModalConfirm({
+      icon: "⚡",
+      title: "Status Kuota Harian",
+      desc: `Pesan terpakai: ${currentQuota.used} dari ${currentQuota.limit}. Sisa: ${currentQuota.remaining} pesan.\\nReset otomatis setiap hari pukul 00:00. Ingin me-reset kuota sekarang?`,
+      confirmText: "Reset Kuota",
+      isDanger: false,
+      onConfirm: () => devResetQuota()
+    });
   }
 };
 
@@ -2298,22 +2629,23 @@ async function checkCanvaAuthStatus(){
 checkCanvaAuthStatus();
 
 function openConnectorModal(){
-  $("connectorModal").classList.remove("hidden");
-  renderConnectors();
+  if($("connectorModal")) $("connectorModal").classList.remove("hidden");
 }
 
 function closeConnectorModal(){
-  $("connectorModal").classList.add("hidden");
+  if($("connectorModal")) $("connectorModal").classList.add("hidden");
 }
 
-$("btnOpenConnectors").onclick = openConnectorModal;
-$("btnCloseConnectors").onclick = closeConnectorModal;
-$("connectorModal").onclick = (e) => {
-  if(e.target === $("connectorModal")) closeConnectorModal();
-};
-$("tabConnTersedia").onclick = () => switchConnTab("tersedia");
-$("tabConnTerhubung").onclick = () => switchConnTab("terhubung");
-$("connSearchInput").oninput = renderConnectors;
+if($("btnOpenConnectors")) $("btnOpenConnectors").onclick = openConnectorModal;
+if($("btnCloseConnectors")) $("btnCloseConnectors").onclick = closeConnectorModal;
+if($("connectorModal")) {
+  $("connectorModal").onclick = (e) => {
+    if(e.target === $("connectorModal")) closeConnectorModal();
+  };
+}
+if($("tabConnTersedia")) $("tabConnTersedia").onclick = () => switchConnTab("tersedia");
+if($("tabConnTerhubung")) $("tabConnTerhubung").onclick = () => switchConnTab("terhubung");
+if($("connSearchInput")) $("connSearchInput").oninput = renderConnectors;
 
 function enterDevMode(){
   uid = "dev-mode";
@@ -2324,8 +2656,7 @@ function enterDevMode(){
   $("btnLogout").style.display = "inline";
   $("userName").textContent = "Dev Tester";
   $("userAvatar").textContent = "DT";
-  selectPersona("canva");
-  updateConnBadge();
+  renderHeroSuggestions();
   loadModels();
   loadConvs();
   loadQuota();
@@ -2341,7 +2672,7 @@ if(auth) {
       const name = u.displayName || u.email || "Pengguna";
       $("userName").textContent = name;
       $("userAvatar").textContent = name.substring(0,2).toUpperCase();
-      selectPersona("canva");
+      renderHeroSuggestions();
       await refreshToken(); loadModels(); loadConvs(); loadQuota(); newChat();
     }else if(uid !== "dev-mode"){
       uid = null;
@@ -2374,12 +2705,21 @@ $("btnLogin2").onclick = () => {
 if($("btnAuth")) $("btnAuth").onclick = $("btnLogin2").onclick;
 
 $("btnLogout").onclick = () => {
-  if(auth) auth.signOut();
-  uid = null; idToken = null;
-  $("loginBox").style.display="flex"; $("main").style.display="none";
-  $("btnAuth").style.display="inline"; $("btnLogout").style.display="none";
-  $("userName").textContent="Tamu";
-  $("userAvatar").textContent="?";
+  showModalConfirm({
+    icon: "🚪",
+    title: "Keluar dari Akun?",
+    desc: "Anda akan keluar dari sesi Oreo AI. Anda dapat masuk kembali dengan akun Google Anda kapan saja.",
+    confirmText: "Ya, Keluar",
+    isDanger: false,
+    onConfirm: () => {
+      if(auth) auth.signOut();
+      uid = null; idToken = null;
+      $("loginBox").style.display="flex"; $("main").style.display="none";
+      $("btnAuth").style.display="inline"; $("btnLogout").style.display="none";
+      $("userName").textContent="Tamu";
+      $("userAvatar").textContent="?";
+    }
+  });
 };
 $("btnNew").onclick = ()=>newChat();
 
@@ -2565,13 +2905,7 @@ function renderPersonaList(){
 }
 
 function selectPersona(id){
-  if(!PERSONAS_DATA[id]) id = "canva";
-  currentPersona = id;
-  const p = PERSONAS_DATA[id];
-  $("personaSelect").value = id;
-  $("currentPersonaIcon").textContent = p.icon;
-  $("currentPersonaLabel").textContent = p.name;
-  renderPersonaList();
+  $("personaSelect").value = "auto";
   renderHeroSuggestions();
 }
 
@@ -2714,7 +3048,7 @@ async function loadModels(){
       badge.id = "adminBadge";
       badge.className = "badge-admin";
       badge.textContent = "ADMIN";
-      document.querySelector(".brand").appendChild(badge);
+      const wrap = document.getElementById("adminBadgeWrap"); if(wrap){ wrap.innerHTML = ""; wrap.appendChild(badge); } else { document.querySelector(".brand").appendChild(badge); }
     }
   } catch(e) {
     console.error("Gagal load models:", e);
@@ -2759,16 +3093,23 @@ function renderConvItem(id, data){
 }
 
 async function deleteConv(id){
-  if(confirm("Hapus obrolan ini?")){
-    if(!db || uid === "dev-mode"){
-      delete devConvs[id];
-      localStorage.setItem("oreo_dev_convs", JSON.stringify(devConvs));
-    } else {
-      await convsRef().doc(id).delete();
+  showModalConfirm({
+    icon: "🗑️",
+    title: "Hapus Obrolan?",
+    desc: "Percakapan ini akan dihapus secara permanen dan tidak dapat dipulihkan.",
+    confirmText: "Hapus",
+    isDanger: true,
+    onConfirm: async () => {
+      if(!db || uid === "dev-mode"){
+        delete devConvs[id];
+        localStorage.setItem("oreo_dev_convs", JSON.stringify(devConvs));
+      } else {
+        await convsRef().doc(id).delete();
+      }
+      if(convId === id) newChat();
+      else loadConvs();
     }
-    if(convId === id) newChat();
-    else loadConvs();
-  }
+  });
 }
 
 function newChat(){
@@ -2779,10 +3120,10 @@ function newChat(){
 }
 
 const HERO_SUGGESTIONS = [
-  { head: "🎨 Desain Canva", sub: "Konsep Feed Carousel Instagram produk baru", prompt: "Rancang konsep desain Feed Carousel Instagram untuk promosi produk baru yang elegan dan eye-catching lengkap dengan palet warna HEX dan font Canva." },
-  { head: "💻 Koding & REST API", sub: "FastAPI Python dengan JWT Auth", prompt: "Buatkan boilerplate REST API Python menggunakan FastAPI lengkap dengan autentikasi JWT token dan schema Pydantic." },
-  { head: "✍️ Viral Copywriting", sub: "Formula AIDA & Hook Reels/TikTok", prompt: "Tuliskan copywriting promosi menggunakan framework AIDA dan 5 hook pembuka video pendek untuk produk minuman sehat." },
-  { head: "📊 Analisis Bisnis", sub: "Strategi monetisasi & model bisnis", prompt: "Rancang strategi monetisasi dan analisis target pasar untuk aplikasi asisten kecerdasan buatan serbaguna." }
+  { head: "💡 Jelaskan Konsep", sub: "Komputasi kuantum dalam bahasa sederhana", prompt: "Jelaskan konsep komputasi kuantum secara sederhana dengan analogi yang mudah dipahami pemula." },
+  { head: "💻 Koding & Debugging", sub: "Bantu arsitektur API atau script", prompt: "Buatkan contoh arsitektur REST API modern dengan otentikasi aman dan best practices." },
+  { head: "✍️ Tulis & Rangkum", sub: "Draf tulisan profesional atau ringkasan", prompt: "Bantu buatkan draf pesan profesional yang padat, persuasif, dan terstruktur rapi." },
+  { head: "🎨 Ide & Desain Kreatif", sub: "Konsep visual, palet warna, atau layout", prompt: "Berikan konsep visual kreatif lengkap dengan rekomendasi palet warna HEX dan ide tata letak yang estetik." }
 ];
 
 function renderHeroSuggestions(){
@@ -2791,10 +3132,10 @@ function renderHeroSuggestions(){
   grid.innerHTML = "";
 
   if($("heroTitle")){
-    $("heroTitle").textContent = "🍪 Halo, saya Oreo AI";
+    $("heroTitle").textContent = "Ada yang bisa saya bantu hari ini?";
   }
   if($("heroDesc")){
-    $("heroDesc").textContent = "Asisten kecerdasan buatan serbaguna dengan keahlian otomatis (Desain Canva, Koding, Copywriting, Analisis Bisnis, dll). Tanyakan apa saja!";
+    $("heroDesc").textContent = "Mulai percakapan baru, tanyakan konsep, analisis ide, tulis kode, atau minta bantuan apa saja.";
   }
 
   HERO_SUGGESTIONS.forEach(s => {
@@ -2813,9 +3154,11 @@ function createHeroElement(){
   const hero = document.createElement("div");
   hero.id = "heroState";
   hero.innerHTML = `
-    <div class="hero-glow">✨</div>
-    <h2 class="hero-title" id="heroTitle">🍪 Halo, saya Oreo AI</h2>
-    <p class="hero-desc" id="heroDesc">Asisten kecerdasan buatan serbaguna dengan keahlian otomatis (Desain Canva, Koding, Copywriting, Analisis Bisnis, dll). Tanyakan apa saja!</p>
+    <div class="hero-cookie-badge">
+      <span class="hero-cookie-icon">🍪</span>
+    </div>
+    <h2 class="hero-title" id="heroTitle">Ada yang bisa saya bantu hari ini?</h2>
+    <p class="hero-desc" id="heroDesc">Mulai percakapan baru, tanyakan konsep, analisis ide, tulis kode, atau minta bantuan apa saja.</p>
     <div class="suggestions-grid" id="suggestionsGrid"></div>
   `;
   setTimeout(() => renderHeroSuggestions(), 10);
@@ -3000,34 +3343,9 @@ function addMsg(role, text, meta, image){
     const metaBar = document.createElement("div");
     metaBar.className = "msg-meta-bar";
 
-    let connBtnsHtml = "";
-    const pKey = $("personaSelect") ? $("personaSelect").value : "";
-    const lower = (text || "").toLowerCase();
-
-    // Canva action
-    if(connectedApps.has("canva") && (pKey === "canva" || lower.includes("canva") || lower.includes("palet warna") || lower.includes("desain") || lower.includes("layout"))){
-      connBtnsHtml += `<button class="btn-canva-action" onclick="openCanvaWithPrompt(this)" data-content="${encodeURIComponent((text||'').slice(0, 300))}" title="Cari templat dan buka ide ini langsung di Canva">🎨 Buka di Canva</button>`;
-      connBtnsHtml += `<button class="btn-canva-action" style="background:linear-gradient(135deg, #ff6b4a, #ec4899); border:none;" onclick="dispatchN8nAction('canva', 'create_design', this)" data-title="Konsep Desain Canva" data-snippet="${encodeURIComponent((text||'').slice(0, 300))}" title="Kirim payload desain ke N8N / Webhook">⚡ Buat via N8N</button>`;
-    }
-    // Gmail action
-    if(connectedApps.has("gmail") && (lower.includes("email") || lower.includes("surat") || lower.includes("draf") || lower.includes("kirim") || lower.includes("subjek"))){
-      connBtnsHtml += `<button class="btn-canva-action" style="background:#ea4335; border:none;" onclick="dispatchN8nAction('gmail', 'send_draft', this)" data-title="Draf Email Oreo AI" data-snippet="${encodeURIComponent((text||'').slice(0, 300))}" title="Kirim draf email via N8N Webhook">✉️ Drafkan di Gmail</button>`;
-    }
-    // GitHub action
-    if(connectedApps.has("github") && (lower.includes("github") || lower.includes("git clone") || lower.includes("repository") || lower.includes("def ") || lower.includes("function") || lower.includes("const "))){
-      connBtnsHtml += `<a href="https://github.com/new" target="_blank" class="btn-canva-action" style="background:#24292e;" title="Buka GitHub untuk membuat repo/kode">🐙 Buka di GitHub</a>`;
-      connBtnsHtml += `<button class="btn-canva-action" style="background:#334155; border:none;" onclick="dispatchN8nAction('github', 'create_repo', this)" data-title="Repo Oreo AI" data-snippet="${encodeURIComponent((text||'').slice(0, 300))}" title="Publish kode via N8N">⚡ Simpan ke GitHub</button>`;
-    }
-    // Google Sheets action
-    if(connectedApps.has("gsheets") && (lower.includes("tabel") || lower.includes("sheet") || text.includes("| --- |") || text.includes("<td>"))){
-      connBtnsHtml += `<a href="https://sheets.new" target="_blank" class="btn-canva-action" style="background:#0F9D58;" title="Buka Google Sheets baru">📊 Buat di Sheets</a>`;
-      connBtnsHtml += `<button class="btn-canva-action" style="background:#059669; border:none;" onclick="dispatchN8nAction('gsheets', 'export_table', this)" data-title="Tabel Data Oreo AI" data-snippet="${encodeURIComponent((text||'').slice(0, 300))}" title="Ekspor data via N8N">⚡ Ekspor ke Sheets</button>`;
-    }
-
     metaBar.innerHTML = `
       <span>⚡ ${meta}</span>
       <button class="btn-copy-msg" onclick="copyText(this, ${JSON.stringify(text)})">📋 Salin</button>
-      ${connBtnsHtml}
     `;
     body.appendChild(metaBar);
   }
