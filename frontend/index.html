@@ -4359,9 +4359,9 @@ const firebaseConfig = {
 };
 
 // URL Backend otomatis
-const API_BASE = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
-  ? "" 
-  : (localStorage.getItem("oreo_backend_url") || "");
+// URL Backend otomatis (Cloudflare Workers menyajikan frontend & API pada origin yang sama)
+try { localStorage.removeItem("oreo_backend_url"); } catch(e){}
+const API_BASE = "";
 
 let auth = null, db = null, provider = null;
 const isDevConfig = !firebaseConfig.apiKey || firebaseConfig.apiKey.includes("ISI_API_KEY");
@@ -5234,15 +5234,30 @@ if($("adminModelSearch")){
 async function loadAdminUsers(){
   const listEl = $("adminUsersList");
   if(!listEl) return;
-  listEl.innerHTML = `<div style="text-align:center; padding:24px; color:#94a3b8; font-size:13px;">⏳ Memuat riwayat aktivitas pengguna...</div>`;
+  listEl.innerHTML = '<div style="text-align:center; padding:24px; color:#94a3b8; font-size:13px;">⏳ Memuat riwayat aktivitas pengguna...</div>';
   
   try {
     const r = await fetch(API_BASE + "/api/admin/users", {
       headers: getAuthHeaders()
     });
-    const d = await r.json();
+    const text = await r.text();
+    let d = null;
+    try {
+      d = JSON.parse(text);
+    } catch(parseErr) {
+      listEl.innerHTML = '<div style="text-align:center; padding:24px; color:#f87171; font-size:13px;">⚠️ Respon server tidak valid (' + r.status + '). Silakan coba sesaat lagi.</div>';
+      return;
+    }
+
     if(!d.ok){
-      listEl.innerHTML = `<div style="text-align:center; padding:24px; color:#f87171; font-size:13px;">⚠️ ${escapeHtml(d.error || "Gagal memuat pengguna")}</div>`;
+      if(r.status === 401 || r.status === 403 || (d.error && d.error.includes("Admin"))){
+        listEl.innerHTML = '<div style="text-align:center; padding:32px 18px; color:#fde68a; font-size:13.5px; line-height:1.6;">' +
+          '🔒 <strong>Akses Admin Diperlukan</strong><br>' +
+          '<span style="color:#94a3b8; font-size:12.5px;">Untuk melihat riwayat aktivitas pengguna, masukkan PIN Rahasia Admin di tab <strong>🔑 Hak Akses & PIN</strong> lalu klik Verifikasi PIN.</span>' +
+        '</div>';
+      } else {
+        listEl.innerHTML = '<div style="text-align:center; padding:24px; color:#f87171; font-size:13px;">⚠️ ' + escapeHtml(d.error || "Gagal memuat pengguna") + '</div>';
+      }
       return;
     }
 
@@ -6439,16 +6454,20 @@ async function loadModels(){
       headers: getAuthHeaders()
     });
     const d = await r.json();
-    const seenNames = new Set();
     const modelList = [];
-    
-    d.providers.forEach(p=>{
-      p.models.forEach(m=>{
-        const cleanName = formatModelName(m);
-        if(!seenNames.has(cleanName)){
-          seenNames.add(cleanName);
-          modelList.push({ id: m, name: cleanName });
-        }
+    const nameCounts = {};
+    d.providers.forEach(p => {
+      p.models.forEach(m => {
+        const cn = formatModelName(m);
+        nameCounts[cn] = (nameCounts[cn] || 0) + 1;
+      });
+    });
+
+    d.providers.forEach(p => {
+      p.models.forEach(m => {
+        const cn = formatModelName(m);
+        const displayName = (nameCounts[cn] > 1) ? (cn + " (" + p.label + ")") : cn;
+        modelList.push({ id: m, name: displayName, provider: p.label });
       });
     });
 
