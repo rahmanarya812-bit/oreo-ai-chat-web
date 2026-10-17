@@ -121,15 +121,18 @@ header {
   align-items: center;
   gap: 6px;
   background: rgba(99, 102, 241, 0.12);
-  border: 1px solid rgba(99, 102, 241, 0.3);
+  border: 1px solid rgba(99, 102, 241, 0.28);
   color: #c7d2fe;
   font-size: 12px;
   font-weight: 600;
-  padding: 4px 11px;
-  border-radius: 16px;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 999px;
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   user-select: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  white-space: nowrap;
 }
 .quota-badge:hover {
   background: rgba(99, 102, 241, 0.22);
@@ -137,20 +140,20 @@ header {
   transform: translateY(-1px);
 }
 .quota-badge.warning {
-  background: rgba(245, 158, 11, 0.15);
-  border-color: rgba(245, 158, 11, 0.4);
+  background: rgba(245, 158, 11, 0.12);
+  border-color: rgba(245, 158, 11, 0.35);
   color: #fde68a;
 }
 .quota-badge.danger {
-  background: rgba(239, 68, 68, 0.18);
-  border-color: rgba(239, 68, 68, 0.45);
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.4);
   color: #fca5a5;
   animation: pulseQuota 2s infinite;
 }
 .quota-badge.unlimited {
-  background: rgba(16, 185, 129, 0.15);
-  border-color: rgba(16, 185, 129, 0.4);
-  color: #6ee7b7;
+  background: rgba(16, 185, 129, 0.12);
+  border-color: rgba(16, 185, 129, 0.35);
+  color: #34d399;
 }
 @keyframes pulseQuota {
   0%, 100% { opacity: 1; }
@@ -2978,26 +2981,38 @@ header {
 .btn-img-action:hover {
   background: rgba(99, 102, 241, 0.2);
   border-color: rgba(99, 102, 241, 0.4);
+}
+
 /* === ADMIN PANEL & ANNOUNCEMENT STYLING === */
+.header-right-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
 .btn-admin-pill {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: rgba(245, 158, 11, 0.12);
-  border: 1px solid rgba(245, 158, 11, 0.35);
-  color: #fbbf24;
-  font-size: 12px;
-  font-weight: 600;
-  padding: 4px 11px;
-  border-radius: 14px;
+  background: rgba(245, 158, 11, 0.12) !important;
+  border: 1px solid rgba(245, 158, 11, 0.32) !important;
+  color: #fbbf24 !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  height: 32px;
+  padding: 0 12px !important;
+  border-radius: 999px !important;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
   user-select: none;
+  font-family: inherit;
+  outline: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 .btn-admin-pill:hover {
-  background: rgba(245, 158, 11, 0.22);
-  border-color: rgba(245, 158, 11, 0.6);
+  background: rgba(245, 158, 11, 0.22) !important;
+  border-color: rgba(245, 158, 11, 0.55) !important;
   transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.25);
 }
 .admin-nav-row {
   background: rgba(245, 158, 11, 0.08) !important;
@@ -3471,21 +3486,24 @@ header {
 
   <div class="header-spacer"></div>
 
-  <button id="btnAdminSettings" class="btn-admin-pill" style="display:none;" title="Pengaturan Admin & Kontrol Model">
-    ⚙️ Pengaturan
-  </button>
+  <div class="header-right-group">
+    <button id="btnAdminSettings" class="btn-admin-pill" style="display:none;" title="Pengaturan Admin & Kontrol Model">
+      <span class="admin-pill-icon">⚙️</span>
+      <span class="admin-pill-text">Pengaturan</span>
+    </button>
 
-  <div id="quotaBadge" class="quota-badge" style="display:none;" title="Batas kuota harian. Di-reset otomatis setiap hari pukul 00:00. Klik untuk detail.">
-    <span id="quotaText">⚡ Kuota: --/--</span>
+    <div id="quotaBadge" class="quota-badge" style="display:none;" title="Batas kuota harian. Di-reset otomatis setiap hari pukul 00:00. Klik untuk detail.">
+      <span id="quotaText">⚡ Kuota: --/--</span>
+    </div>
+
+    <div id="headerUserInfo" class="user-chip">
+      <div id="userAvatar" class="user-avatar">?</div>
+      <span id="userName">Tamu</span>
+    </div>
+
+    <button id="btnAuth" class="btn-secondary" style="display:none">Login</button>
+    <button id="btnLogout" class="btn-logout-sleek" style="display:none" title="Keluar dari akun">Keluar</button>
   </div>
-
-  <div id="headerUserInfo" class="user-chip">
-    <div id="userAvatar" class="user-avatar">?</div>
-    <span id="userName">Tamu</span>
-  </div>
-
-  <button id="btnAuth" class="btn-secondary" style="display:none">Login</button>
-  <button id="btnLogout" class="btn-logout-sleek" style="display:none">Keluar</button>
 </header>
 
 <!-- Modal Konfirmasi Estetik (Hapus Obrolan & Logout) -->
