@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: oreo-ai-chat-api
+    runtime: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT --timeout 120
+    envVars:
+      - key: DISCOVERY_KEY
+        sync: false
+      - key: RADOXAI_KEY
+        sync: false
+      - key: CC_KEY
+        sync: false
+      - key: CLOUVIA_KEY
+        sync: false
+      - key: DEVORA_KEY
+        sync: false
+      - key: ATRIA_KEY
+        sync: false
+      - key: FIREBASE_CREDENTIALS_JSON
+        sync: false
+      - key: ADMIN_UIDS
+        sync: false
+      - key: USER_MODELS
+        sync: false
+      - key: PYTHONUNBUFFERED
+        value: "1"

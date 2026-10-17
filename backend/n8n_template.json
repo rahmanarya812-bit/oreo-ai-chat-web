@@ -1,0 +1,69 @@
+{
+  "name": "Oreo AI - Connector Hub Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "oreo-hub",
+        "options": {}
+      },
+      "id": "1",
+      "name": "Webhook Inbound Oreo AI",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "dataType": "string",
+        "value1": "={{ $json.body.app }}",
+        "rules": {
+          "rules": [
+            { "value2": "canva", "output": 0 },
+            { "value2": "gmail", "output": 1 },
+            { "value2": "github", "output": 2 },
+            { "value2": "gsheets", "output": 3 }
+          ]
+        }
+      },
+      "id": "2",
+      "name": "Switch by App",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 1,
+      "position": [480, 300]
+    },
+    {
+      "parameters": {
+        "options": {},
+        "respondWith": "json",
+        "responseBody": "={\n  \"ok\": true,\n  \"status\": \"success\",\n  \"message\": \"Berhasil dieksekusi via n8n!\",\n  \"app\": \"{{ $json.body.app }}\",\n  \"action\": \"{{ $json.body.action }}\",\n  \"result\": {\n    \"id\": \"n8n_\" + $now.format('x'),\n    \"url\": \"https://www.canva.com/design\",\n    \"data\": $json.body.payload\n  }\n}"
+      },
+      "id": "3",
+      "name": "Response Success",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [760, 300]
+    }
+  ],
+  "connections": {
+    "Webhook Inbound Oreo AI": {
+      "main": [
+        [
+          {
+            "node": "Switch by App",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch by App": {
+      "main": [
+        [{ "node": "Response Success", "type": "main", "index": 0 }],
+        [{ "node": "Response Success", "type": "main", "index": 0 }],
+        [{ "node": "Response Success", "type": "main", "index": 0 }],
+        [{ "node": "Response Success", "type": "main", "index": 0 }]
+      ]
+    }
+  }
+}

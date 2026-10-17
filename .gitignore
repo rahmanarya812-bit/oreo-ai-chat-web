@@ -1,0 +1,8 @@
+.env
+__pycache__/
+*.pyc
+backend/data/
+backend/canva_token.json
+backend/oauth_sessions.json
+backend/.env
+

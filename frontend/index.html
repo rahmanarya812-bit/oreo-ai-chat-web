@@ -1,0 +1,3194 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Oreo AI — Smart Chatbot</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-main: #090b10;
+  --bg-sidebar: #0f131d;
+  --bg-card: #151a28;
+  --bg-input: #171d2c;
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-focus: rgba(99, 102, 241, 0.4);
+  --accent-blue: #3b82f6;
+  --accent-indigo: #6366f1;
+  --accent-purple: #a855f7;
+  --accent-cyan: #06b6d4;
+  --text-main: #f1f5f9;
+  --text-muted: #94a3b8;
+  --text-subtle: #64748b;
+  --gemini-gradient: linear-gradient(135deg, #60a5fa 0%, #a78bfa 50%, #f472b6 100%);
+  --sidebar-w: 260px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg-main);
+  color: var(--text-main);
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.12); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.22); }
+
+/* Header */
+header {
+  height: 60px;
+  background: rgba(15, 19, 29, 0.85);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 20;
+}
+
+.icon-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-muted);
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 18px;
+}
+.icon-btn:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-main);
+  border-color: var(--border-subtle);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  background: var(--gemini-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.brand span.emoji {
+  -webkit-text-fill-color: initial;
+}
+
+
+
+.header-spacer { flex: 1; }
+
+.quota-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(99, 102, 241, 0.12);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  color: #c7d2fe;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 11px;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+}
+.quota-badge:hover {
+  background: rgba(99, 102, 241, 0.22);
+  border-color: rgba(99, 102, 241, 0.5);
+  transform: translateY(-1px);
+}
+.quota-badge.warning {
+  background: rgba(245, 158, 11, 0.15);
+  border-color: rgba(245, 158, 11, 0.4);
+  color: #fde68a;
+}
+.quota-badge.danger {
+  background: rgba(239, 68, 68, 0.18);
+  border-color: rgba(239, 68, 68, 0.45);
+  color: #fca5a5;
+  animation: pulseQuota 2s infinite;
+}
+.quota-badge.unlimited {
+  background: rgba(16, 185, 129, 0.15);
+  border-color: rgba(16, 185, 129, 0.4);
+  color: #6ee7b7;
+}
+@keyframes pulseQuota {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.65; }
+}
+
+.badge-admin {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #000;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 12px;
+  letter-spacing: 0.5px;
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.3);
+}
+
+.user-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+.user-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-muted);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--text-main);
+}
+
+/* Layout Main */
+#main {
+  display: none;
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Sidebar */
+#sidebar {
+  width: var(--sidebar-w);
+  background: var(--bg-sidebar);
+  border-right: 1px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 10;
+}
+#sidebar.collapsed {
+  margin-left: calc(-1 * var(--sidebar-w));
+}
+
+.sidebar-header {
+  padding: 14px;
+}
+.btn-new-chat {
+  width: 100%;
+  background: linear-gradient(135deg, #2563eb, #4f46e5);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.25);
+  transition: all 0.2s;
+}
+.btn-new-chat:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
+}
+
+.sidebar-section-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-subtle);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  padding: 8px 16px 6px;
+}
+
+#convList {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 10px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.conv-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 12px;
+  border-radius: 10px;
+  font-size: 13px;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.15s;
+  position: relative;
+  group: 1;
+}
+.conv-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-main);
+}
+.conv-item.active {
+  background: rgba(99, 102, 241, 0.15);
+  color: #fff;
+  font-weight: 600;
+}
+.conv-title {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.conv-del {
+  display: none;
+  color: var(--text-subtle);
+  font-size: 13px;
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+.conv-item:hover .conv-del {
+  display: block;
+}
+.conv-del:hover {
+  color: #f87171;
+  background: rgba(248, 113, 113, 0.15);
+}
+
+/* Chat Container */
+#chatBox {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  background: radial-gradient(circle at 50% 10%, rgba(99, 102, 241, 0.06), transparent 60%);
+}
+
+#messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 860px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* Empty State / Hero */
+#heroState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: auto 0;
+  padding: 40px 20px;
+  text-align: center;
+}
+.hero-glow {
+  width: 60px;
+  height: 60px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #3b82f6, #a855f7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  margin-bottom: 16px;
+  box-shadow: 0 10px 30px rgba(99, 102, 241, 0.35);
+}
+.hero-title {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  margin-bottom: 8px;
+  background: var(--gemini-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.hero-desc {
+  font-size: 14px;
+  color: var(--text-muted);
+  max-width: 480px;
+  margin-bottom: 32px;
+}
+
+.suggestions-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  width: 100%;
+  max-width: 680px;
+}
+.sug-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  padding: 14px 16px;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.sug-card:hover {
+  border-color: var(--border-focus);
+  background: rgba(30, 36, 56, 0.7);
+  transform: translateY(-2px);
+}
+.sug-card .sug-head {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.sug-card .sug-sub {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* Messages */
+.msg-row {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+}
+.msg-row.user {
+  justify-content: flex-end;
+}
+
+.msg-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  flex-shrink: 0;
+}
+.msg-avatar.ai {
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.msg-body {
+  max-width: 82%;
+  display: flex;
+  flex-direction: column;
+}
+.msg-row.user .msg-body {
+  align-items: flex-end;
+}
+
+.msg-bubble {
+  padding: 12px 18px;
+  font-size: 14px;
+  line-height: 1.6;
+  border-radius: 18px;
+  word-break: break-word;
+}
+.msg-row.user .msg-bubble {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: #fff;
+  border-bottom-right-radius: 4px;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.2);
+}
+.msg-row.ai .msg-bubble {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-top-left-radius: 4px;
+  color: var(--text-main);
+}
+
+.msg-meta-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 6px;
+  font-size: 11px;
+  color: var(--text-subtle);
+  padding: 0 4px;
+}
+.btn-copy-msg {
+  background: transparent;
+  border: none;
+  color: var(--text-subtle);
+  cursor: pointer;
+  font-size: 11px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: all 0.15s;
+}
+.btn-copy-msg:hover {
+  color: var(--text-main);
+  background: rgba(255,255,255,0.06);
+}
+
+/* Markdown styling */
+.msg-bubble p { margin-bottom: 10px; }
+.msg-bubble p:last-child { margin-bottom: 0; }
+.msg-bubble ul, .msg-bubble ol { margin: 8px 0 8px 22px; }
+.msg-bubble li { margin-bottom: 4px; }
+.msg-bubble h1, .msg-bubble h2, .msg-bubble h3 { margin: 14px 0 8px; font-weight: 700; }
+.msg-bubble blockquote {
+  border-left: 3px solid var(--accent-indigo);
+  padding-left: 12px;
+  margin: 10px 0;
+  color: var(--text-muted);
+}
+.msg-bubble table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 12px 0;
+  font-size: 13px;
+}
+.msg-bubble th, .msg-bubble td {
+  border: 1px solid var(--border-subtle);
+  padding: 8px 12px;
+  text-align: left;
+}
+.msg-bubble th {
+  background: rgba(255, 255, 255, 0.04);
+  font-weight: 600;
+}
+
+.code-block-wrap {
+  position: relative;
+  margin: 12px 0;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--border-subtle);
+}
+.code-header {
+  background: #0a0d14;
+  padding: 6px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text-subtle);
+  border-bottom: 1px solid var(--border-subtle);
+}
+.code-copy-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 11px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.code-copy-btn:hover { color: #fff; }
+.msg-bubble pre {
+  background: #06080d;
+  padding: 12px 14px;
+  overflow-x: auto;
+  margin: 0;
+}
+.msg-bubble code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+}
+.msg-bubble :not(pre) > code {
+  background: rgba(255, 255, 255, 0.08);
+  padding: 2px 6px;
+  border-radius: 5px;
+  color: #38bdf8;
+}
+
+.msg-image {
+  margin-bottom: 8px;
+  max-width: 280px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.msg-image img {
+  width: 100%;
+  height: auto;
+  display: block;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+.msg-image img:hover {
+  transform: scale(1.02);
+}
+
+.image-preview-bar {
+  display: flex;
+  gap: 10px;
+  padding: 0 4px 10px 4px;
+}
+.image-preview-wrapper {
+  position: relative;
+  width: 58px;
+  height: 58px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+}
+.image-preview-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.btn-remove-image {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  background: rgba(0, 0, 0, 0.75);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  font-size: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.btn-remove-image:hover {
+  background: #ef4444;
+}
+
+/* Typing Indicator */
+.typing-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 4px;
+}
+.typing-dot {
+  width: 7px;
+  height: 7px;
+  background-color: var(--text-muted);
+  border-radius: 50%;
+  animation: typingBounce 1.4s infinite ease-in-out both;
+}
+.typing-dot:nth-child(1) { animation-delay: -0.32s; }
+.typing-dot:nth-child(2) { animation-delay: -0.16s; }
+.typing-dot:nth-child(3) { animation-delay: 0s; }
+@keyframes typingBounce {
+  0%, 80%, 100% { transform: scale(0.6); opacity: 0.3; }
+  40% { transform: scale(1.2); opacity: 1; background-color: var(--accent-cyan); }
+}
+
+/* Input Area (Floating Dock) */
+#dockArea {
+  padding: 12px 20px 16px;
+  width: 100%;
+  max-width: 860px;
+  margin: 0 auto;
+  position: relative;
+}
+.dock-card {
+  background: #181d2a;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 28px;
+  padding: 8px 12px 8px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  transition: all 0.2s;
+}
+.dock-card:focus-within {
+  border-color: rgba(99, 102, 241, 0.45);
+  box-shadow: 0 10px 35px rgba(99, 102, 241, 0.2);
+}
+.dock-plus-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 20px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.15s;
+}
+.dock-plus-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+#input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--text-main);
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.5;
+  resize: none;
+  max-height: 160px;
+  outline: none;
+  padding: 6px 0;
+}
+#input::placeholder { color: var(--text-subtle); }
+.dock-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+/* Custom Persona Trigger (Keahlian AI) */
+.custom-persona-trigger {
+  display: flex;
+  align-items: center;
+  background: rgba(236, 72, 153, 0.1);
+  border: 1px solid rgba(236, 72, 153, 0.32);
+  border-radius: 20px;
+  padding: 5px 12px 5px 10px;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
+}
+.custom-persona-trigger:hover {
+  background: rgba(236, 72, 153, 0.18);
+  border-color: rgba(236, 72, 153, 0.6);
+  transform: translateY(-1px);
+}
+.persona-current-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #f472b6;
+  max-width: 140px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.custom-persona-trigger.open .chevron-icon {
+  transform: rotate(180deg);
+}
+
+/* Persona Popover Menu */
+.persona-popover {
+  position: absolute;
+  bottom: calc(100% + 12px);
+  right: 170px;
+  width: 320px;
+  background: #141824;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(24px);
+  display: flex;
+  flex-direction: column;
+  z-index: 101;
+  overflow: hidden;
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.persona-popover.hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(8px) scale(0.96);
+}
+.persona-list {
+  padding: 8px 0;
+  max-height: 380px;
+  overflow-y: auto;
+}
+.persona-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 14px;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  transition: all 0.15s;
+}
+.persona-item:last-child {
+  border-bottom: none;
+}
+.persona-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+.persona-item.selected {
+  background: rgba(236, 72, 153, 0.12);
+  border-left: 3px solid #ec4899;
+}
+.persona-item-icon {
+  font-size: 20px;
+  margin-top: 1px;
+}
+.persona-item-info {
+  flex: 1;
+}
+.persona-item-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.persona-item-tag {
+  font-size: 10px;
+  font-weight: 600;
+  background: rgba(236, 72, 153, 0.2);
+  color: #f472b6;
+  padding: 1px 6px;
+  border-radius: 8px;
+}
+.persona-item-desc {
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+/* Canva Action Button */
+.btn-canva-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: linear-gradient(135deg, #00c4cc, #7d2ae8);
+  color: #fff;
+  border: none;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 12px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(0, 196, 204, 0.3);
+}
+.btn-canva-action:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(125, 42, 232, 0.45);
+  color: #fff;
+}
+
+/* Tombol Header Konektor */
+.btn-connectors-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #e2e8f0;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 11px;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+}
+.btn-connectors-pill:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(99, 102, 241, 0.5);
+  transform: translateY(-1px);
+}
+.conn-count-badge {
+  background: #3b82f6;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 10px;
+}
+
+/* Modal Konektor (Persis Screenshot User) */
+.connector-modal-backdrop {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  opacity: 1;
+  transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.connector-modal-backdrop.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+.connector-modal-card {
+  background: #202127;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 24px;
+  width: 100%;
+  max-width: 580px;
+  max-height: 86vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
+  overflow: hidden;
+  animation: modalPop 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes modalPop {
+  0% { transform: scale(0.95) translateY(10px); opacity: 0; }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+.conn-modal-header {
+  padding: 20px 24px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.conn-modal-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+}
+.conn-close-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: none;
+  color: #9ca3af;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.conn-close-btn:hover {
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+}
+.conn-search-wrap {
+  padding: 0 24px 14px;
+}
+.conn-search-box {
+  background: #2b2c34;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: border-color 0.2s;
+}
+.conn-search-box:focus-within {
+  border-color: #3b82f6;
+}
+.conn-search-box input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #fff;
+  font-size: 14px;
+  font-family: inherit;
+  width: 100%;
+}
+.conn-search-box input::placeholder {
+  color: #6b7280;
+}
+.conn-tabs-wrap {
+  padding: 0 24px 16px;
+}
+.conn-tabs {
+  background: #15161a;
+  border-radius: 12px;
+  padding: 4px;
+  display: flex;
+  gap: 4px;
+}
+.conn-tab-btn {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: #9ca3af;
+  font-weight: 600;
+  font-size: 13px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.conn-tab-btn.active {
+  background: #363842;
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+.conn-modal-body {
+  padding: 0 24px 24px;
+  overflow-y: auto;
+  flex: 1;
+}
+.conn-section {
+  margin-bottom: 22px;
+}
+.conn-section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.conn-section-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+}
+.conn-see-all {
+  font-size: 12px;
+  color: #9ca3af;
+  cursor: pointer;
+  transition: color 0.15s;
+}
+.conn-see-all:hover {
+  color: #fff;
+}
+.conn-featured-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+.conn-card {
+  background: #2b2d37;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 18px;
+  padding: 16px 14px;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.conn-card:hover {
+  background: #323541;
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+.conn-card-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+  flex-shrink: 0;
+}
+.conn-card-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 6px;
+}
+.conn-card-desc {
+  font-size: 11px;
+  color: #94a3b8;
+  line-height: 1.45;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-bottom: 12px;
+  flex: 1;
+}
+.conn-card-btn {
+  font-size: 12px;
+  font-weight: 600;
+  color: #3b82f6;
+  background: transparent;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  padding: 0;
+}
+.conn-card.connected .conn-card-btn {
+  color: #10b981;
+}
+.conn-list-box {
+  background: #2b2d37;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 18px;
+  padding: 4px 16px;
+}
+.conn-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 13px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+.conn-row:last-child {
+  border-bottom: none;
+}
+.conn-row-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.conn-row-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.conn-row-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+}
+.conn-row-desc {
+  font-size: 11px;
+  color: #64748b;
+  margin-top: 1px;
+}
+.conn-action-btn {
+  background: transparent;
+  border: none;
+  font-size: 13px;
+  font-weight: 600;
+  color: #3b82f6;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 8px;
+  transition: all 0.15s;
+}
+.conn-action-btn:hover {
+  background: rgba(59, 130, 246, 0.12);
+}
+.conn-action-btn.connected {
+  color: #10b981;
+}
+.conn-action-btn.connected:hover {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.12);
+}
+
+/* N8N Automation Hub Styling */
+.conn-n8n-banner {
+  background: linear-gradient(135deg, rgba(255, 107, 74, 0.12), rgba(236, 72, 153, 0.12));
+  border: 1px solid rgba(255, 107, 74, 0.25);
+  border-radius: 16px;
+  padding: 14px 16px;
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.conn-n8n-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #ff6b4a;
+}
+.conn-n8n-desc {
+  font-size: 12px;
+  color: #cbd5e1;
+  line-height: 1.5;
+}
+.conn-n8n-tools {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.btn-n8n-tool {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 5px 10px;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.btn-n8n-tool:hover {
+  background: rgba(255, 107, 74, 0.2);
+  border-color: #ff6b4a;
+  color: #fff;
+}
+.conn-webhook-panel {
+  background: #191b22;
+  border-radius: 12px;
+  padding: 12px;
+  margin-top: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.conn-webhook-input {
+  width: 100%;
+  background: #202127;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  padding: 8px 12px;
+  color: #fff;
+  font-size: 12px;
+  font-family: inherit;
+  outline: none;
+  box-sizing: border-box;
+}
+.conn-webhook-input:focus {
+  border-color: #ff6b4a;
+}
+.conn-webhook-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+.conn-result-card {
+  margin-top: 10px;
+  background: #1e2029;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-left: 3px solid #10b981;
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-size: 13px;
+  animation: fadeIn 0.25s ease-out;
+}
+.conn-result-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  font-weight: 700;
+  color: #10b981;
+  font-size: 12px;
+}
+.conn-result-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #3b82f6;
+  color: #fff;
+  text-decoration: none;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-top: 8px;
+  transition: all 0.15s;
+}
+.conn-result-btn:hover {
+  background: #2563eb;
+  transform: translateY(-1px);
+}
+
+/* Custom Model Trigger (Pill di dalam Dock) */
+.custom-model-trigger {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  padding: 5px 12px 5px 10px;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
+}
+.custom-model-trigger:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(99, 102, 241, 0.45);
+  transform: translateY(-1px);
+}
+.model-current-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  max-width: 150px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.chevron-icon {
+  color: var(--text-muted);
+  transition: transform 0.2s;
+}
+.custom-model-trigger.open .chevron-icon {
+  transform: rotate(180deg);
+}
+
+/* Model Popover Modal (Gaya Gemini) */
+.model-popover {
+  position: absolute;
+  bottom: calc(100% + 12px);
+  right: 20px;
+  width: 350px;
+  height: 430px;
+  background: #141824;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(24px);
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+  overflow: hidden;
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.model-popover.hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(8px) scale(0.96);
+}
+
+.popover-header {
+  padding: 14px 14px 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(20, 24, 36, 0.95);
+}
+.popover-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: #fff;
+}
+.popover-count {
+  font-size: 11px;
+  font-weight: 600;
+  background: rgba(99, 102, 241, 0.2);
+  color: #818cf8;
+  padding: 2px 8px;
+  border-radius: 12px;
+}
+.search-box {
+  display: flex;
+  align-items: center;
+  background: #0d101a;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 8px 10px;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.search-box:focus-within {
+  border-color: rgba(99, 102, 241, 0.5);
+}
+.search-box input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #fff;
+  font-family: inherit;
+  font-size: 12.5px;
+  width: 100%;
+}
+.search-box input::placeholder {
+  color: var(--text-subtle);
+}
+.filter-chips {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+}
+.filter-chips::-webkit-scrollbar { display: none; }
+.chip {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--text-muted);
+  border-radius: 14px;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s;
+}
+.chip:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+.chip.active {
+  background: #3b82f6;
+  color: #fff;
+  border-color: #3b82f6;
+}
+
+.popover-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.custom-model-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.15s;
+  color: var(--text-muted);
+}
+.custom-model-item:hover {
+  background: rgba(255, 255, 255, 0.07);
+  color: #fff;
+}
+.custom-model-item.selected {
+  background: rgba(99, 102, 241, 0.18);
+  color: #fff;
+  font-weight: 600;
+}
+.item-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.item-name {
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.item-check {
+  font-size: 13px;
+  color: #38bdf8;
+  font-weight: bold;
+}
+#btnSend {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: var(--accent-blue);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+#btnSend:hover:not(:disabled) {
+  background: var(--accent-indigo);
+  transform: scale(1.05);
+}
+#btnSend:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.dock-disclaimer {
+  text-align: center;
+  font-size: 11px;
+  color: var(--text-subtle);
+  margin-top: 8px;
+}
+
+/* Login Box */
+#loginBox {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.login-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 24px;
+  padding: 40px;
+  max-width: 440px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  position: relative;
+  overflow: hidden;
+}
+.login-card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 3px;
+  background: var(--gemini-gradient);
+}
+.login-title {
+  font-size: 24px;
+  font-weight: 700;
+  margin: 16px 0 8px;
+}
+.login-desc {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin-bottom: 28px;
+}
+.btn-login-google {
+  width: 100%;
+  background: #ffffff;
+  color: #000;
+  font-weight: 600;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 18px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(255,255,255,0.15);
+}
+.btn-login-google:hover {
+  background: #f1f5f9;
+  transform: translateY(-1px);
+}
+.btn-dev-mode {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.07);
+  color: var(--text-main);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 11px 18px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 12px;
+  transition: all 0.2s;
+}
+.btn-dev-mode:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: var(--border-focus);
+}
+
+@media(max-width: 768px) {
+  #sidebar {
+    position: absolute;
+    top: 60px;
+    bottom: 0;
+    left: 0;
+    box-shadow: 10px 0 30px rgba(0,0,0,0.5);
+  }
+  .suggestions-grid {
+    grid-template-columns: 1fr;
+  }
+  .msg-body {
+    max-width: 90%;
+  }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <button id="btnToggleSidebar" class="icon-btn" title="Toggle Sidebar">☰</button>
+  <div class="brand">
+    <span class="emoji">✨</span>
+    <span>Oreo AI</span>
+  </div>
+
+  <div class="header-spacer"></div>
+
+  <button id="btnOpenConnectors" class="btn-connectors-pill" title="Konektor Aplikasi (Canva, Google, GitHub, Zoom, dll)">
+    <span>🔌</span>
+    <span>Konektor</span>
+    <span id="connCountBadge" class="conn-count-badge" style="display:none;">0</span>
+  </button>
+
+  <div id="quotaBadge" class="quota-badge" style="display:none;" title="Batas kuota harian. Di-reset otomatis setiap hari pukul 00:00. Klik untuk detail.">
+    <span id="quotaText">⚡ Kuota: --/--</span>
+  </div>
+
+  <div id="headerUserInfo" class="user-chip">
+    <div id="userAvatar" class="user-avatar">?</div>
+    <span id="userName">Tamu</span>
+  </div>
+
+  <button id="btnAuth" class="btn-secondary" style="display:none">Login</button>
+  <button id="btnLogout" class="btn-secondary" style="display:none">Keluar</button>
+</header>
+
+<!-- Modal Konektor Aplikasi (Persis Screenshot User) -->
+<div id="connectorModal" class="connector-modal-backdrop hidden">
+  <div class="connector-modal-card">
+    <div class="conn-modal-header">
+      <div class="conn-modal-title">Konektor</div>
+      <button id="btnCloseConnectors" class="conn-close-btn" type="button" title="Tutup">✕</button>
+    </div>
+
+    <div class="conn-search-wrap">
+      <div class="conn-search-box">
+        <span style="font-size:14px; color:#9ca3af;">🔍</span>
+        <input type="text" id="connSearchInput" placeholder="Mencari" autocomplete="off">
+      </div>
+    </div>
+
+    <div class="conn-tabs-wrap">
+      <div class="conn-tabs">
+        <button id="tabConnTersedia" class="conn-tab-btn active" type="button">Tersedia</button>
+        <button id="tabConnTerhubung" class="conn-tab-btn" type="button">Terhubung</button>
+      </div>
+    </div>
+
+    <div class="conn-modal-body" id="connModalBody"></div>
+  </div>
+</div>
+
+<!-- Halaman Login -->
+<div id="loginBox">
+  <div class="login-card">
+    <div style="font-size: 38px;">🍪</div>
+    <h2 class="login-title">Selamat Datang di Oreo AI</h2>
+    <p class="login-desc">Eksplorasi kecerdasan buatan dengan 150+ model AI tercanggih dalam satu tempat yang modern dan cepat.</p>
+    
+    <button id="btnLogin2" class="btn-login-google">
+      <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.8-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.27v3.15C3.25 21.36 7.35 24 12 24z"/><path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.27C.46 8.2.01 10.04.01 12s.45 3.8 1.26 5.42l4.01-3.15z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.35 0 3.25 2.64 1.27 6.58l4.01 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/></svg>
+      Masuk dengan Google
+    </button>
+
+    <button id="btnDevMode" class="btn-dev-mode">
+      🚀 Masuk Mode Tes (Lokal)
+    </button>
+  </div>
+</div>
+
+<!-- Tampilan Utama Chat -->
+<div id="main">
+  <aside id="sidebar">
+    <div class="sidebar-header" style="display:flex; gap:8px;">
+      <button id="btnNew" class="btn-new-chat" style="flex:1;">
+        <span>+</span> Obrolan Baru
+      </button>
+      <button id="btnExportChat" class="icon-btn" title="Unduh / Ekspor Percakapan (Markdown)" style="background:rgba(255,255,255,0.06); border-radius:12px;">
+        📥
+      </button>
+    </div>
+    <div class="sidebar-section-title">Riwayat Obrolan</div>
+    <div id="convList"></div>
+  </aside>
+
+  <main id="chatBox">
+    <div id="messages">
+      <!-- Hero State / Tampilan Awal -->
+      <div id="heroState">
+        <div class="hero-glow">✨</div>
+        <h2 class="hero-title" id="heroTitle">Ada yang bisa saya bantu hari ini?</h2>
+        <p class="hero-desc" id="heroDesc">Pilih model dan mode keahlian di bawah untuk memulai percakapan atau pilih ide topik berikut.</p>
+        <div class="suggestions-grid" id="suggestionsGrid"></div>
+      </div>
+    </div>
+
+    <!-- Input Bar Dock (Gaya Gemini Modern) -->
+    <div id="dockArea">
+      <!-- Popover Menu Mode Keahlian AI (Canva, Developer, Copywriter, dll) -->
+      <div id="personaPopover" class="persona-popover hidden">
+        <div class="popover-header" style="padding:12px 14px 8px;">
+          <div class="popover-title" style="margin:0;">
+            <span>🎯 Mode Keahlian AI</span>
+            <span class="persona-item-tag">5 Persona</span>
+          </div>
+        </div>
+        <div class="persona-list" id="personaList"></div>
+      </div>
+
+      <!-- Popover Menu Model AI (Gaya Gemini) -->
+      <div id="modelPopover" class="model-popover hidden">
+        <div class="popover-header">
+          <div class="popover-title">
+            <span>✨ Model AI</span>
+            <span class="popover-count" id="modelCountBadge">153 model</span>
+          </div>
+          <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="modelSearchInput" placeholder="Cari model AI..." autocomplete="off">
+          </div>
+          <div class="filter-chips" id="filterChips">
+            <button class="chip active" type="button" data-tag="all">Semua</button>
+            <button class="chip" type="button" data-tag="gemini">Gemini</button>
+            <button class="chip" type="button" data-tag="claude">Claude</button>
+            <button class="chip" type="button" data-tag="gpt">GPT</button>
+            <button class="chip" type="button" data-tag="deepseek">DeepSeek</button>
+            <button class="chip" type="button" data-tag="kimi">Kimi</button>
+          </div>
+        </div>
+        <div class="popover-list" id="customModelList"></div>
+      </div>
+
+      <div class="dock-card">
+        <input type="file" id="fileInput" accept="image/*" style="display:none">
+        <button class="dock-plus-btn" id="btnUploadImage" title="Unggah Gambar" type="button">+</button>
+        
+        <div style="flex:1; display:flex; flex-direction:column; min-width:0;">
+          <div id="imagePreviewContainer" class="image-preview-bar" style="display:none;">
+            <div class="image-preview-wrapper">
+              <img id="imagePreview" src="" alt="Preview">
+              <button id="btnRemoveImage" class="btn-remove-image" type="button" title="Hapus gambar">✕</button>
+            </div>
+          </div>
+          <textarea id="input" rows="1" placeholder="Minta ide desain Canva, kode, atau pertanyaan..."></textarea>
+        </div>
+        
+        <div class="dock-actions">
+          <!-- Persona Trigger Pill -->
+          <div class="custom-persona-trigger" id="personaTriggerBtn" title="Ganti Mode Keahlian (Canva, Koding, Copywriter, dll)">
+            <span id="currentPersonaIcon">🎨</span>
+            <span id="currentPersonaLabel" class="persona-current-name">Canva Designer</span>
+            <svg class="chevron-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            <input type="hidden" id="personaSelect" value="canva">
+          </div>
+
+          <!-- Model Trigger Pill -->
+          <div class="custom-model-trigger" id="modelTriggerBtn" title="Pilih Model AI">
+            <span class="model-sparkle">🧠</span>
+            <span id="currentModelLabel" class="model-current-name">Memuat model...</span>
+            <svg class="chevron-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            <input type="hidden" id="modelSelect" value="">
+          </div>
+
+          <button id="btnSend" title="Kirim Pesan">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="19" x2="12" y2="5"></line>
+              <polyline points="5 12 12 5 19 12"></polyline>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div class="dock-disclaimer">
+        Oreo AI dapat membuat kesalahan. Harap verifikasi informasi penting.
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+// === KONFIGURASI FIREBASE ===
+const firebaseConfig = {
+  apiKey: "ISI_API_KEY",
+  authDomain: "ISI_AUTH_DOMAIN",
+  projectId: "ISI_PROJECT_ID",
+  appId: "ISI_APP_ID",
+};
+
+// URL Backend otomatis
+const API_BASE = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
+  ? "" 
+  : "https://ISI_BACKEND_URL";
+
+let auth = null, db = null, provider = null;
+const isDevConfig = !firebaseConfig.apiKey || firebaseConfig.apiKey.includes("ISI_API_KEY");
+
+try {
+  if (!isDevConfig) {
+    firebase.initializeApp(firebaseConfig);
+    auth = firebase.auth();
+    db = firebase.firestore();
+    provider = new firebase.auth.GoogleAuthProvider();
+  }
+} catch(e) {
+  console.warn("Firebase tidak diinisialisasi (mode testing):", e);
+}
+
+let idToken = null, history = [], convId = null, uid = null;
+let devConvs = JSON.parse(localStorage.getItem("oreo_dev_convs") || "{}");
+let currentQuota = null;
+
+const $ = id => document.getElementById(id);
+
+// Generate atau ambil ID browser perangkat yang unik & persisten
+function getClientId(){
+  let cid = localStorage.getItem("oreo_client_id");
+  if(!cid){
+    cid = "client_" + Math.random().toString(36).substring(2, 9) + Date.now().toString(36);
+    localStorage.setItem("oreo_client_id", cid);
+  }
+  return cid;
+}
+
+// Sidebar Toggle
+$("btnToggleSidebar").onclick = () => {
+  $("sidebar").classList.toggle("collapsed");
+};
+
+// Textarea auto-resize
+const inputEl = $("input");
+inputEl.addEventListener("input", function() {
+  this.style.height = "auto";
+  this.style.height = Math.min(this.scrollHeight, 160) + "px";
+});
+
+async function refreshToken(){
+  if(auth && auth.currentUser) idToken = await auth.currentUser.getIdToken();
+  else if(uid === "dev-mode") idToken = "dev-token";
+}
+
+async function loadQuota(){
+  try {
+    await refreshToken();
+    const r = await fetch(API_BASE + "/api/quota", {
+      headers: {
+        "Authorization": "Bearer " + (idToken || "dev-token"),
+        "X-Client-Id": getClientId()
+      }
+    });
+    const d = await r.json();
+    if(d.ok && d.quota){
+      updateQuotaDisplay(d.quota);
+    }
+  } catch(e) {
+    console.warn("Gagal memuat info kuota:", e);
+  }
+}
+
+function updateQuotaDisplay(q){
+  currentQuota = q;
+  const badge = $("quotaBadge");
+  const text = $("quotaText");
+  if(!badge || !text) return;
+
+  badge.style.display = "inline-flex";
+
+  if(q.is_unlimited){
+    badge.className = "quota-badge unlimited";
+    text.textContent = "⚡ Kuota: Unlimited";
+    badge.title = "Mode Unlimited (Admin): Anda bebas berkirim pesan tanpa batas kuota.";
+  } else {
+    const remaining = q.remaining !== undefined ? q.remaining : Math.max(0, (q.limit || 30) - (q.used || 0));
+    const limit = q.limit || 30;
+    text.textContent = `⚡ Kuota: ${remaining}/${limit}`;
+    badge.title = `Sisa kuota harian: ${remaining} dari ${limit} pesan. Di-reset otomatis setiap hari pukul 00:00. Klik untuk info/opsi.`;
+
+    if(remaining <= 0){
+      badge.className = "quota-badge danger";
+    } else if(remaining <= 5){
+      badge.className = "quota-badge warning";
+    } else {
+      badge.className = "quota-badge";
+    }
+  }
+}
+
+async function devResetQuota(){
+  if(!confirm("Reset kuota harian Anda kembali penuh (untuk pengujian)?")){
+    return;
+  }
+  try {
+    await refreshToken();
+    const r = await fetch(API_BASE + "/api/quota/reset", {
+      method: "POST",
+      headers: {
+        "Authorization": "Bearer " + (idToken || "dev-token"),
+        "X-Client-Id": getClientId()
+      }
+    });
+    const d = await r.json();
+    if(d.ok && d.quota){
+      updateQuotaDisplay(d.quota);
+      alert("✅ Kuota harian berhasil di-reset kembali!");
+    }
+  } catch(e) {
+    alert("Gagal reset kuota: " + e.message);
+  }
+}
+
+$("quotaBadge").onclick = () => {
+  if(!currentQuota) return;
+  if(currentQuota.is_unlimited){
+    alert("⚡ Akun Anda memiliki akses Kuota Unlimited (Admin).\nTidak ada batasan jumlah pesan per hari.");
+  } else {
+    const msg = `⚡ Info Kuota Harian Oreo AI:\n\n` +
+      `• Pesan terpakai hari ini: ${currentQuota.used} pesan\n` +
+      `• Sisa kuota hari ini: ${currentQuota.remaining} pesan\n` +
+      `• Batas kuota per hari: ${currentQuota.limit} pesan\n` +
+      `• Reset otomatis: Setiap hari pukul 00:00 (pergantian hari)\n\n` +
+      `Ingin me-reset kuota sekarang untuk pengujian?`;
+    if(confirm(msg)){
+      devResetQuota();
+    }
+  }
+};
+
+// === KONEKTOR APLIKASI (APP CONNECTORS — PERSIS SCREENSHOT USER) ===
+const CONNECTORS_DATA = [
+  {
+    id: "gmail",
+    name: "Gmail",
+    category: "featured",
+    desc: "Anda dapat memberikan akses baca saja atau akses baca dan tulis.",
+    iconBg: "rgba(234, 67, 53, 0.15)",
+    icon: `<svg viewBox="0 0 24 24" width="28" height="28"><path fill="#EA4335" d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.272H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L12 9.605l8.073-6.112C21.69 2.28 24 3.434 24 5.457z"/><path fill="#4285F4" d="M0 5.457v13.909c0 .904.732 1.636 1.636 1.636h3.819V11.73L0 7.82z"/><path fill="#34A853" d="M24 19.366V5.457l-5.455 4.091v9.818h3.819c.904 0 1.636-.732 1.636-1.636z"/><path fill="#FBBC05" d="M18.545 3.493 12 8.405 5.455 3.493A2.455 2.455 0 0 1 7.455 1h9.09a2.455 2.455 0 0 1 2 2.493z"/></svg>`
+  },
+  {
+    id: "kurir",
+    name: "Kurir",
+    category: "featured",
+    desc: "Ingat kembali percakapan sebelumnya, catat rencana, dan pantau...",
+    iconBg: "rgba(0, 132, 255, 0.15)",
+    icon: `<svg viewBox="0 0 24 24" width="28" height="28"><path fill="#0084FF" d="M12 0C5.373 0 0 4.974 0 11.111c0 3.498 1.745 6.616 4.473 8.652V24l4.089-2.242c1.096.304 2.253.468 3.438.468 6.627 0 12-4.975 12-11.115C24 4.974 18.627 0 12 0zm1.192 14.963-3.056-3.26-5.963 3.26 6.556-6.963 3.13 3.26 5.889-3.26-6.556 6.963z"/></svg>`
+  },
+  {
+    id: "withings",
+    name: "Withings",
+    category: "featured",
+    desc: "Pantau berat badan, tekanan darah, pola tidur, dan metrik kebugaran secara...",
+    iconBg: "rgba(255, 90, 95, 0.15)",
+    icon: `<svg viewBox="0 0 24 24" width="28" height="28"><path fill="url(#withings-grad)" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/><defs><linearGradient id="withings-grad" x1="2" y1="3" x2="22" y2="21.35" gradientUnits="userSpaceOnUse"><stop stop-color="#FF5A5F"/><stop offset="1" stop-color="#3B82F6"/></linearGradient></defs></svg>`
+  },
+  {
+    id: "calendar",
+    name: "Kalender Google",
+    category: "productivity",
+    desc: "Sinkronisasi jadwal acara, rapat, dan pengingat harian",
+    icon: `<svg viewBox="0 0 24 24" width="26" height="26"><rect width="24" height="24" rx="4" fill="#1a73e8"/><rect y="6" width="24" height="18" fill="#fff" rx="2"/><text x="12" y="19" font-size="11" font-weight="bold" fill="#1a73e8" text-anchor="middle" font-family="sans-serif">31</text></svg>`
+  },
+  {
+    id: "drive",
+    name: "Google Drive",
+    category: "productivity",
+    desc: "Akses dan kelola file dokumen cloud",
+    icon: `<svg viewBox="0 0 24 24" width="26" height="26"><path fill="#FFC107" d="M8.2 2.5 1.5 14.2l3.4 5.8L11.6 8.3z"/><path fill="#1976D2" d="m15.8 2.5-6.7 11.7h13.4l-3.3-5.8z"/><path fill="#4CAF50" d="M1.5 14.2h13.4l-3.3 5.8H4.9z"/></svg>`
+  },
+  {
+    id: "sheets",
+    name: "Google Sheets",
+    category: "productivity",
+    desc: "Ekspor tabel data dan analisis spreadsheet",
+    icon: `<svg viewBox="0 0 24 24" width="26" height="26"><rect width="22" height="22" x="1" y="1" rx="4" fill="#0F9D58"/><rect width="14" height="12" x="5" y="6" fill="#fff" rx="1"/><path fill="#0F9D58" d="M11 7h2v10h-2zm-5 4h12v2H6zm0-3h12v1H6zm0 6h12v1H6z"/></svg>`
+  },
+  {
+    id: "meta",
+    name: "Manajer Bisnis Meta",
+    category: "business",
+    desc: "Kampanye iklan Facebook, Instagram, dan WhatsApp",
+    icon: `<svg viewBox="0 0 24 24" width="26" height="26"><path fill="#0081FB" d="M16.67 4c-2.4 0-4.04 1.4-4.67 2.45C11.37 5.4 9.73 4 7.33 4 3.73 4 1 6.8 1 10.4c0 4.4 4.54 8.6 11 9.6 6.46-1 11-5.2 11-9.6C23 6.8 20.27 4 16.67 4zm-9.34 9.6c-2.2 0-3.67-1.6-3.67-3.6 0-2 1.47-3.6 3.67-3.6 1.8 0 3.2 1.2 3.67 2.8.13.4.13.8 0 1.2-.47 1.6-1.87 3.2-3.67 3.2zm9.34 0c-1.8 0-3.2-1.6-3.67-3.2-.13-.4-.13-.8 0-1.2.47-1.6 1.87-2.8 3.67-2.8 2.2 0 3.67 1.6 3.67 3.6 0 2-1.47 3.6-3.67 3.6z"/></svg>`
+  },
+  {
+    id: "github",
+    name: "GitHub",
+    category: "business",
+    desc: "Repository source code, issues, dan pull requests",
+    icon: `<svg viewBox="0 0 24 24" width="26" height="26"><circle cx="12" cy="12" r="12" fill="#fff"/><path fill="#181717" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0 0 22 12.017C22 6.484 17.522 2 12 2z"/></svg>`
+  },
+  {
+    id: "canva",
+    name: "Canva",
+    category: "business",
+    desc: "Pembuatan desain grafis, presentasi, dan materi visual",
+    icon: `<svg viewBox="0 0 24 24" width="26" height="26"><circle cx="12" cy="12" r="12" fill="url(#canva-grad-c)"/><path fill="#fff" d="M12.9 6.2c-2.8 0-4.9 1.7-5.8 4.2-.6 1.7-.5 3.5.2 5.1.7 1.6 2 2.8 3.7 3.3.6.2 1.3.3 1.9.3 2.1 0 3.9-.9 5.1-2.4l-1.3-1c-.9 1.1-2.2 1.7-3.7 1.7-1.7 0-3.1-.9-3.8-2.4-.4-.8-.5-1.7-.3-2.6.5-2.2 2.3-3.6 4.3-3.6 1.3 0 2.4.6 3.1 1.5l1.3-1.1c-1.1-1.3-2.6-2.1-4.4-2.1z"/><defs><linearGradient id="canva-grad-c" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse"><stop stop-color="#00C4CC"/><stop offset="1" stop-color="#7D2AE8"/></linearGradient></defs></svg>`
+  },
+  {
+    id: "dropbox",
+    name: "Dropbox",
+    category: "business",
+    desc: "Penyimpanan cloud dan berbagi dokumen aman",
+    icon: `<svg viewBox="0 0 24 24" width="26" height="26"><path fill="#0061FF" d="M6 3 0 6.9l6 3.9L12 6.9 6 3zm12 0-6 3.9 6 3.9 6-3.9L18 3zM0 14.7l6 3.9 6-3.9-6-3.9-6 3.9zm18-3.9-6 3.9 6 3.9 6-3.9-6-3.9zM6 20.1l6 3.9 6-3.9-6-3.9-6 3.9z"/></svg>`
+  },
+  {
+    id: "zoom",
+    name: "Zoom",
+    category: "business",
+    desc: "Konferensi video dan ringkasan rapat cerdas",
+    icon: `<svg viewBox="0 0 24 24" width="26" height="26"><rect width="24" height="24" rx="5" fill="#2D8CFF"/><path fill="#fff" d="M4.5 8.5C4.5 7.67 5.17 7 6 7h8c.83 0 1.5.67 1.5 1.5v7c0 .83-.67 1.5-1.5 1.5H6c-.83 0-1.5-.67-1.5-1.5v-7zm12.5 2.2 3.8-2.5c.4-.3.9 0 .9.5v6.6c0 .5-.5.8-.9.5l-3.8-2.5v-2.6z"/></svg>`
+  }
+];
+
+let connectedApps = new Set(JSON.parse(localStorage.getItem("oreo_connected_apps") || '["canva"]'));
+let activeConnTab = "tersedia";
+
+function saveConnectedApps(){
+  localStorage.setItem("oreo_connected_apps", JSON.stringify(Array.from(connectedApps)));
+  updateConnBadge();
+}
+
+function updateConnBadge(){
+  const badge = $("connCountBadge");
+  if(!badge) return;
+  const count = connectedApps.size;
+  if(count > 0){
+    badge.textContent = count;
+    badge.style.display = "inline-block";
+  } else {
+    badge.style.display = "none";
+  }
+}
+
+let n8nWebhookUrl = localStorage.getItem("oreo_n8n_webhook_url") || "";
+
+function toggleN8nConfig(){
+  const panel = $("n8nConfigPanel");
+  if(!panel) return;
+  panel.style.display = panel.style.display === "none" ? "flex" : "none";
+}
+
+function saveN8nWebhook(){
+  const inp = $("n8nWebhookInput");
+  if(!inp) return;
+  n8nWebhookUrl = inp.value.trim();
+  localStorage.setItem("oreo_n8n_webhook_url", n8nWebhookUrl);
+  const st = $("n8nTestStatus");
+  if(st){
+    st.style.color = "#10b981";
+    st.textContent = "✅ URL Webhook berhasil disimpan!";
+    setTimeout(() => { if(st) st.textContent = ""; }, 3000);
+  }
+}
+
+async function testN8nWebhook(){
+  const inp = $("n8nWebhookInput");
+  const url = (inp ? inp.value.trim() : "") || n8nWebhookUrl;
+  const st = $("n8nTestStatus");
+  if(!url){
+    if(st){
+      st.style.color = "#ef4444";
+      st.textContent = "⚠️ Masukkan URL Webhook n8n terlebih dahulu.";
+    }
+    return;
+  }
+  if(st){
+    st.style.color = "#94a3b8";
+    st.textContent = "Menguji koneksi ke webhook...";
+  }
+  try {
+    const res = await fetch("/api/connectors/test-webhook", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ webhook_url: url })
+    });
+    const d = await res.json();
+    if(d.ok){
+      st.style.color = "#10b981";
+      st.textContent = `✅ Terhubung! (${d.message || "HTTP 200 OK"})`;
+    } else {
+      st.style.color = "#ef4444";
+      st.textContent = `❌ Gagal: ${d.error || "Webhook tidak merespons"}`;
+    }
+  } catch(e) {
+    if(st){
+      st.style.color = "#ef4444";
+      st.textContent = "❌ Error: " + e.message;
+    }
+  }
+}
+
+function switchConnTab(tab){
+  activeConnTab = tab;
+  $("tabConnTersedia").classList.toggle("active", tab === "tersedia");
+  $("tabConnTerhubung").classList.toggle("active", tab === "terhubung");
+  renderConnectors();
+}
+
+function renderConnectors(){
+  const body = $("connModalBody");
+  if(!body) return;
+  body.innerHTML = "";
+
+  const search = ($("connSearchInput").value || "").toLowerCase().trim();
+
+  if(activeConnTab === "terhubung"){
+    // Render N8N Hub Header Banner
+    const n8nBanner = document.createElement("div");
+    n8nBanner.className = "conn-n8n-banner";
+    n8nBanner.innerHTML = `
+      <div class="conn-n8n-title">
+        <span>⚡</span>
+        <span>Otomatisasi Nyata via N8N / Webhook Hub</span>
+      </div>
+      <div class="conn-n8n-desc">
+        Hubungkan Oreo AI ke 500+ layanan (Canva, Gmail, GitHub, Sheets) via N8N Webhook Dispatcher.
+      </div>
+      <div class="conn-n8n-tools">
+        <button class="btn-n8n-tool" onclick="toggleN8nConfig()">⚙️ Konfigurasi URL Webhook</button>
+        <a class="btn-n8n-tool" href="/api/connectors/n8n-template" target="_blank" download="n8n_oreo_workflow.json">📥 Unduh Template Workflow N8N</a>
+      </div>
+      <div id="n8nConfigPanel" class="conn-webhook-panel" style="display: ${n8nWebhookUrl ? 'flex' : 'none'};">
+        <div style="font-size:11px; color:#94a3b8; font-weight:600;">Endpoint Webhook N8N / Composio:</div>
+        <input type="text" id="n8nWebhookInput" class="conn-webhook-input" placeholder="https://n8n.domainanda.com/webhook/oreo-hub" value="${escapeHtml(n8nWebhookUrl)}" />
+        <div class="conn-webhook-actions">
+          <button class="btn-n8n-tool" onclick="testN8nWebhook()">📡 Uji Koneksi</button>
+          <button class="btn-n8n-tool" style="background:#10b981; border-color:#10b981; color:#fff;" onclick="saveN8nWebhook()">💾 Simpan URL</button>
+        </div>
+        <div id="n8nTestStatus" style="font-size:11px; margin-top:2px;"></div>
+      </div>
+    `;
+    body.appendChild(n8nBanner);
+
+    const connectedList = CONNECTORS_DATA.filter(item => connectedApps.has(item.id) && (!search || item.name.toLowerCase().includes(search) || item.desc.toLowerCase().includes(search)));
+
+    if(connectedList.length === 0){
+      const emptyDiv = document.createElement("div");
+      emptyDiv.style = "text-align:center; padding:32px 16px; color:#94a3b8;";
+      emptyDiv.innerHTML = `
+        <div style="font-size:36px; margin-bottom:10px;">🔌</div>
+        <div style="font-size:15px; font-weight:700; color:#fff; margin-bottom:6px;">Belum Ada Aplikasi Terhubung</div>
+        <p style="font-size:12px; line-height:1.5; margin-bottom:14px;">Aktifkan aplikasi seperti Canva, Google Drive, atau GitHub untuk integrasi otomatis.</p>
+        <button onclick="switchConnTab('tersedia')" style="background:#3b82f6; color:#fff; border:none; padding:8px 18px; border-radius:12px; font-weight:600; font-size:13px; cursor:pointer;">Jelajahi Aplikasi</button>
+      `;
+      body.appendChild(emptyDiv);
+      return;
+    }
+
+    const listBox = document.createElement("div");
+    listBox.className = "conn-list-box";
+    connectedList.forEach(item => {
+      const row = document.createElement("div");
+      row.className = "conn-row";
+      row.innerHTML = `
+        <div class="conn-row-left">
+          <div class="conn-row-icon">${item.icon}</div>
+          <div>
+            <div class="conn-row-name">${escapeHtml(item.name)}</div>
+            <div class="conn-row-desc">Status: Aktif terhubung (${n8nWebhookUrl ? 'Real N8N Webhook' : 'Siap Relay / Simulasi Cerdas'})</div>
+          </div>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <button class="conn-action-btn connected" onclick="toggleConnector('${item.id}', '${escapeHtml(item.name)}')">Putuskan</button>
+        </div>
+      `;
+      listBox.appendChild(row);
+    });
+    body.appendChild(listBox);
+    return;
+  }
+
+  // Tab: Tersedia
+  const filterItem = item => !search || item.name.toLowerCase().includes(search) || item.desc.toLowerCase().includes(search);
+
+  // 1. Unggulan
+  const featured = CONNECTORS_DATA.filter(i => i.category === "featured" && filterItem(i));
+  if(featured.length > 0){
+    const sec = document.createElement("div");
+    sec.className = "conn-section";
+    sec.innerHTML = `
+      <div class="conn-section-head">
+        <span class="conn-section-title">Unggulan</span>
+      </div>
+    `;
+    const grid = document.createElement("div");
+    grid.className = "conn-featured-grid";
+    featured.forEach(item => {
+      const isConn = connectedApps.has(item.id);
+      const card = document.createElement("div");
+      card.className = "conn-card" + (isConn ? " connected" : "");
+      card.innerHTML = `
+        <div class="conn-card-icon" style="background:${item.iconBg || 'rgba(255,255,255,0.06)'}">${item.icon}</div>
+        <div class="conn-card-name">${escapeHtml(item.name)}</div>
+        <div class="conn-card-desc">${escapeHtml(item.desc)}</div>
+        <button class="conn-card-btn" onclick="toggleConnector('${item.id}', '${escapeHtml(item.name)}')">
+          ${isConn ? '✓ Terhubung' : 'Menghubungkan'}
+        </button>
+      `;
+      grid.appendChild(card);
+    });
+    sec.appendChild(grid);
+    body.appendChild(sec);
+  }
+
+  // 2. Produktivitas
+  const prod = CONNECTORS_DATA.filter(i => i.category === "productivity" && filterItem(i));
+  if(prod.length > 0){
+    const sec = document.createElement("div");
+    sec.className = "conn-section";
+    sec.innerHTML = `
+      <div class="conn-section-head">
+        <span class="conn-section-title">Produktivitas</span>
+        <span class="conn-see-all">Lihat semua &gt;</span>
+      </div>
+    `;
+    const listBox = document.createElement("div");
+    listBox.className = "conn-list-box";
+    prod.forEach(item => {
+      const isConn = connectedApps.has(item.id);
+      const row = document.createElement("div");
+      row.className = "conn-row";
+      row.innerHTML = `
+        <div class="conn-row-left">
+          <div class="conn-row-icon">${item.icon}</div>
+          <div class="conn-row-name">${escapeHtml(item.name)}</div>
+        </div>
+        <button class="conn-action-btn ${isConn ? 'connected' : ''}" onclick="toggleConnector('${item.id}', '${escapeHtml(item.name)}')">
+          ${isConn ? 'Terhubung' : 'Menghubungkan'}
+        </button>
+      `;
+      listBox.appendChild(row);
+    });
+    sec.appendChild(listBox);
+    body.appendChild(sec);
+  }
+
+  // 3. Bisnis
+  const biz = CONNECTORS_DATA.filter(i => i.category === "business" && filterItem(i));
+  if(biz.length > 0){
+    const sec = document.createElement("div");
+    sec.className = "conn-section";
+    sec.innerHTML = `
+      <div class="conn-section-head">
+        <span class="conn-section-title">Bisnis</span>
+        <span class="conn-see-all">Lihat semua &gt;</span>
+      </div>
+    `;
+    const listBox = document.createElement("div");
+    listBox.className = "conn-list-box";
+    biz.forEach(item => {
+      const isConn = connectedApps.has(item.id);
+      const row = document.createElement("div");
+      row.className = "conn-row";
+      row.innerHTML = `
+        <div class="conn-row-left">
+          <div class="conn-row-icon">${item.icon}</div>
+          <div class="conn-row-name">${escapeHtml(item.name)}</div>
+        </div>
+        <button class="conn-action-btn ${isConn ? 'connected' : ''}" onclick="toggleConnector('${item.id}', '${escapeHtml(item.name)}')">
+          ${isConn ? 'Terhubung' : 'Menghubungkan'}
+        </button>
+      `;
+      listBox.appendChild(row);
+    });
+    sec.appendChild(listBox);
+    body.appendChild(sec);
+  }
+}
+
+async function toggleConnector(id, name){
+  if(connectedApps.has(id)){
+    if(confirm(`Putuskan sambungan konektor ${name}?`)){
+      if(id === "canva"){
+        try { await fetch("/api/oauth/canva/disconnect", { method: "POST" }); } catch(e){}
+      }
+      connectedApps.delete(id);
+      saveConnectedApps();
+      renderConnectors();
+    }
+    return;
+  }
+
+  if(id === "canva"){
+    // Buka Otentikasi OAuth 2.0 Resmi Canva
+    const proceed = confirm(`Mulai otorisasi OAuth 2.0 resmi Canva?\n\nAnda akan diarahkan ke halaman login resmi Canva untuk memberikan izin akses sinkronisasi akun Anda.`);
+    if(!proceed) return;
+
+    try {
+      const res = await fetch("/api/oauth/canva/authorize");
+      const d = await res.json();
+      if(d.ok && d.auth_url){
+        const width = 640, height = 750;
+        const left = Math.max(0, (window.screen.width - width) / 2);
+        const top = Math.max(0, (window.screen.height - height) / 2);
+        const popup = window.open(d.auth_url, "canva_oauth_login", `width=${width},height=${height},top=${top},left=${left},status=yes,scrollbars=yes`);
+        
+        if(!popup || popup.closed || typeof popup.closed === 'undefined'){
+          window.open(d.auth_url, "_blank");
+        }
+
+        const pollTimer = setInterval(async () => {
+          try {
+            const stRes = await fetch("/api/oauth/canva/status");
+            const stData = await stRes.json();
+            if(stData.ok && stData.canva && stData.canva.connected){
+              clearInterval(pollTimer);
+              if(popup && !popup.closed) popup.close();
+              connectedApps.add("canva");
+              saveConnectedApps();
+              renderConnectors();
+              alert(`🎉 Sukses! Akun Canva (${stData.canva.display_name || 'Terverifikasi'}) telah resmi terhubung!`);
+            }
+          } catch(e){}
+          if(popup && popup.closed){
+            clearInterval(pollTimer);
+          }
+        }, 2000);
+      } else {
+        alert("Gagal memuat URL otorisasi Canva: " + (d.error || "Unknown"));
+      }
+    } catch(e) {
+      alert("Error menghubungi server Canva: " + e.message);
+    }
+    return;
+  }
+
+  const grant = confirm(`Beri izin Oreo AI untuk terhubung dengan ${name}?\n\n• Akses sinkronisasi data & perintah aksi\n• Keamanan data terenkripsi end-to-end`);
+  if(grant){
+    connectedApps.add(id);
+    saveConnectedApps();
+    renderConnectors();
+    alert(`✅ Berhasil! ${name} kini telah terhubung ke Oreo AI.`);
+  }
+}
+
+window.addEventListener("message", (e) => {
+  if(e.data && e.data.type === "CANVA_OAUTH_SUCCESS"){
+    connectedApps.add("canva");
+    saveConnectedApps();
+    renderConnectors();
+  }
+});
+
+async function checkCanvaAuthStatus(){
+  try {
+    const res = await fetch("/api/oauth/canva/status");
+    const d = await res.json();
+    if(d.ok && d.canva && d.canva.connected){
+      connectedApps.add("canva");
+      saveConnectedApps();
+      updateConnectorBadge();
+    }
+  } catch(e){}
+}
+checkCanvaAuthStatus();
+
+function openConnectorModal(){
+  $("connectorModal").classList.remove("hidden");
+  renderConnectors();
+}
+
+function closeConnectorModal(){
+  $("connectorModal").classList.add("hidden");
+}
+
+$("btnOpenConnectors").onclick = openConnectorModal;
+$("btnCloseConnectors").onclick = closeConnectorModal;
+$("connectorModal").onclick = (e) => {
+  if(e.target === $("connectorModal")) closeConnectorModal();
+};
+$("tabConnTersedia").onclick = () => switchConnTab("tersedia");
+$("tabConnTerhubung").onclick = () => switchConnTab("terhubung");
+$("connSearchInput").oninput = renderConnectors;
+
+function enterDevMode(){
+  uid = "dev-mode";
+  idToken = "dev-token";
+  $("loginBox").style.display = "none";
+  $("main").style.display = "flex";
+  $("btnAuth").style.display = "none";
+  $("btnLogout").style.display = "inline";
+  $("userName").textContent = "Dev Tester";
+  $("userAvatar").textContent = "DT";
+  selectPersona("canva");
+  updateConnBadge();
+  loadModels();
+  loadConvs();
+  loadQuota();
+  newChat();
+}
+
+if(auth) {
+  auth.onAuthStateChanged(async u => {
+    if(u){
+      uid = u.uid;
+      $("loginBox").style.display="none"; $("main").style.display="flex";
+      $("btnAuth").style.display="none"; $("btnLogout").style.display="inline";
+      const name = u.displayName || u.email || "Pengguna";
+      $("userName").textContent = name;
+      $("userAvatar").textContent = name.substring(0,2).toUpperCase();
+      selectPersona("canva");
+      await refreshToken(); loadModels(); loadConvs(); loadQuota(); newChat();
+    }else if(uid !== "dev-mode"){
+      uid = null;
+      $("loginBox").style.display="flex"; $("main").style.display="none";
+      $("btnAuth").style.display="inline"; $("btnLogout").style.display="none";
+      $("userName").textContent="Tamu";
+      $("userAvatar").textContent="?";
+      $("quotaBadge").style.display="none";
+    }
+  });
+}
+
+$("btnLogin2").onclick = () => {
+  if(auth && provider) auth.signInWithPopup(provider);
+  else alert("Kredensial Firebase belum diisi di index.html. Gunakan tombol 'Masuk Mode Tes' untuk pengujian lokal.");
+};
+if($("btnAuth")) $("btnAuth").onclick = $("btnLogin2").onclick;
+if($("btnDevMode")) $("btnDevMode").onclick = enterDevMode;
+
+$("btnLogout").onclick = () => {
+  if(auth) auth.signOut();
+  uid = null; idToken = null;
+  $("loginBox").style.display="flex"; $("main").style.display="none";
+  $("btnAuth").style.display="inline"; $("btnLogout").style.display="none";
+  $("userName").textContent="Tamu";
+  $("userAvatar").textContent="?";
+};
+$("btnNew").onclick = ()=>newChat();
+
+let loadedModels = [];
+let activeFilterTag = "all";
+
+// Bersihkan nama model dari path internal provider
+function formatModelName(m){
+  if(!m) return "";
+  return m.includes("/") ? m.split("/").pop() : m;
+}
+
+function selectModel(id, name){
+  $("modelSelect").value = id;
+  const displayName = name || formatModelName(id);
+  $("currentModelLabel").textContent = displayName;
+  renderPopoverList();
+}
+
+function renderPopoverList(){
+  const container = $("customModelList");
+  if(!container) return;
+  container.innerHTML = "";
+  
+  const search = ($("modelSearchInput").value || "").toLowerCase().trim();
+  const filtered = loadedModels.filter(m => {
+    const matchesSearch = !search || m.name.toLowerCase().includes(search) || m.id.toLowerCase().includes(search);
+    let matchesTag = true;
+    if(activeFilterTag !== "all"){
+      matchesTag = m.name.toLowerCase().includes(activeFilterTag);
+    }
+    return matchesSearch && matchesTag;
+  });
+
+  if(filtered.length === 0){
+    container.innerHTML = `<div style="text-align:center;padding:24px 10px;font-size:12px;color:var(--text-subtle);">Tidak ada model yang cocok</div>`;
+    return;
+  }
+
+  filtered.forEach(item => {
+    const el = document.createElement("div");
+    const isSelected = item.id === $("modelSelect").value;
+    el.className = "custom-model-item" + (isSelected ? " selected" : "");
+    el.innerHTML = `
+      <div class="item-left">
+        <span style="font-size:14px;">✨</span>
+        <span class="item-name">${escapeHtml(item.name)}</span>
+      </div>
+      ${isSelected ? '<span class="item-check">✓</span>' : ''}
+    `;
+    el.onclick = () => {
+      selectModel(item.id, item.name);
+      closeModelPopover();
+    };
+    container.appendChild(el);
+  });
+}
+
+function openModelPopover(){
+  $("modelPopover").classList.remove("hidden");
+  $("modelTriggerBtn").classList.add("open");
+  $("modelSearchInput").focus();
+  renderPopoverList();
+}
+
+function closeModelPopover(){
+  $("modelPopover").classList.add("hidden");
+  $("modelTriggerBtn").classList.remove("open");
+}
+
+$("modelTriggerBtn").onclick = (e) => {
+  e.stopPropagation();
+  if($("modelPopover").classList.contains("hidden")){
+    openModelPopover();
+  } else {
+    closeModelPopover();
+  }
+};
+
+$("modelPopover").onclick = (e) => {
+  e.stopPropagation();
+};
+
+// === PERSONA & KEAHLIAN AI ===
+const PERSONAS_DATA = {
+  "canva": {
+    name: "Canva Designer",
+    icon: "🎨",
+    tag: "Visual & Grafis",
+    desc: "Spesialis konsep visual, palet warna HEX, font Canva, layout medsos, dan ide grafis.",
+    suggestions: [
+      { head: "🎨 Feed Instagram", sub: "Desain feed carousel produk baru", prompt: "Rancang konsep desain Feed Carousel Instagram untuk promosi produk baru yang elegan dan eye-catching lengkap dengan palet warna HEX dan font Canva." },
+      { head: "📸 Banner Promo", sub: "Banner iklan diskon flash sale toko", prompt: "Buatkan ide konsep banner promo flash sale diskon 50% untuk toko online, sertakan kode warna HEX, rekomendasi font Canva, dan kata kunci elemen." },
+      { head: "▶️ YouTube Thumbnail", sub: "Thumbnail video clickable & viral", prompt: "Rancang konsep Thumbnail YouTube yang sangat clickable dan kontras tinggi tentang tips produktivitas. Berikan rekomendasi teks hook dan layout Canva." },
+      { head: "📊 Presentasi Pitch", sub: "Slide presentasi startup modern", prompt: "Rancang panduan visual untuk slide presentasi pitch deck startup modern: palet warna, pasangan font Canva, dan ide elemen visual." }
+    ]
+  },
+  "developer": {
+    name: "Programmer",
+    icon: "💻",
+    tag: "Coding & Backend",
+    desc: "Arsitektur kode bersih, debugging error, REST API, database, dan optimasi performa sistem.",
+    suggestions: [
+      { head: "⚡ REST API", sub: "Buat API Python FastAPI dengan JWT Auth", prompt: "Buatkan boilerplate REST API Python menggunakan FastAPI lengkap dengan autentikasi JWT token dan schema Pydantic." },
+      { head: "⚛️ React Component", sub: "Komponen interaktif modern clean code", prompt: "Buatkan komponen React modern dengan TypeScript dan Tailwind CSS untuk tabel data interaktif dengan fitur filter dan pagination." },
+      { head: "🛡️ Debug & Keamanan", sub: "Audit keamanan web dan antisipasi SQLi", prompt: "Jelaskan langkah-langkah audit keamanan web application untuk mencegah SQL Injection, XSS, dan CSRF pada backend API." },
+      { head: "🚀 Database Query", sub: "Optimasi query SQL & indexing", prompt: "Bagaimana cara mendiagnosis dan mengoptimasi query SQL yang lambat pada database dengan jutaan baris data?" }
+    ]
+  },
+  "copywriter": {
+    name: "Copywriter",
+    icon: "✍️",
+    tag: "Pemasaran & Konten",
+    desc: "Formula copywriting AIDA/PAS, caption medsos viral, headline hook kuat, dan email penjualan.",
+    suggestions: [
+      { head: "📢 Formula AIDA", sub: "Copywriting promosi produk baru", prompt: "Tuliskan copywriting iklan promosi menggunakan framework AIDA (Attention, Interest, Desire, Action) untuk produk botol minum pintar." },
+      { head: "🔥 Hook TikTok / Reels", sub: "5 hook pembuka video penarik perhatian", prompt: "Buatkan 5 hook pembuka 3 detik pertama untuk video pendek TikTok/Reels tentang tips belajar cepat yang dijamin bikin orang berhenti scrolling." },
+      { head: "📧 Email Marketing", sub: "Email penawaran kerja sama bisnis B2B", prompt: "Buatkan email dingin (cold email) penawaran kerja sama bisnis yang sopan, padat, persuasif, dan berpeluang tinggi dibalas." },
+      { head: "🏷️ Tagline Brand", sub: "10 ide slogan produk yang mudah diingat", prompt: "Berikan 10 ide slogan/tagline yang catchy, modern, dan berkesan untuk brand kopi artisan anak muda." }
+    ]
+  },
+  "analyst": {
+    name: "Analis Bisnis",
+    icon: "📊",
+    tag: "Data & Strategi",
+    desc: "Strategi pertumbuhan bisnis, monetisasi, analisis kompetitor, KPI, dan laporan eksekutif.",
+    suggestions: [
+      { head: "📈 Analisis SWOT", sub: "Evaluasi kekuatan dan peluang bisnis", prompt: "Lakukan analisis SWOT mendalam untuk bisnis cloud kitchen / F&B delivery di era digital saat ini." },
+      { head: "💰 Model Pendapatan", sub: "Rencana monetisasi aplikasi SaaS", prompt: "Rancang strategi monetisasi (freemium vs tier berbayar) untuk aplikasi SaaS manajemen tugas tim." },
+      { head: "🎯 Metrik KPI", sub: "Indikator kunci retensi pelanggan", prompt: "Jelaskan metrik KPI bisnis yang paling krusial untuk melacak kepuasan dan retensi pelanggan (Customer Retention Rate & Churn Rate)." },
+      { head: "📑 Ringkasan Eksekutif", sub: "Struktur proposal bisnis ke investor", prompt: "Susun kerangka ringkasan eksekutif (Executive Summary) profesional untuk proposal bisnis yang siap dipresentasikan ke investor." }
+    ]
+  },
+  "general": {
+    name: "Asisten Umum",
+    icon: "✨",
+    tag: "Serbaguna",
+    desc: "Asisten cerdas serba bisa yang ramah untuk segala topik obrolan, riset, dan penjelasan konsep.",
+    suggestions: [
+      { head: "💡 Konsep Rumit", sub: "Jelaskan komputasi kuantum secara sederhana", prompt: "Jelaskan komputasi kuantum secara sederhana untuk pemula dengan analogi yang mudah dipahami." },
+      { head: "⚡ Produktivitas", sub: "5 strategi manajemen waktu terbaik", prompt: "Berikan 5 strategi efektif untuk meningkatkan produktivitas harian dan mengatasi rasa malas." },
+      { head: "📚 Rangkum Topik", sub: "Rangkum sejarah revolusi industri", prompt: "Rangkum evolusi Revolusi Industri dari 1.0 hingga 4.0 beserta dampak teknologi utamanya." },
+      { head: "🧠 Curah Pendapat", sub: "Ide nama proyek kreatif dan unik", prompt: "Berikan 10 ide nama proyek kreatif untuk aplikasi asisten kecerdasan buatan serbaguna." }
+    ]
+  }
+};
+
+let currentPersona = "canva";
+
+function renderPersonaList(){
+  const container = $("personaList");
+  if(!container) return;
+  container.innerHTML = "";
+
+  Object.entries(PERSONAS_DATA).forEach(([id, p]) => {
+    const isSelected = id === currentPersona;
+    const item = document.createElement("div");
+    item.className = "persona-item" + (isSelected ? " selected" : "");
+    item.innerHTML = `
+      <div class="persona-item-icon">${p.icon}</div>
+      <div class="persona-item-info">
+        <div class="persona-item-name">
+          <span>${escapeHtml(p.name)}</span>
+          <span class="persona-item-tag">${escapeHtml(p.tag)}</span>
+        </div>
+        <div class="persona-item-desc">${escapeHtml(p.desc)}</div>
+      </div>
+    `;
+    item.onclick = () => {
+      selectPersona(id);
+      closePersonaPopover();
+    };
+    container.appendChild(item);
+  });
+}
+
+function selectPersona(id){
+  if(!PERSONAS_DATA[id]) id = "canva";
+  currentPersona = id;
+  const p = PERSONAS_DATA[id];
+  $("personaSelect").value = id;
+  $("currentPersonaIcon").textContent = p.icon;
+  $("currentPersonaLabel").textContent = p.name;
+  renderPersonaList();
+  renderHeroSuggestions();
+}
+
+function openPersonaPopover(){
+  $("personaPopover").classList.remove("hidden");
+  $("personaTriggerBtn").classList.add("open");
+  closeModelPopover();
+  renderPersonaList();
+}
+
+function closePersonaPopover(){
+  $("personaPopover").classList.add("hidden");
+  $("personaTriggerBtn").classList.remove("open");
+}
+
+$("personaTriggerBtn").onclick = (e) => {
+  e.stopPropagation();
+  if($("personaPopover").classList.contains("hidden")){
+    openPersonaPopover();
+  } else {
+    closePersonaPopover();
+  }
+};
+
+$("personaPopover").onclick = (e) => {
+  e.stopPropagation();
+};
+
+function openCanvaWithPrompt(el){
+  let text = "";
+  try {
+    text = decodeURIComponent(el.getAttribute("data-content") || "");
+  } catch(e){}
+  
+  let query = "Instagram Feed";
+  const lower = text.toLowerCase();
+  if(lower.includes("thumbnail") || lower.includes("youtube")) query = "YouTube Thumbnail";
+  else if(lower.includes("carousel") || lower.includes("feed") || lower.includes("instagram")) query = "Instagram Post";
+  else if(lower.includes("banner") || lower.includes("iklan")) query = "Banner Promo";
+  else if(lower.includes("poster")) query = "Poster";
+  else if(lower.includes("presentasi") || lower.includes("slide") || lower.includes("pitch")) query = "Presentation";
+  else if(lower.includes("logo")) query = "Logo";
+  else if(lower.includes("tiktok") || lower.includes("story") || lower.includes("reels")) query = "Instagram Story";
+  else {
+    const firstLine = text.split("\n")[0].replace(/[#*`:]/g, "").trim();
+    query = firstLine.slice(0, 30) || "Design Template";
+  }
+  window.open(`https://www.canva.com/search?q=${encodeURIComponent(query)}`, "_blank");
+}
+
+function exportChat(){
+  if(history.length === 0){
+    alert("Belum ada obrolan untuk diekspor.");
+    return;
+  }
+  let md = `# Riwayat Obrolan Oreo AI\n`;
+  md += `- Tanggal: ${new Date().toLocaleString()}\n`;
+  md += `- Model AI: ${$("modelSelect").value || "-"}\n`;
+  md += `- Mode Keahlian: ${PERSONAS_DATA[currentPersona]?.name || currentPersona}\n\n---\n\n`;
+
+  history.forEach(m => {
+    const roleName = m.role === "user" ? "👤 Anda" : "✨ Oreo AI";
+    let text = m.content;
+    if(Array.isArray(text)){
+      const t = text.find(c => c.type === "text");
+      text = t ? t.text : "[Gambar]";
+    }
+    md += `### ${roleName}\n${text}\n\n`;
+  });
+
+  const blob = new Blob([md], { type: "text/markdown;charset=utf-8" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `Oreo_Chat_${Date.now()}.md`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+if($("btnExportChat")) $("btnExportChat").onclick = exportChat;
+
+document.addEventListener("click", () => {
+  if(!$("modelPopover").classList.contains("hidden")){
+    closeModelPopover();
+  }
+  if(!$("personaPopover").classList.contains("hidden")){
+    closePersonaPopover();
+  }
+});
+
+$("modelSearchInput").oninput = () => {
+  renderPopoverList();
+};
+
+document.querySelectorAll("#filterChips .chip").forEach(btn => {
+  btn.onclick = () => {
+    document.querySelectorAll("#filterChips .chip").forEach(c => c.classList.remove("active"));
+    btn.classList.add("active");
+    activeFilterTag = btn.dataset.tag;
+    renderPopoverList();
+  };
+});
+
+async function loadModels(){
+  await refreshToken();
+  try {
+    const r = await fetch(API_BASE+"/api/models",{
+      headers:{
+        "Authorization":"Bearer "+(idToken||"dev-token"),
+        "X-Client-Id": getClientId()
+      }
+    });
+    const d = await r.json();
+    const seenNames = new Set();
+    const modelList = [];
+    
+    d.providers.forEach(p=>{
+      p.models.forEach(m=>{
+        const cleanName = formatModelName(m);
+        if(!seenNames.has(cleanName)){
+          seenNames.add(cleanName);
+          modelList.push({ id: m, name: cleanName });
+        }
+      });
+    });
+
+    // Urutkan alfabetis
+    modelList.sort((a,b) => a.name.localeCompare(b.name));
+    loadedModels = modelList;
+    $("modelCountBadge").textContent = loadedModels.length + " model";
+
+    if(loadedModels.length > 0 && !$("modelSelect").value){
+      const geminiModel = loadedModels.find(m => m.name.toLowerCase().includes("gemini-3.8-flash") || m.name.toLowerCase().includes("gemini"));
+      const defaultModel = geminiModel || loadedModels[0];
+      selectModel(defaultModel.id, defaultModel.name);
+    } else {
+      renderPopoverList();
+    }
+
+    if(d.admin && !document.getElementById("adminBadge")){
+      const badge = document.createElement("span");
+      badge.id = "adminBadge";
+      badge.className = "badge-admin";
+      badge.textContent = "ADMIN";
+      document.querySelector(".brand").appendChild(badge);
+    }
+  } catch(e) {
+    console.error("Gagal load models:", e);
+  }
+}
+
+// Riwayat obrolan
+function convsRef(){ return db ? db.collection("users").doc(uid).collection("conversations") : null; }
+
+async function loadConvs(){
+  const list = $("convList"); list.innerHTML="";
+  if(!db || uid === "dev-mode") {
+    const sorted = Object.entries(devConvs).sort((a,b)=> (b[1].updatedAt||0) - (a[1].updatedAt||0));
+    sorted.forEach(([id, d])=>{
+      renderConvItem(id, d);
+    });
+    return;
+  }
+  const snap = await convsRef().orderBy("updatedAt","desc").limit(30).get();
+  snap.forEach(doc=>{
+    renderConvItem(doc.id, doc.data());
+  });
+}
+
+function renderConvItem(id, data){
+  const el = document.createElement("div");
+  el.className = "conv-item" + (id === convId ? " active" : "");
+  el.innerHTML = `
+    <span style="font-size:14px;">💬</span>
+    <span class="conv-title">${escapeHtml(data.title || "Obrolan baru")}</span>
+    <span class="conv-del" title="Hapus chat">✕</span>
+  `;
+  el.onclick = (e) => {
+    if(e.target.classList.contains("conv-del")){
+      e.stopPropagation();
+      deleteConv(id);
+      return;
+    }
+    openConv(id, data);
+  };
+  $("convList").appendChild(el);
+}
+
+async function deleteConv(id){
+  if(confirm("Hapus obrolan ini?")){
+    if(!db || uid === "dev-mode"){
+      delete devConvs[id];
+      localStorage.setItem("oreo_dev_convs", JSON.stringify(devConvs));
+    } else {
+      await convsRef().doc(id).delete();
+    }
+    if(convId === id) newChat();
+    else loadConvs();
+  }
+}
+
+function newChat(){
+  convId = null; history = [];
+  $("messages").innerHTML = "";
+  $("messages").appendChild(createHeroElement());
+  document.querySelectorAll(".conv-item").forEach(e=>e.classList.remove("active"));
+}
+
+function renderHeroSuggestions(){
+  const grid = $("suggestionsGrid");
+  if(!grid) return;
+  grid.innerHTML = "";
+  const p = PERSONAS_DATA[currentPersona] || PERSONAS_DATA["canva"];
+
+  if($("heroTitle")){
+    $("heroTitle").textContent = `${p.icon} Halo, saya ${p.name}`;
+  }
+  if($("heroDesc")){
+    $("heroDesc").textContent = `${p.desc} Tanyakan langsung atau pilih inspirasi topik berikut:`;
+  }
+
+  p.suggestions.forEach(s => {
+    const card = document.createElement("div");
+    card.className = "sug-card";
+    card.innerHTML = `
+      <span class="sug-head">${escapeHtml(s.head)}</span>
+      <span class="sug-sub">${escapeHtml(s.sub)}</span>
+    `;
+    card.onclick = () => useSuggestion(s.prompt);
+    grid.appendChild(card);
+  });
+}
+
+function createHeroElement(){
+  const hero = document.createElement("div");
+  hero.id = "heroState";
+  const p = PERSONAS_DATA[currentPersona] || PERSONAS_DATA["canva"];
+  hero.innerHTML = `
+    <div class="hero-glow">✨</div>
+    <h2 class="hero-title" id="heroTitle">${p.icon} Halo, saya ${p.name}</h2>
+    <p class="hero-desc" id="heroDesc">${p.desc} Tanyakan langsung atau pilih inspirasi topik berikut:</p>
+    <div class="suggestions-grid" id="suggestionsGrid"></div>
+  `;
+  setTimeout(() => renderHeroSuggestions(), 10);
+  return hero;
+}
+
+function useSuggestion(text){
+  $("input").value = text;
+  $("input").style.height = "auto";
+  send();
+}
+
+async function openConv(id, data){
+  convId = id; history = data.messages || [];
+  $("messages").innerHTML = "";
+  if(history.length === 0){
+    $("messages").appendChild(createHeroElement());
+  } else {
+    history.forEach(m => {
+      if(Array.isArray(m.content)){
+        let txt = "";
+        let img = null;
+        m.content.forEach(c => {
+          if(c.type === "text") txt = c.text;
+          if(c.type === "image_url") img = c.image_url?.url || c.image_url;
+        });
+        addMsg(m.role, txt, m.meta, img || m.image);
+      } else {
+        addMsg(m.role, m.content, m.meta, m.image);
+      }
+    });
+  }
+  if(data.model) selectModel(data.model);
+  document.querySelectorAll(".conv-item").forEach(e=>e.classList.remove("active"));
+  loadConvs();
+}
+
+async function saveConv(){
+  if(!uid || history.length===0) return;
+  let firstMsg = history[0].content;
+  let title = "Obrolan baru";
+  if(typeof firstMsg === "string"){
+    title = firstMsg.slice(0, 36);
+  } else if(Array.isArray(firstMsg)){
+    const txtItem = firstMsg.find(c => c.type === "text");
+    title = txtItem ? txtItem.text.slice(0, 36) : "Obrolan Gambar";
+  }
+  const data = {
+    title,
+    model: $("modelSelect").value,
+    messages: history,
+    updatedAt: Date.now()
+  };
+  if(!db || uid === "dev-mode"){
+    if(!convId) convId = "conv_" + Date.now();
+    devConvs[convId] = data;
+    localStorage.setItem("oreo_dev_convs", JSON.stringify(devConvs));
+    loadConvs();
+    return;
+  }
+  data.updatedAt = firebase.firestore.FieldValue.serverTimestamp();
+  if(convId){ await convsRef().doc(convId).set(data, {merge:true}); }
+  else { const doc = await convsRef().add(data); convId = doc.id; }
+  loadConvs();
+}
+
+function escapeHtml(str){
+  return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+function formatContent(role, text){
+  if(role === "user"){
+    return escapeHtml(text);
+  }
+  if(window.marked && typeof window.marked.parse === "function"){
+    try {
+      let rawHtml = window.marked.parse(String(text));
+      // Tambahkan tombol copy ke setiap code block
+      return rawHtml.replace(/<pre><code([^>]*)>([\s\S]*?)<\/code><\/pre>/gi, function(match, p1, codeContent){
+        return `<div class="code-block-wrap">
+          <div class="code-header">
+            <span>Code</span>
+            <button class="code-copy-btn" onclick="copyCode(this)">📋 Salin</button>
+          </div>
+          <pre><code${p1}>${codeContent}</code></pre>
+        </div>`;
+      });
+    } catch(e) {
+      console.warn("Markdown parse error:", e);
+    }
+  }
+  return escapeHtml(text);
+}
+
+function copyCode(btn){
+  const codeEl = btn.closest(".code-block-wrap").querySelector("code");
+  if(codeEl){
+    navigator.clipboard.writeText(codeEl.innerText).then(()=>{
+      btn.textContent = "✅ Tersalin!";
+      setTimeout(()=>btn.textContent = "📋 Salin", 2000);
+    });
+  }
+}
+
+function copyText(btn, text){
+  navigator.clipboard.writeText(text).then(()=>{
+    btn.innerHTML = "✅ Tersalin";
+    setTimeout(()=>btn.innerHTML = "📋 Salin", 2000);
+  });
+}
+
+let currentImageBase64 = null;
+
+$("btnUploadImage").onclick = () => {
+  $("fileInput").click();
+};
+
+$("fileInput").onchange = (e) => {
+  const file = e.target.files[0];
+  if(!file) return;
+  if(!file.type.startsWith("image/")){
+    alert("Silakan pilih file gambar (JPG, PNG, WebP, GIF).");
+    return;
+  }
+  if(file.size > 5 * 1024 * 1024){
+    alert("Ukuran gambar maksimal 5 MB.");
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = (evt) => {
+    currentImageBase64 = evt.target.result;
+    $("imagePreview").src = currentImageBase64;
+    $("imagePreviewContainer").style.display = "flex";
+    $("input").focus();
+  };
+  reader.readAsDataURL(file);
+};
+
+$("btnRemoveImage").onclick = () => {
+  currentImageBase64 = null;
+  $("fileInput").value = "";
+  $("imagePreviewContainer").style.display = "none";
+  $("imagePreview").src = "";
+};
+
+function addMsg(role, text, meta, image){
+  const hero = $("heroState");
+  if(hero) hero.remove();
+
+  const row = document.createElement("div");
+  row.className = "msg-row " + (role === "user" ? "user" : "ai");
+
+  if(role === "ai"){
+    const avatar = document.createElement("div");
+    avatar.className = "msg-avatar ai";
+    avatar.textContent = "✨";
+    row.appendChild(avatar);
+  }
+
+  const body = document.createElement("div");
+  body.className = "msg-body";
+
+  const bubble = document.createElement("div");
+  bubble.className = "msg-bubble";
+
+  if(image){
+    const imgContainer = document.createElement("div");
+    imgContainer.className = "msg-image";
+    imgContainer.innerHTML = `<img src="${image}" alt="Lampiran gambar" onclick="window.open(this.src, '_blank')">`;
+    bubble.appendChild(imgContainer);
+  }
+
+  if(text){
+    const textNode = document.createElement("div");
+    textNode.innerHTML = formatContent(role, text);
+    bubble.appendChild(textNode);
+  }
+
+  body.appendChild(bubble);
+
+  if(meta && role === "ai"){
+    const metaBar = document.createElement("div");
+    metaBar.className = "msg-meta-bar";
+
+    let connBtnsHtml = "";
+    const pKey = $("personaSelect") ? $("personaSelect").value : "";
+    const lower = (text || "").toLowerCase();
+
+    // Canva action
+    if(connectedApps.has("canva") && (pKey === "canva" || lower.includes("canva") || lower.includes("palet warna") || lower.includes("desain") || lower.includes("layout"))){
+      connBtnsHtml += `<button class="btn-canva-action" onclick="openCanvaWithPrompt(this)" data-content="${encodeURIComponent((text||'').slice(0, 300))}" title="Cari templat dan buka ide ini langsung di Canva">🎨 Buka di Canva</button>`;
+      connBtnsHtml += `<button class="btn-canva-action" style="background:linear-gradient(135deg, #ff6b4a, #ec4899); border:none;" onclick="dispatchN8nAction('canva', 'create_design', this)" data-title="Konsep Desain Canva" data-snippet="${encodeURIComponent((text||'').slice(0, 300))}" title="Kirim payload desain ke N8N / Webhook">⚡ Buat via N8N</button>`;
+    }
+    // Gmail action
+    if(connectedApps.has("gmail") && (lower.includes("email") || lower.includes("surat") || lower.includes("draf") || lower.includes("kirim") || lower.includes("subjek"))){
+      connBtnsHtml += `<button class="btn-canva-action" style="background:#ea4335; border:none;" onclick="dispatchN8nAction('gmail', 'send_draft', this)" data-title="Draf Email Oreo AI" data-snippet="${encodeURIComponent((text||'').slice(0, 300))}" title="Kirim draf email via N8N Webhook">✉️ Drafkan di Gmail</button>`;
+    }
+    // GitHub action
+    if(connectedApps.has("github") && (lower.includes("github") || lower.includes("git clone") || lower.includes("repository") || lower.includes("def ") || lower.includes("function") || lower.includes("const "))){
+      connBtnsHtml += `<a href="https://github.com/new" target="_blank" class="btn-canva-action" style="background:#24292e;" title="Buka GitHub untuk membuat repo/kode">🐙 Buka di GitHub</a>`;
+      connBtnsHtml += `<button class="btn-canva-action" style="background:#334155; border:none;" onclick="dispatchN8nAction('github', 'create_repo', this)" data-title="Repo Oreo AI" data-snippet="${encodeURIComponent((text||'').slice(0, 300))}" title="Publish kode via N8N">⚡ Simpan ke GitHub</button>`;
+    }
+    // Google Sheets action
+    if(connectedApps.has("gsheets") && (lower.includes("tabel") || lower.includes("sheet") || text.includes("| --- |") || text.includes("<td>"))){
+      connBtnsHtml += `<a href="https://sheets.new" target="_blank" class="btn-canva-action" style="background:#0F9D58;" title="Buka Google Sheets baru">📊 Buat di Sheets</a>`;
+      connBtnsHtml += `<button class="btn-canva-action" style="background:#059669; border:none;" onclick="dispatchN8nAction('gsheets', 'export_table', this)" data-title="Tabel Data Oreo AI" data-snippet="${encodeURIComponent((text||'').slice(0, 300))}" title="Ekspor data via N8N">⚡ Ekspor ke Sheets</button>`;
+    }
+
+    metaBar.innerHTML = `
+      <span>⚡ ${meta}</span>
+      <button class="btn-copy-msg" onclick="copyText(this, ${JSON.stringify(text)})">📋 Salin</button>
+      ${connBtnsHtml}
+    `;
+    body.appendChild(metaBar);
+  }
+
+  row.appendChild(body);
+  $("messages").appendChild(row);
+  $("messages").scrollTop = $("messages").scrollHeight;
+  return row;
+}
+
+async function dispatchN8nAction(app, action, btn){
+  const prevHtml = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = `<span>⏳</span> Memproses...`;
+
+  const metaBar = btn.closest(".msg-meta-bar");
+  const rawSnippet = decodeURIComponent(btn.getAttribute("data-snippet") || "");
+  const title = btn.getAttribute("data-title") || "Aksi Oreo AI";
+
+  try {
+    const res = await fetch("/api/connectors/dispatch", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        app: app,
+        action: action,
+        webhook_url: n8nWebhookUrl,
+        payload: {
+          title: title,
+          body: rawSnippet,
+          subject: title,
+          summary: rawSnippet.slice(0, 150)
+        }
+      })
+    });
+    const d = await res.json();
+    btn.innerHTML = `✅ Terkirim!`;
+
+    const resDiv = document.createElement("div");
+    resDiv.className = "conn-result-card";
+    const isReal = d.real_n8n;
+    const resObj = d.result || d.data || {};
+    resDiv.innerHTML = `
+      <div class="conn-result-header">
+        <span>${isReal ? '⚡ Sukses via Webhook N8N' : '✨ Berhasil Diproses (Integrasi Langsung)'}</span>
+        <span style="font-size:11px; color:#94a3b8;">${new Date().toLocaleTimeString()}</span>
+      </div>
+      <div style="color:#e2e8f0; font-size:12px; line-height:1.4;">
+        ${escapeHtml(resObj.message || "Aksi berhasil dieksekusi!")}
+      </div>
+      ${resObj.action_url ? `<a href="${resObj.action_url}" target="_blank" class="conn-result-btn">${resObj.action_label || 'Buka Aplikasi'} ↗</a>` : ''}
+    `;
+    metaBar.parentNode.appendChild(resDiv);
+    $("messages").scrollTop = $("messages").scrollHeight;
+  } catch(e) {
+    btn.innerHTML = `⚠️ Gagal`;
+    alert("Gagal mengeksekusi aksi: " + e.message);
+  } finally {
+    setTimeout(() => {
+      btn.disabled = false;
+      btn.innerHTML = prevHtml;
+    }, 4000);
+  }
+}
+
+function showTypingIndicator(){
+  const hero = $("heroState");
+  if(hero) hero.remove();
+
+  const row = document.createElement("div");
+  row.className = "msg-row ai typing-row";
+
+  const avatar = document.createElement("div");
+  avatar.className = "msg-avatar ai";
+  avatar.textContent = "✨";
+  row.appendChild(avatar);
+
+  const body = document.createElement("div");
+  body.className = "msg-body";
+
+  const bubble = document.createElement("div");
+  bubble.className = "msg-bubble";
+  bubble.innerHTML = `
+    <div class="typing-indicator" title="Sedang berpikir...">
+      <div class="typing-dot"></div>
+      <div class="typing-dot"></div>
+      <div class="typing-dot"></div>
+    </div>
+  `;
+  body.appendChild(bubble);
+  row.appendChild(body);
+
+  $("messages").appendChild(row);
+  $("messages").scrollTop = $("messages").scrollHeight;
+  return row;
+}
+
+async function send(){
+  const inp = $("input"), text = inp.value.trim();
+  if(!text && !currentImageBase64) return;
+
+  const sendingImage = currentImageBase64;
+  currentImageBase64 = null;
+  $("fileInput").value = "";
+  $("imagePreviewContainer").style.display = "none";
+  $("imagePreview").src = "";
+
+  inp.value = "";
+  inp.style.height = "auto";
+  inp.disabled = true;
+  $("btnSend").disabled = true;
+
+  let userMessageObj;
+  if(sendingImage){
+    userMessageObj = {
+      role: "user",
+      content: [
+        { type: "text", text: text || "Jelaskan gambar ini" },
+        { type: "image_url", image_url: { url: sendingImage } }
+      ],
+      image: sendingImage
+    };
+    addMsg("user", text, null, sendingImage);
+  } else {
+    userMessageObj = { role: "user", content: text };
+    addMsg("user", text);
+  }
+
+  history.push(userMessageObj);
+  const model = $("modelSelect").value;
+  const t = showTypingIndicator();
+  await refreshToken();
+  try{
+    const r = await fetch(API_BASE+"/api/chat",{
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json",
+        "Authorization":"Bearer "+(idToken||"dev-token"),
+        "X-Client-Id": getClientId()
+      },
+      body: JSON.stringify({
+        model, 
+        persona: $("personaSelect") ? $("personaSelect").value : "canva",
+        connected_apps: Array.from(connectedApps),
+        messages: history.map(m => ({ role: m.role, content: m.content }))
+      })
+    });
+    const d = await r.json();
+    t.remove();
+    if(d.quota){
+      updateQuotaDisplay(d.quota);
+    }
+    if(d.ok){
+      const cleanName = formatModelName(d.model);
+      const meta = cleanName + " · " + d.elapsed + "s";
+      history.push({role:"assistant", content:d.content, meta});
+      addMsg("ai", d.content, meta);
+      saveConv();
+    } else {
+      if(d.quota_exceeded){
+        addMsg("ai", `⛔ **Batas Kuota Harian Habis**\n\n${d.error}\n\n*Catatan: Kuota di-reset otomatis setiap hari pada pukul 00:00. Anda juga bisa mengklik indikator kuota di atas untuk menguji fitur reset.*`);
+      } else {
+        addMsg("ai", "⚠️ " + (d.error || "Gagal memproses respons"));
+      }
+      history.pop();
+    }
+  }catch(e){
+    t.remove();
+    addMsg("ai","⚠️ Error koneksi: " + e.message);
+    history.pop();
+  }finally{
+    inp.disabled = false;
+    $("btnSend").disabled = false;
+    inp.focus();
+  }
+}
+
+$("btnSend").onclick = send;
+$("input").onkeydown = e => {
+  if(e.key === "Enter" && !e.shiftKey){
+    e.preventDefault();
+    send();
+  }
+};
+</script>
+</body>
+</html>
