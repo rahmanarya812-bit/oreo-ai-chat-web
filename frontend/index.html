@@ -2504,7 +2504,7 @@ header {
                 <button id="btnRemoveImage" class="btn-remove-image" type="button" title="Hapus gambar">✕</button>
               </div>
             </div>
-            <textarea id="input" rows="1" placeholder="Minta ide desain Canva, kode, atau pertanyaan..."></textarea>
+            <textarea id="input" rows="1" placeholder="Tanya apa saja ke Oreo AI..."></textarea>
           </div>
           
           <div class="dock-actions">
@@ -2757,7 +2757,7 @@ function switchToChatMode(){
   if($("btnNew")) $("btnNew").classList.add("active");
   if($("btnNavImage")) $("btnNavImage").classList.remove("active");
   if($("aspectRatioRow")) $("aspectRatioRow").style.display = "none";
-  $("input").placeholder = "Minta ide desain Canva, kode, atau pertanyaan...";
+  $("input").placeholder = "Tanya apa saja ke Oreo AI...";
   newChat();
 }
 
@@ -3011,7 +3011,7 @@ const CONNECTORS_DATA = [
   }
 ];
 
-let connectedApps = new Set(JSON.parse(localStorage.getItem("oreo_connected_apps") || '["canva"]'));
+let connectedApps = new Set(JSON.parse(localStorage.getItem("oreo_connected_apps") || '[]'));
 let activeConnTab = "tersedia";
 
 function saveConnectedApps(){
@@ -3342,17 +3342,8 @@ window.addEventListener("message", (e) => {
 });
 
 async function checkCanvaAuthStatus(){
-  try {
-    const res = await fetch("/api/oauth/canva/status");
-    const d = await res.json();
-    if(d.ok && d.canva && d.canva.connected){
-      connectedApps.add("canva");
-      saveConnectedApps();
-      updateConnectorBadge();
-    }
-  } catch(e){}
+  // Auto connect disabled by user preference
 }
-checkCanvaAuthStatus();
 
 function openConnectorModal(){
   if($("connectorModal")) $("connectorModal").classList.remove("hidden");
@@ -3657,7 +3648,7 @@ const PERSONAS_DATA = {
   }
 };
 
-let currentPersona = "canva";
+let currentPersona = "general";
 
 function renderPersonaList(){
   const container = $("personaList");
@@ -4035,7 +4026,7 @@ async function openConv(id, data){
     if($("btnNew")) $("btnNew").classList.add("active");
     if($("btnNavImage")) $("btnNavImage").classList.remove("active");
     if($("aspectRatioRow")) $("aspectRatioRow").style.display = "none";
-    $("input").placeholder = "Minta ide desain Canva, kode, atau pertanyaan...";
+    $("input").placeholder = "Tanya apa saja ke Oreo AI...";
   }
 
   $("messages").innerHTML = "";
@@ -4220,14 +4211,67 @@ function addMsg(role, text, meta, image){
 
   body.appendChild(bubble);
 
-  if(meta && role === "ai"){
+  if(role === "ai"){
     const metaBar = document.createElement("div");
     metaBar.className = "msg-meta-bar";
 
-    metaBar.innerHTML = `
-      <span>⚡ ${meta}</span>
-      <button class="btn-copy-msg" onclick="copyText(this, ${JSON.stringify(text)})">📋 Salin</button>
+    if(meta){
+      const metaSpan = document.createElement("span");
+      metaSpan.textContent = `⚡ ${meta}`;
+      metaBar.appendChild(metaSpan);
+    }
+
+    const copyBtn = document.createElement("button");
+    copyBtn.className = "btn-copy-msg";
+    copyBtn.type = "button";
+    copyBtn.title = "Salin respons";
+    copyBtn.innerHTML = `
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+      </svg>
+      <span>Salin</span>
     `;
+    copyBtn.onclick = async () => {
+      try {
+        await navigator.clipboard.writeText(text);
+        copyBtn.innerHTML = `
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          <span style="color:#34d399;">Tersalin</span>
+        `;
+        showToast("Teks disalin ke clipboard", "success");
+        setTimeout(() => {
+          copyBtn.innerHTML = `
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+            <span>Salin</span>
+          `;
+        }, 2000);
+      } catch(err) {
+        showToast("Gagal menyalin teks", "error");
+      }
+    };
+    metaBar.appendChild(copyBtn);
+
+    const thumbsBtn = document.createElement("button");
+    thumbsBtn.className = "btn-copy-msg";
+    thumbsBtn.type = "button";
+    thumbsBtn.title = "Respons bagus";
+    thumbsBtn.innerHTML = `
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path>
+      </svg>
+    `;
+    thumbsBtn.onclick = () => {
+      thumbsBtn.style.color = "#34d399";
+      showToast("Terima kasih atas tanggapannya!", "info");
+    };
+    metaBar.appendChild(thumbsBtn);
+
     body.appendChild(metaBar);
   }
 
@@ -4490,7 +4534,6 @@ async function send(){
       body: JSON.stringify({
         model, 
         persona: "auto",
-        connected_apps: Array.from(connectedApps),
         messages: history.map(m => ({ role: m.role, content: m.content }))
       })
     });

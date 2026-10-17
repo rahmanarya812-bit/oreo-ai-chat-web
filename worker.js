@@ -509,10 +509,7 @@ export default {
       return jsonResp({
         ok: true,
         canva: {
-          connected: true,
-          connected_at: 'Aktif',
-          client_id: 'oreo-ai-hub',
-          user_id: 'arya-canva'
+          connected: false
         }
       });
     }
@@ -698,33 +695,22 @@ export default {
         }
         const lowerPrompt = userPromptText.toLowerCase();
 
-        let sysPrompt = "";
-        let detectedPersona = personaKey;
-        if (personaKey && personaKey !== 'auto' && PERSONAS[personaKey]) {
-          sysPrompt = PERSONAS[personaKey].system_prompt;
-        } else {
-          // Dynamic adaptive persona detection based on user query
-          if (/(canva|desain|design|feed|banner|poster|logo|palet|warna|hex|layout|carousel|thumbnail|tipografi|font canva|grafis|flyer|brosur|kemasan)/i.test(lowerPrompt)) {
-            sysPrompt = PERSONAS.canva.system_prompt;
-            detectedPersona = "canva";
-          } else if (/(koding|coding|code|script|python|javascript|typescript|html|css|php|sql|api|function|bug|debug|error|class|git|react|fastapi|backend|frontend|query|endpoint|server)/i.test(lowerPrompt)) {
-            sysPrompt = PERSONAS.developer.system_prompt;
-            detectedPersona = "developer";
-          } else if (/(copywriting|copywriter|caption|iklan|hook|aida|headline|naskah|promo|sales|penjualan|slogan|tagline|cta|reels|tiktok)/i.test(lowerPrompt)) {
-            sysPrompt = PERSONAS.copywriter.system_prompt;
-            detectedPersona = "copywriter";
-          } else if (/(bisnis|strategi|analis|kpi|pasar|roi|revenue|monetisasi|investor|pitch deck|finansial|omset|swot)/i.test(lowerPrompt)) {
-            sysPrompt = PERSONAS.analyst.system_prompt;
-            detectedPersona = "analyst";
-          } else {
-            sysPrompt = `Kamu adalah Oreo AI, asisten kecerdasan buatan serbaguna yang ramah, berwawasan luas, akurat, dan sangat membantu. Secara cerdas sesuaikan keahlian dan gaya jawabanmu dengan apa yang diminta oleh pengguna (Desain Canva, Koding, Copywriting, Bisnis, atau Percakapan Umum) dengan format markdown yang rapi, terstruktur, dan mudah dipahami.`;
-            detectedPersona = "general";
-          }
-        }
+        // System Prompt bergaya ChatGPT & Google Gemini (Alami, Ramah, Bebas Menu Kaku)
+        const sysPrompt = `Kamu adalah Oreo AI, asisten kecerdasan buatan cerdas, ramah, bersahabat, dan serbaguna persis seperti ChatGPT dan Google Gemini.
 
-        if (connectedApps.length > 0) {
-          sysPrompt += `\n\n[Konektor Aplikasi Aktif]: Pengguna telah mengaktifkan integrasi dengan: ${connectedApps.join(', ')}. Berikan rekomendasi konten dan instruksi yang siap diintegrasikan atau dibuka di aplikasi tersebut.`;
-        }
+Pedoman Komunikasi Penting:
+1. Alami & Luwes: Jawablah dengan bahasa Indonesia yang natural, hangat, dan santai namun sopan, mengalir seperti manusia berbicara.
+2. Respons Langsung Sesuai Konteks:
+   - Jika pengguna hanya menyapa (contoh: "hai", "halo", "apa kabar", "selamat pagi", "p", dsb.), balaslah dengan ramah dan tanyakan apa yang bisa kamu bantu hari ini secara singkat dan wajar (seperti: "Hai! Ada yang bisa saya bantu hari ini? 😊" atau "Halo! Apa kabar? Ada yang ingin kamu diskusikan hari ini?").
+   - JANGAN PERNAH menyajikan daftar menu kaku (seperti "1. Desain Canva, 2. Koding GitHub, 3. Nulis Konten/Copywriting, 4. Ngobrol") atau menampilkan tabel pilihan kemampuan kecuali pengguna secara eksplisit meminta daftar tersebut.
+   - JANGAN PERNAH menyebutkan "Integrasi Aktif", "Canva", atau "GitHub" jika pengguna tidak menanyakannya secara spesifik.
+3. Cerdas & Tanggap:
+   - Jika pengguna bertanya tentang pemrograman/koding, berikan kode bersih, efisien, dengan penjelasan yang jelas.
+   - Jika pengguna meminta ide desain, berikan rekomendasi visual yang kreatif dan estetik.
+   - Jika pengguna meminta tulisan/copywriting, buatlah kalimat yang menarik, persuasif, dan berkualitas tinggi.
+   - Jika pengguna bertanya atau mengobrol santai, diskusikan dengan informatif dan menyenangkan.
+4. Format Bersih & Rapi: Gunakan format markdown yang rapi, ringkas, dan nyaman dibaca.`;
+        const detectedPersona = "general";
 
         const augmentedMessages = [];
         const hasSystem = messages.some(m => m.role === 'system');
