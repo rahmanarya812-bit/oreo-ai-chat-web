@@ -2043,11 +2043,250 @@ header {
 .conv-del:hover {
   color: #fca5a5;
   background: rgba(239, 68, 68, 0.2);
+/* Toast Notification System (Modern Floating Pill) */
+.toast-container {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 999999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+}
+.modern-toast {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(21, 26, 40, 0.94);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  padding: 12px 18px;
+  color: #f1f5f9;
+  font-size: 13.5px;
+  font-weight: 500;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5), 0 0 20px rgba(99, 102, 241, 0.12);
+  animation: toastSlideDown 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.25s ease;
+  min-width: 280px;
+  max-width: 480px;
+}
+.modern-toast.warning {
+  border-color: rgba(245, 158, 11, 0.4);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5), 0 0 20px rgba(245, 158, 11, 0.18);
+}
+.modern-toast.error {
+  border-color: rgba(239, 68, 68, 0.4);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5), 0 0 20px rgba(239, 68, 68, 0.18);
+}
+.modern-toast.success {
+  border-color: rgba(16, 185, 129, 0.4);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5), 0 0 20px rgba(16, 185, 129, 0.18);
+}
+.modern-toast.fade-out {
+  opacity: 0;
+  transform: translateY(-10px) scale(0.95);
+}
+@keyframes toastSlideDown {
+  from { opacity: 0; transform: translateY(-16px) scale(0.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.toast-icon { font-size: 16px; flex-shrink: 0; }
+.toast-text { flex: 1; line-height: 1.4; }
+.toast-close {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 6px;
+  transition: all 0.15s;
+}
+.toast-close:hover { color: #fff; background: rgba(255, 255, 255, 0.1); }
+
+/* Aspect Ratio Trigger Row in Dock */
+.aspect-ratio-dock-row {
+  display: flex;
+  align-items: center;
+  padding: 4px 14px 10px;
+  margin-top: -4px;
+  gap: 8px;
+}
+.aspect-ratio-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #e3e3e3;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 6px 14px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  font-family: inherit;
+}
+.aspect-ratio-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+.aspect-ratio-btn.active, .aspect-ratio-btn.open {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(99, 102, 241, 0.4);
+}
+.aspect-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9499ab;
 }
 
+/* Aspect Ratio Popover (Exact Screenshot Image 4) */
+.aspect-ratio-popover {
+  position: absolute;
+  bottom: 84px;
+  left: 20px;
+  background: #1e1f20;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 18px;
+  padding: 12px 8px;
+  width: 200px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), 0 0 24px rgba(0, 0, 0, 0.4);
+  z-index: 100;
+  user-select: none;
+  animation: popoverFadeIn 0.18s cubic-bezier(0.2, 0, 0, 1);
+}
+.aspect-ratio-popover.hidden {
+  display: none !important;
+}
+.aspect-popover-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #c4c7c5;
+  padding: 4px 14px 8px;
+}
+.aspect-popover-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.aspect-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 14px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #e3e3e3;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.aspect-option:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+.aspect-option.selected {
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+  font-weight: 600;
+}
+.aspect-opt-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  color: #e3e3e3;
+}
+.aspect-opt-text {
+  flex: 1;
+}
+.aspect-opt-desc {
+  font-size: 11px;
+  color: #8e918f;
+}
+
+/* AI Generated Image Card in Chat */
+.ai-image-card {
+  margin: 12px 0;
+  background: rgba(22, 27, 40, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+  max-width: 580px;
+}
+.ai-image-wrap {
+  position: relative;
+  width: 100%;
+  background: #090b10;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ai-image-img {
+  width: 100%;
+  height: auto;
+  max-height: 480px;
+  object-fit: contain;
+  display: block;
+  transition: transform 0.3s ease;
+}
+.ai-image-img:hover {
+  transform: scale(1.02);
+}
+.ai-image-meta {
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.ai-image-tag {
+  font-size: 11px;
+  font-weight: 600;
+  color: #9499ab;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+.ai-image-actions {
+  display: flex;
+  gap: 8px;
+}
+.btn-img-action {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #e2e8f0;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 5px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  text-decoration: none;
+}
+.btn-img-action:hover {
+  background: rgba(99, 102, 241, 0.2);
+  border-color: rgba(99, 102, 241, 0.4);
+  color: #fff;
+}
 </style>
 </head>
 <body>
+<div id="toastContainer" class="toast-container"></div>
 
 <header id="topbar">
   <button id="btnToggleSidebar" class="icon-btn" title="Toggle Sidebar">
@@ -2211,41 +2450,95 @@ header {
         <div class="popover-list" id="customModelList"></div>
       </div>
 
-      <div class="dock-card">
-        <input type="file" id="fileInput" accept="image/*" style="display:none">
-        <button class="dock-plus-btn" id="btnUploadImage" title="Unggah Gambar" type="button">+</button>
-        
-        <div style="flex:1; display:flex; flex-direction:column; min-width:0;">
-          <div id="imagePreviewContainer" class="image-preview-bar" style="display:none;">
-            <div class="image-preview-wrapper">
-              <img id="imagePreview" src="" alt="Preview">
-              <button id="btnRemoveImage" class="btn-remove-image" type="button" title="Hapus gambar">✕</button>
-            </div>
+      <!-- Popover Menu Rasio Aspek (Persis Gambar 4) -->
+      <div id="aspectRatioPopover" class="aspect-ratio-popover hidden">
+        <div class="aspect-popover-title">Rasio aspek</div>
+        <div class="aspect-popover-list" id="aspectRatioList">
+          <div class="aspect-option selected" data-ratio="1:1">
+            <span class="aspect-opt-icon">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"></rect></svg>
+            </span>
+            <span class="aspect-opt-text">1:1</span>
+            <span class="aspect-opt-desc">Persegi</span>
           </div>
-          <textarea id="input" rows="1" placeholder="Minta ide desain Canva, kode, atau pertanyaan..."></textarea>
+          <div class="aspect-option" data-ratio="9:16">
+            <span class="aspect-opt-icon">
+              <svg width="13" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="3" width="12" height="18" rx="2"></rect></svg>
+            </span>
+            <span class="aspect-opt-text">9:16</span>
+            <span class="aspect-opt-desc">Story</span>
+          </div>
+          <div class="aspect-option" data-ratio="3:4">
+            <span class="aspect-opt-icon">
+              <svg width="14" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="3" width="14" height="18" rx="2"></rect></svg>
+            </span>
+            <span class="aspect-opt-text">3:4</span>
+            <span class="aspect-opt-desc">Potret</span>
+          </div>
+          <div class="aspect-option" data-ratio="4:3">
+            <span class="aspect-opt-icon">
+              <svg width="17" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"></rect></svg>
+            </span>
+            <span class="aspect-opt-text">4:3</span>
+            <span class="aspect-opt-desc">Lanskap</span>
+          </div>
+          <div class="aspect-option" data-ratio="16:9">
+            <span class="aspect-opt-icon">
+              <svg width="18" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="6" width="18" height="12" rx="2"></rect></svg>
+            </span>
+            <span class="aspect-opt-text">16:9</span>
+            <span class="aspect-opt-desc">Layar Lebar</span>
+          </div>
         </div>
-        
-        <div class="dock-actions">
-          <!-- Persona Trigger Pill (Tersembunyi: Mode Keahlian Otomatis Aktif Sesuai Permintaan) -->
-          <div class="custom-persona-trigger" id="personaTriggerBtn" style="display:none !important;">
-            <span id="currentPersonaIcon">✨</span>
-            <span id="currentPersonaLabel" class="persona-current-name">Otomatis Adaptif</span>
-            <input type="hidden" id="personaSelect" value="auto">
-          </div>
+      </div>
 
-          <!-- Model Trigger Pill -->
-          <div class="custom-model-trigger" id="modelTriggerBtn" title="Pilih Model AI">
-            <span class="model-sparkle">🧠</span>
-            <span id="currentModelLabel" class="model-current-name">Memuat model...</span>
-            <svg class="chevron-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
-            <input type="hidden" id="modelSelect" value="">
+      <div class="dock-card" style="flex-direction:column; align-items:stretch; padding:12px 14px 10px;">
+        <div style="display:flex; align-items:flex-end; gap:8px; width:100%;">
+          <input type="file" id="fileInput" accept="image/*" style="display:none">
+          <button class="dock-plus-btn" id="btnUploadImage" title="Unggah Gambar Acuan" type="button">+</button>
+          
+          <div style="flex:1; display:flex; flex-direction:column; min-width:0;">
+            <div id="imagePreviewContainer" class="image-preview-bar" style="display:none;">
+              <div class="image-preview-wrapper">
+                <img id="imagePreview" src="" alt="Preview">
+                <button id="btnRemoveImage" class="btn-remove-image" type="button" title="Hapus gambar">✕</button>
+              </div>
+            </div>
+            <textarea id="input" rows="1" placeholder="Minta ide desain Canva, kode, atau pertanyaan..."></textarea>
           </div>
+          
+          <div class="dock-actions">
+            <!-- Persona Trigger Pill (Tersembunyi: Mode Keahlian Otomatis Aktif Sesuai Permintaan) -->
+            <div class="custom-persona-trigger" id="personaTriggerBtn" style="display:none !important;">
+              <span id="currentPersonaIcon">✨</span>
+              <span id="currentPersonaLabel" class="persona-current-name">Otomatis Adaptif</span>
+              <input type="hidden" id="personaSelect" value="auto">
+            </div>
 
-          <button id="btnSend" title="Kirim Pesan">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="12" y1="19" x2="12" y2="5"></line>
-              <polyline points="5 12 12 5 19 12"></polyline>
-            </svg>
+            <!-- Model Trigger Pill -->
+            <div class="custom-model-trigger" id="modelTriggerBtn" title="Pilih Model AI">
+              <span class="model-sparkle">🧠</span>
+              <span id="currentModelLabel" class="model-current-name">Memuat model...</span>
+              <svg class="chevron-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              <input type="hidden" id="modelSelect" value="">
+            </div>
+
+            <button id="btnSend" title="Kirim Pesan">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="19" x2="12" y2="5"></line>
+                <polyline points="5 12 12 5 19 12"></polyline>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Tombol Pilihan Rasio Aspek (Muncul otomatis saat mode Gambar / Image AI) -->
+        <div id="aspectRatioRow" class="aspect-ratio-dock-row" style="display:none; padding-top:8px; margin:0;">
+          <button type="button" id="aspectRatioTriggerBtn" class="aspect-ratio-btn" title="Pilih Rasio Aspek Gambar">
+            <span id="aspectRatioIcon" class="aspect-icon">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"></rect></svg>
+            </span>
+            <span id="aspectRatioLabel">Rasio aspek ▾</span>
           </button>
         </div>
       </div>
@@ -2293,10 +2586,74 @@ try {
 }
 
 let idToken = null, history = [], convId = null, uid = null;
-let devConvs = JSON.parse(localStorage.getItem("oreo_dev_convs") || "{}");
 let currentQuota = null;
+let isImageMode = false;
+let currentAspectRatio = "1:1";
 
 const $ = id => document.getElementById(id);
+
+// === TOAST NOTIFIKASI MODERN (MENGGANTIKAN ALERT JADUL BROWSER) ===
+function showToast(message, type = "info", icon = null, duration = 3500) {
+  let container = $("toastContainer");
+  if(!container){
+    container = document.createElement("div");
+    container.id = "toastContainer";
+    container.className = "toast-container";
+    document.body.appendChild(container);
+  }
+  const toast = document.createElement("div");
+  toast.className = `modern-toast ${type}`;
+  
+  let defaultIcon = "✨";
+  if(type === "warning") defaultIcon = "⚠️";
+  else if(type === "error") defaultIcon = "⛔";
+  else if(type === "success") defaultIcon = "✅";
+  else if(type === "info") defaultIcon = "ℹ️";
+  
+  toast.innerHTML = `
+    <span class="toast-icon">${icon || defaultIcon}</span>
+    <span class="toast-text">${escapeHtml(message)}</span>
+    <button class="toast-close" type="button" title="Tutup">✕</button>
+  `;
+  
+  const removeToast = () => {
+    toast.classList.add("fade-out");
+    setTimeout(() => toast.remove(), 250);
+  };
+  
+  const closeBtn = toast.querySelector(".toast-close");
+  if(closeBtn) closeBtn.onclick = removeToast;
+  container.appendChild(toast);
+  if(duration > 0) setTimeout(removeToast, duration);
+}
+
+// Override alert bawaan peramban agar seluruh dialog menjadi modern toast
+window.alert = function(msg) {
+  showToast(String(msg), "warning");
+};
+
+// === HELPER RIWAYAT OBROLAN TERISOLASI PER AKUN GOOGLE ===
+function getActiveUserKey(){
+  return uid || "guest";
+}
+
+function getUserConvsKey(){
+  return "oreo_convs_" + getActiveUserKey();
+}
+
+function getUserConvs(){
+  try {
+    return JSON.parse(localStorage.getItem(getUserConvsKey()) || "{}");
+  } catch(e) {
+    return {};
+  }
+}
+
+function setUserConvs(convs){
+  try {
+    localStorage.setItem(getUserConvsKey(), JSON.stringify(convs));
+  } catch(e){}
+}
 
 // Cek sesi user tersimpan di localStorage agar tetap login saat direfresh
 function restoreCachedSession(initContent = false){
@@ -2386,11 +2743,76 @@ if($("btnSidebarCollapse")){
     $("sidebar").classList.toggle("collapsed");
   };
 }
+function switchToImageMode(){
+  isImageMode = true;
+  if($("btnNavImage")) $("btnNavImage").classList.add("active");
+  if($("btnNew")) $("btnNew").classList.remove("active");
+  if($("aspectRatioRow")) $("aspectRatioRow").style.display = "flex";
+  $("input").placeholder = "Deskripsikan gambar Anda...";
+  newChat();
+}
+
+function switchToChatMode(){
+  isImageMode = false;
+  if($("btnNew")) $("btnNew").classList.add("active");
+  if($("btnNavImage")) $("btnNavImage").classList.remove("active");
+  if($("aspectRatioRow")) $("aspectRatioRow").style.display = "none";
+  $("input").placeholder = "Minta ide desain Canva, kode, atau pertanyaan...";
+  newChat();
+}
+
 if($("btnNavImage")){
-  $("btnNavImage").onclick = () => {
-    $("fileInput").click();
+  $("btnNavImage").onclick = switchToImageMode;
+}
+if($("btnNew")){
+  $("btnNew").onclick = switchToChatMode;
+}
+
+// Aspect ratio popover handlers (Persis Screenshot Gambar 4)
+function openAspectRatioPopover(){
+  $("aspectRatioPopover").classList.remove("hidden");
+  $("aspectRatioTriggerBtn").classList.add("open");
+}
+function closeAspectRatioPopover(){
+  $("aspectRatioPopover").classList.add("hidden");
+  $("aspectRatioTriggerBtn").classList.remove("open");
+}
+
+if($("aspectRatioTriggerBtn")){
+  $("aspectRatioTriggerBtn").onclick = (e) => {
+    e.stopPropagation();
+    if($("aspectRatioPopover").classList.contains("hidden")){
+      openAspectRatioPopover();
+    } else {
+      closeAspectRatioPopover();
+    }
   };
 }
+
+if($("aspectRatioPopover")){
+  $("aspectRatioPopover").onclick = (e) => {
+    e.stopPropagation();
+  };
+}
+
+document.querySelectorAll("#aspectRatioList .aspect-option").forEach(opt => {
+  opt.onclick = () => {
+    document.querySelectorAll("#aspectRatioList .aspect-option").forEach(o => o.classList.remove("selected"));
+    opt.classList.add("selected");
+    const ratio = opt.dataset.ratio || "1:1";
+    currentAspectRatio = ratio;
+    
+    // Update label & icon
+    const optSvg = opt.querySelector(".aspect-opt-icon svg");
+    if(optSvg && $("aspectRatioIcon")){
+      $("aspectRatioIcon").innerHTML = "";
+      $("aspectRatioIcon").appendChild(optSvg.cloneNode(true));
+    }
+    $("aspectRatioLabel").textContent = `${ratio} ▾`;
+    closeAspectRatioPopover();
+    showToast(`Rasio aspek gambar: ${ratio}`, "info");
+  };
+});
 
 $("btnToggleSidebar").onclick = () => {
   $("sidebar").classList.toggle("collapsed");
@@ -3070,11 +3492,14 @@ $("btnLogout").onclick = () => {
         try { auth.signOut(); } catch(e){}
       }
       uid = null; idToken = null;
+      convId = null; history = [];
       $("loginBox").style.display="flex"; $("main").style.display="none";
       $("btnAuth").style.display="inline"; $("btnLogout").style.display="none";
       $("userName").textContent="Tamu";
       $("userAvatar").textContent="?";
       $("quotaBadge").style.display="none";
+      loadConvs();
+      showToast("Anda telah keluar dari akun", "info");
     }
   });
 };
@@ -3315,13 +3740,13 @@ function openCanvaWithPrompt(el){
 
 function exportChat(){
   if(history.length === 0){
-    alert("Belum ada obrolan untuk diekspor.");
+    showToast("Belum ada obrolan untuk diekspor", "warning", "📥");
     return;
   }
   let md = `# Riwayat Obrolan Oreo AI\n`;
   md += `- Tanggal: ${new Date().toLocaleString()}\n`;
   md += `- Model AI: ${$("modelSelect").value || "-"}\n`;
-  md += `- Mode Keahlian: ${PERSONAS_DATA[currentPersona]?.name || currentPersona}\n\n---\n\n`;
+  md += `- Mode: ${isImageMode ? "Buat Gambar AI" : "Percakapan Chat"}\n\n---\n\n`;
 
   history.forEach(m => {
     const roleName = m.role === "user" ? "👤 Anda" : "✨ Oreo AI";
@@ -3330,15 +3755,19 @@ function exportChat(){
       const t = text.find(c => c.type === "text");
       text = t ? t.text : "[Gambar]";
     }
+    if(m.image_url){
+      text += `\n\n![Gambar](${m.image_url})`;
+    }
     md += `### ${roleName}\n${text}\n\n`;
   });
 
   const blob = new Blob([md], { type: "text/markdown;charset=utf-8" });
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
-  a.download = `Oreo_Chat_${Date.now()}.md`;
+  a.download = `Oreo_${isImageMode ? "Image" : "Chat"}_${Date.now()}.md`;
   a.click();
   URL.revokeObjectURL(a.href);
+  showToast("Riwayat obrolan berhasil diekspor!", "success", "📥");
 }
 if($("btnExportChat")) $("btnExportChat").onclick = exportChat;
 
@@ -3348,6 +3777,9 @@ document.addEventListener("click", () => {
   }
   if(!$("personaPopover").classList.contains("hidden")){
     closePersonaPopover();
+  }
+  if($("aspectRatioPopover") && !$("aspectRatioPopover").classList.contains("hidden")){
+    closeAspectRatioPopover();
   }
 });
 
@@ -3415,35 +3847,54 @@ async function loadModels(){
 // Riwayat obrolan
 function convsRef(){ return db ? db.collection("users").doc(uid).collection("conversations") : null; }
 
+function renderConvList(){
+  const list = $("convList");
+  if(!list) return;
+  list.innerHTML = "";
+  
+  const convs = getUserConvs();
+  const sorted = Object.entries(convs).sort((a,b) => (b[1].updatedAt || 0) - (a[1].updatedAt || 0));
+  
+  if(sorted.length === 0){
+    list.innerHTML = `<div style="padding:16px 14px; font-size:12px; color:var(--text-subtle); text-align:center;">Belum ada riwayat obrolan</div>`;
+    return;
+  }
+  
+  sorted.forEach(([id, d]) => {
+    renderConvItem(id, d);
+  });
+}
+
 async function loadConvs(){
-  const list = $("convList"); if(list) list.innerHTML="";
-  try {
-    if(!db || uid === "dev-mode") {
-      const sorted = Object.entries(devConvs).sort((a,b)=> (b[1].updatedAt||0) - (a[1].updatedAt||0));
-      sorted.forEach(([id, d])=>{
-        renderConvItem(id, d);
+  renderConvList();
+  if(db && uid && uid !== "dev-mode"){
+    try {
+      const snap = await convsRef().orderBy("updatedAt","desc").limit(30).get();
+      const convs = getUserConvs();
+      snap.forEach(doc => {
+        const d = doc.data();
+        convs[doc.id] = {
+          ...d,
+          id: doc.id,
+          updatedAt: d.updatedAt?.toMillis ? d.updatedAt.toMillis() : (d.updatedAt || Date.now())
+        };
       });
-      return;
+      setUserConvs(convs);
+      renderConvList();
+    } catch(e) {
+      console.warn("Firestore load fallback to local storage:", e);
     }
-    const snap = await convsRef().orderBy("updatedAt","desc").limit(30).get();
-    snap.forEach(doc=>{
-      renderConvItem(doc.id, doc.data());
-    });
-  } catch(e) {
-    console.warn("loadConvs fallback to local:", e);
-    const sorted = Object.entries(devConvs).sort((a,b)=> (b[1].updatedAt||0) - (a[1].updatedAt||0));
-    sorted.forEach(([id, d])=>{
-      renderConvItem(id, d);
-    });
   }
 }
 
 function renderConvItem(id, data){
   const el = document.createElement("div");
   el.className = "conv-item" + (id === convId ? " active" : "");
+  el.setAttribute("data-id", id);
+  const isImg = data.mode === "image" || (data.title && data.title.includes("🎨"));
   el.innerHTML = `
     <span class="conv-item-icon">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+      ${isImg ? '🎨' : '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>'}
     </span>
     <span class="conv-title">${escapeHtml(data.title || "Obrolan baru")}</span>
     <span class="conv-del" title="Hapus chat">✕</span>
@@ -3463,18 +3914,24 @@ async function deleteConv(id){
   showModalConfirm({
     icon: "🗑️",
     title: "Hapus Obrolan?",
-    desc: "Percakapan ini akan dihapus secara permanen dan tidak dapat dipulihkan.",
+    desc: "Percakapan ini akan dihapus secara permanen dari akun Anda.",
     confirmText: "Hapus",
     isDanger: true,
     onConfirm: async () => {
-      if(!db || uid === "dev-mode"){
-        delete devConvs[id];
-        localStorage.setItem("oreo_dev_convs", JSON.stringify(devConvs));
-      } else {
-        await convsRef().doc(id).delete();
+      const convs = getUserConvs();
+      delete convs[id];
+      setUserConvs(convs);
+      renderConvList();
+
+      if(db && uid && uid !== "dev-mode"){
+        try {
+          await convsRef().doc(id).delete();
+        } catch(e){
+          console.warn("Firestore delete error:", e);
+        }
       }
       if(convId === id) newChat();
-      else loadConvs();
+      showToast("Obrolan berhasil dihapus", "info");
     }
   });
 }
@@ -3493,39 +3950,62 @@ const HERO_SUGGESTIONS = [
   { head: "🎨 Ide & Desain Kreatif", sub: "Konsep visual, palet warna, atau layout", prompt: "Berikan konsep visual kreatif lengkap dengan rekomendasi palet warna HEX dan ide tata letak yang estetik." }
 ];
 
+const HERO_IMAGE_SUGGESTIONS = [
+  { head: "🏞️ Pemandangan Fantasi", sub: "Kastil terapung di langit fajar, 8k", prompt: "Pemandangan kastil megah terapung di atas awan saat fajar keemasan, air terjun jatuh ke angkasa, gaya anime fantasi kualitas 8k sinematik" },
+  { head: "📸 Fotografi Sinematik", sub: "Potret estetik golden hour bokeh", prompt: "Foto potret estetik seorang wanita berjaket musim dingin dengan pencahayaan golden hour alami, depth of field dangkal, lensa 35mm bokeh lembut" },
+  { head: "🤖 Karakter Cyberpunk", sub: "Cyborg futuristik neon malam", prompt: "Karakter robot cyborg futuristik berjalan di gang jalanan Tokyo yang basah oleh hujan, lampu neon cyberpunk berpendar, visual realistis" },
+  { head: "🧁 Desain Logo Vektor", sub: "Logo Oreo modern 3D minimalis", prompt: "Desain logo biskuit Oreo modern dan elegan, palet warna biru dan krem, gaya ilustrasi vektor 3D minimalis, latar belakang bersih" }
+];
+
 function renderHeroSuggestions(){
   const grid = $("suggestionsGrid");
   if(!grid) return;
   grid.innerHTML = "";
 
-  if($("heroTitle")){
-    $("heroTitle").textContent = "Ada yang bisa saya bantu hari ini?";
-  }
-  if($("heroDesc")){
-    $("heroDesc").textContent = "Mulai percakapan baru, tanyakan konsep, analisis ide, tulis kode, atau minta bantuan apa saja.";
-  }
+  if(isImageMode){
+    if($("heroTitle")) $("heroTitle").textContent = "Buat gambar";
+    if($("heroDesc")) $("heroDesc").textContent = "Coba template atau jelaskan ide di percakapan. Buat dengan Oreo AI.";
 
-  HERO_SUGGESTIONS.forEach(s => {
-    const card = document.createElement("div");
-    card.className = "sug-card";
-    card.innerHTML = `
-      <span class="sug-head">${escapeHtml(s.head)}</span>
-      <span class="sug-sub">${escapeHtml(s.sub)}</span>
-    `;
-    card.onclick = () => useSuggestion(s.prompt);
-    grid.appendChild(card);
-  });
+    HERO_IMAGE_SUGGESTIONS.forEach(s => {
+      const card = document.createElement("div");
+      card.className = "sug-card";
+      card.innerHTML = `
+        <span class="sug-head">${escapeHtml(s.head)}</span>
+        <span class="sug-sub">${escapeHtml(s.sub)}</span>
+      `;
+      card.onclick = () => useSuggestion(s.prompt);
+      grid.appendChild(card);
+    });
+  } else {
+    if($("heroTitle")) $("heroTitle").textContent = "Ada yang bisa saya bantu hari ini?";
+    if($("heroDesc")) $("heroDesc").textContent = "Mulai percakapan baru, tanyakan konsep, analisis ide, tulis kode, atau minta bantuan apa saja.";
+
+    HERO_SUGGESTIONS.forEach(s => {
+      const card = document.createElement("div");
+      card.className = "sug-card";
+      card.innerHTML = `
+        <span class="sug-head">${escapeHtml(s.head)}</span>
+        <span class="sug-sub">${escapeHtml(s.sub)}</span>
+      `;
+      card.onclick = () => useSuggestion(s.prompt);
+      grid.appendChild(card);
+    });
+  }
 }
 
 function createHeroElement(){
   const hero = document.createElement("div");
   hero.id = "heroState";
+  const icon = isImageMode ? "🎨" : "🍪";
+  const title = isImageMode ? "Buat gambar" : "Ada yang bisa saya bantu hari ini?";
+  const desc = isImageMode ? "Coba template atau jelaskan ide di percakapan. Buat dengan Oreo AI." : "Mulai percakapan baru, tanyakan konsep, analisis ide, tulis kode, atau minta bantuan apa saja.";
+
   hero.innerHTML = `
     <div class="hero-cookie-badge">
-      <span class="hero-cookie-icon">🍪</span>
+      <span class="hero-cookie-icon">${icon}</span>
     </div>
-    <h2 class="hero-title" id="heroTitle">Ada yang bisa saya bantu hari ini?</h2>
-    <p class="hero-desc" id="heroDesc">Mulai percakapan baru, tanyakan konsep, analisis ide, tulis kode, atau minta bantuan apa saja.</p>
+    <h2 class="hero-title" id="heroTitle">${title}</h2>
+    <p class="hero-desc" id="heroDesc">${desc}</p>
     <div class="suggestions-grid" id="suggestionsGrid"></div>
   `;
   setTimeout(() => renderHeroSuggestions(), 10);
@@ -3540,12 +4020,32 @@ function useSuggestion(text){
 
 async function openConv(id, data){
   convId = id; history = data.messages || [];
+  if(data.mode === "image"){
+    isImageMode = true;
+    if($("btnNavImage")) $("btnNavImage").classList.add("active");
+    if($("btnNew")) $("btnNew").classList.remove("active");
+    if($("aspectRatioRow")) $("aspectRatioRow").style.display = "flex";
+    $("input").placeholder = "Deskripsikan gambar Anda...";
+    if(data.aspectRatio){
+      currentAspectRatio = data.aspectRatio;
+      $("aspectRatioLabel").textContent = `${data.aspectRatio} ▾`;
+    }
+  } else {
+    isImageMode = false;
+    if($("btnNew")) $("btnNew").classList.add("active");
+    if($("btnNavImage")) $("btnNavImage").classList.remove("active");
+    if($("aspectRatioRow")) $("aspectRatioRow").style.display = "none";
+    $("input").placeholder = "Minta ide desain Canva, kode, atau pertanyaan...";
+  }
+
   $("messages").innerHTML = "";
   if(history.length === 0){
     $("messages").appendChild(createHeroElement());
   } else {
     history.forEach(m => {
-      if(Array.isArray(m.content)){
+      if(m.image_url){
+        addImageMsg(m.role, m.image_url, m.prompt || m.content, m.aspect_ratio, m.meta);
+      } else if(Array.isArray(m.content)){
         let txt = "";
         let img = null;
         m.content.forEach(c => {
@@ -3560,36 +4060,50 @@ async function openConv(id, data){
   }
   if(data.model) selectModel(data.model);
   document.querySelectorAll(".conv-item").forEach(e=>e.classList.remove("active"));
+  const activeEl = document.querySelector(`.conv-item[data-id="${id}"]`);
+  if(activeEl) activeEl.classList.add("active");
   loadConvs();
 }
 
 async function saveConv(){
-  if(!uid || history.length===0) return;
+  if(!uid || history.length === 0) return;
   let firstMsg = history[0].content;
-  let title = "Obrolan baru";
+  let title = isImageMode ? "🎨 Gambar: " : "Obrolan baru";
   if(typeof firstMsg === "string"){
-    title = firstMsg.slice(0, 36);
+    title = (isImageMode ? "🎨 " : "") + firstMsg.slice(0, 32);
   } else if(Array.isArray(firstMsg)){
     const txtItem = firstMsg.find(c => c.type === "text");
-    title = txtItem ? txtItem.text.slice(0, 36) : "Obrolan Gambar";
+    title = txtItem ? (isImageMode ? "🎨 " : "") + txtItem.text.slice(0, 32) : "Obrolan Gambar";
   }
-  const data = {
+
+  if(!convId) convId = "conv_" + Date.now();
+
+  const convData = {
+    id: convId,
     title,
+    mode: isImageMode ? "image" : "chat",
+    aspectRatio: currentAspectRatio,
     model: $("modelSelect").value,
     messages: history,
     updatedAt: Date.now()
   };
-  if(!db || uid === "dev-mode"){
-    if(!convId) convId = "conv_" + Date.now();
-    devConvs[convId] = data;
-    localStorage.setItem("oreo_dev_convs", JSON.stringify(devConvs));
-    loadConvs();
-    return;
+
+  // Simpan ke partisi terisolasi per akun Google
+  const convs = getUserConvs();
+  convs[convId] = convData;
+  setUserConvs(convs);
+  renderConvList();
+
+  // Sinkronisasi ke Firestore jika ada
+  if(db && uid && uid !== "dev-mode"){
+    try {
+      const firestoreData = { ...convData };
+      firestoreData.updatedAt = firebase.firestore.FieldValue.serverTimestamp();
+      await convsRef().doc(convId).set(firestoreData, { merge: true });
+    } catch(e){
+      console.warn("Firestore save fallback to isolated localStorage:", e);
+    }
   }
-  data.updatedAt = firebase.firestore.FieldValue.serverTimestamp();
-  if(convId){ await convsRef().doc(convId).set(data, {merge:true}); }
-  else { const doc = await convsRef().add(data); convId = doc.id; }
-  loadConvs();
 }
 
 function escapeHtml(str){
@@ -3647,11 +4161,11 @@ $("fileInput").onchange = (e) => {
   const file = e.target.files[0];
   if(!file) return;
   if(!file.type.startsWith("image/")){
-    alert("Silakan pilih file gambar (JPG, PNG, WebP, GIF).");
+    showToast("Silakan pilih file gambar (JPG, PNG, WebP, GIF).", "warning", "🖼️");
     return;
   }
   if(file.size > 5 * 1024 * 1024){
-    alert("Ukuran gambar maksimal 5 MB.");
+    showToast("Ukuran gambar maksimal 5 MB.", "error", "⚠️");
     return;
   }
   const reader = new FileReader();
@@ -3778,7 +4292,60 @@ async function dispatchN8nAction(app, action, btn){
   }
 }
 
-function showTypingIndicator(){
+function addImageMsg(role, imageUrl, promptText, ratio, meta){
+  const hero = $("heroState");
+  if(hero) hero.remove();
+
+  const row = document.createElement("div");
+  row.className = "msg-row " + role;
+
+  const avatar = document.createElement("div");
+  avatar.className = "msg-avatar " + role;
+  avatar.textContent = role === "user" ? "👤" : "🍪";
+
+  const body = document.createElement("div");
+  body.className = "msg-body";
+
+  const card = document.createElement("div");
+  card.className = "ai-image-card";
+  card.innerHTML = `
+    <div class="ai-image-wrap">
+      <img class="ai-image-img" src="${imageUrl}" alt="${escapeHtml(promptText)}" loading="lazy">
+    </div>
+    <div class="ai-image-meta">
+      <span class="ai-image-tag">📐 Rasio: ${ratio || '1:1'}</span>
+      <div class="ai-image-actions">
+        <a href="${imageUrl}" target="_blank" class="btn-img-action" title="Buka Gambar Resolusi Penuh">🔍 Penuh</a>
+        <a href="${imageUrl}" download="OreoAI_${Date.now()}.png" target="_blank" class="btn-img-action" title="Unduh Gambar">📥 Unduh</a>
+        <button type="button" class="btn-img-action btn-copy-prompt" title="Salin Prompt Deskripsi">📋 Salin</button>
+      </div>
+    </div>
+  `;
+
+  const copyBtn = card.querySelector(".btn-copy-prompt");
+  if(copyBtn){
+    copyBtn.onclick = () => {
+      navigator.clipboard.writeText(promptText);
+      showToast("Prompt berhasil disalin ke papan klip!", "success");
+    };
+  }
+
+  body.appendChild(card);
+
+  if(meta && role === "ai"){
+    const metaBar = document.createElement("div");
+    metaBar.className = "msg-meta-bar";
+    metaBar.innerHTML = `<span>✨ ${meta}</span>`;
+    body.appendChild(metaBar);
+  }
+
+  row.appendChild(avatar);
+  row.appendChild(body);
+  $("messages").appendChild(row);
+  $("messages").scrollTop = $("messages").scrollHeight;
+}
+
+function showTypingIndicator(customText = null){
   const hero = $("heroState");
   if(hero) hero.remove();
 
@@ -3787,7 +4354,7 @@ function showTypingIndicator(){
 
   const avatar = document.createElement("div");
   avatar.className = "msg-avatar ai";
-  avatar.textContent = "✨";
+  avatar.textContent = isImageMode ? "🎨" : "✨";
   row.appendChild(avatar);
 
   const body = document.createElement("div");
@@ -3796,10 +4363,13 @@ function showTypingIndicator(){
   const bubble = document.createElement("div");
   bubble.className = "msg-bubble";
   bubble.innerHTML = `
-    <div class="typing-indicator" title="Sedang berpikir...">
-      <div class="typing-dot"></div>
-      <div class="typing-dot"></div>
-      <div class="typing-dot"></div>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <div class="typing-indicator" title="Sedang memproses...">
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+      </div>
+      ${customText ? `<span style="font-size:12px; color:var(--text-muted);">${escapeHtml(customText)}</span>` : ''}
     </div>
   `;
   body.appendChild(bubble);
@@ -3825,6 +4395,69 @@ async function send(){
   inp.disabled = true;
   $("btnSend").disabled = true;
 
+  if(isImageMode && !sendingImage){
+    // Mode Gambar / AI Image Generator
+    addMsg("user", text);
+    const userMessageObj = { role: "user", content: text, is_image: true, aspect_ratio: currentAspectRatio };
+    history.push(userMessageObj);
+    saveConv();
+
+    const t = showTypingIndicator("Sedang melukis gambar Anda...");
+    await refreshToken();
+    try {
+      const r = await fetch(API_BASE + "/api/image", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + (idToken || "dev-token"),
+          "X-Client-Id": getClientId()
+        },
+        body: JSON.stringify({
+          prompt: text,
+          aspect_ratio: currentAspectRatio,
+          model: $("modelSelect").value || "auto"
+        })
+      });
+      const d = await r.json();
+      t.remove();
+      if(d.quota){
+        updateQuotaDisplay(d.quota);
+      }
+      if(d.ok && d.image_url){
+        const meta = `Imagen / Flux AI · ${d.aspect_ratio || currentAspectRatio} · ${d.elapsed || '1.5'}s`;
+        history.push({
+          role: "assistant",
+          content: d.content,
+          image_url: d.image_url,
+          prompt: d.prompt,
+          aspect_ratio: d.aspect_ratio,
+          meta
+        });
+        addImageMsg("ai", d.image_url, d.prompt || text, d.aspect_ratio || currentAspectRatio, meta);
+        saveConv();
+      } else {
+        if(d.quota_exceeded){
+          addMsg("ai", `⛔ **Batas Kuota Harian Habis**\n\n${d.error}\n\n*Catatan: Kuota di-reset otomatis setiap hari pada pukul 00:00.*`);
+        } else {
+          addMsg("ai", "⚠️ " + (d.error || "Gagal membuat gambar"));
+        }
+        history.pop();
+        saveConv();
+      }
+    } catch(e) {
+      t.remove();
+      addMsg("ai", "⚠️ Error koneksi: " + e.message);
+      history.pop();
+      saveConv();
+    } finally {
+      inp.disabled = false;
+      $("btnSend").disabled = false;
+      inp.focus();
+    }
+    return;
+  }
+
+  // Regular Chat Mode
   let userMessageObj;
   if(sendingImage){
     userMessageObj = {
@@ -3842,6 +4475,7 @@ async function send(){
   }
 
   history.push(userMessageObj);
+  saveConv();
   const model = $("modelSelect").value;
   const t = showTypingIndicator();
   await refreshToken();
@@ -3878,11 +4512,13 @@ async function send(){
         addMsg("ai", "⚠️ " + (d.error || "Gagal memproses respons"));
       }
       history.pop();
+      saveConv();
     }
   }catch(e){
     t.remove();
     addMsg("ai","⚠️ Error koneksi: " + e.message);
     history.pop();
+    saveConv();
   }finally{
     inp.disabled = false;
     $("btnSend").disabled = false;
