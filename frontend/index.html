@@ -2356,8 +2356,21 @@ if(auth) {
 }
 
 $("btnLogin2").onclick = () => {
-  if(auth && provider) auth.signInWithPopup(provider);
-  else enterDevMode();
+  if(auth && provider) {
+    auth.signInWithPopup(provider).catch(err => {
+      console.error("Firebase Login Error:", err);
+      if(err.code === "auth/popup-closed-by-user") return;
+      let msg = "Login Google Gagal: " + (err.message || err.code);
+      if(err.code === "auth/unauthorized-domain") {
+        msg = "⚠️ Domain ini belum diizinkan di Firebase Console!\n\nLangkah mudah:\n1. Buka console.firebase.google.com\n2. Pilih proyek 'oreo-ai-chat'\n3. Masuk ke Authentication -> Settings -> Authorized domains\n4. Klik 'Add domain' dan tambahkan:\n   " + window.location.hostname;
+      } else if(err.code === "auth/operation-not-allowed") {
+        msg = "⚠️ Sign-in Google belum diaktifkan!\n\nLangkah mudah:\n1. Buka console.firebase.google.com\n2. Masuk ke Authentication -> Sign-in method\n3. Klik Google -> Aktifkan (Enable) -> Simpan.";
+      }
+      alert(msg);
+    });
+  } else {
+    enterDevMode();
+  }
 };
 if($("btnAuth")) $("btnAuth").onclick = $("btnLogin2").onclick;
 
