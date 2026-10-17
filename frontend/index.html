@@ -2109,107 +2109,308 @@ header {
 }
 .toast-close:hover { color: #fff; background: rgba(255, 255, 255, 0.1); }
 
-/* Aspect Ratio Trigger Row in Dock */
-.aspect-ratio-dock-row {
-  display: flex;
-  align-items: center;
-  padding: 4px 14px 10px;
-  margin-top: -4px;
-  gap: 8px;
-}
-.aspect-ratio-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #e3e3e3;
-  font-size: 13px;
-  font-weight: 500;
-  padding: 6px 14px;
-  border-radius: 20px;
-  cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  font-family: inherit;
-}
-.aspect-ratio-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.2);
-}
-.aspect-ratio-btn.active, .aspect-ratio-btn.open {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(99, 102, 241, 0.4);
-}
-.aspect-icon {
+/* Database & Galeri Gambar Modal */
+.image-db-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.78);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 1000;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #9499ab;
+  padding: 16px;
+  animation: modalFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
-
-/* Aspect Ratio Popover (Exact Screenshot Image 4) */
-.aspect-ratio-popover {
-  position: absolute;
-  bottom: 84px;
-  left: 20px;
-  background: #1e1f20;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 18px;
-  padding: 12px 8px;
-  width: 200px;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), 0 0 24px rgba(0, 0, 0, 0.4);
-  z-index: 100;
-  user-select: none;
-  animation: popoverFadeIn 0.18s cubic-bezier(0.2, 0, 0, 1);
-}
-.aspect-ratio-popover.hidden {
+.image-db-modal.hidden {
   display: none !important;
 }
-.aspect-popover-title {
-  font-size: 13px;
-  font-weight: 600;
-  color: #c4c7c5;
-  padding: 4px 14px 8px;
-}
-.aspect-popover-list {
+.image-db-card {
+  background: #14161f;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  width: 100%;
+  max-width: 960px;
+  height: 85vh;
+  max-height: 760px;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.8), 0 0 40px rgba(99, 102, 241, 0.15);
+  overflow: hidden;
 }
-.aspect-option {
+.image-db-header {
+  padding: 18px 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(255, 255, 255, 0.02);
+}
+.image-db-title-row {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 9px 14px;
-  border-radius: 10px;
-  font-size: 14px;
-  font-weight: 500;
-  color: #e3e3e3;
-  cursor: pointer;
-  transition: all 0.15s;
 }
-.aspect-option:hover {
-  background: rgba(255, 255, 255, 0.08);
+.image-db-icon {
+  font-size: 24px;
 }
-.aspect-option.selected {
-  background: rgba(255, 255, 255, 0.14);
+.image-db-title {
+  font-size: 18px;
+  font-weight: 700;
   color: #fff;
-  font-weight: 600;
+  letter-spacing: -0.01em;
 }
-.aspect-opt-icon {
+.image-db-subtitle {
+  font-size: 12px;
+  color: #94a3b8;
+  margin-top: 2px;
+}
+.image-db-close-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border: none;
+  color: #cbd5e1;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 20px;
-  height: 20px;
-  color: #e3e3e3;
+  font-size: 16px;
+  transition: all 0.2s;
 }
-.aspect-opt-text {
+.image-db-close-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+}
+.image-db-toolbar {
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  flex-wrap: wrap;
+}
+.image-db-tabs {
+  display: flex;
+  gap: 8px;
+}
+.image-db-tab {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #94a3b8;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.image-db-tab:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+.image-db-tab.active {
+  background: rgba(99, 102, 241, 0.2);
+  border-color: rgba(99, 102, 241, 0.5);
+  color: #818cf8;
+  font-weight: 600;
+}
+.image-db-tab-count {
+  font-size: 11px;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 1px 6px;
+  border-radius: 10px;
+}
+.image-db-search {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 6px 12px;
+  gap: 8px;
+  min-width: 220px;
+}
+.image-db-search input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #fff;
+  font-size: 13px;
+  width: 100%;
+}
+.image-db-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 24px;
+}
+.image-db-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+}
+.image-db-card-item {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+}
+.image-db-card-item:hover {
+  transform: translateY(-3px);
+  border-color: rgba(99, 102, 241, 0.4);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5);
+}
+.image-db-card-img-wrap {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background: #090b10;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+.image-db-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+.image-db-card-item:hover .image-db-card-img {
+  transform: scale(1.05);
+}
+.image-db-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 12px;
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.image-db-badge.user {
+  background: rgba(30, 41, 59, 0.88);
+  color: #93c5fd;
+  border: 1px solid rgba(147, 197, 253, 0.35);
+}
+.image-db-badge.ai {
+  background: rgba(49, 46, 129, 0.88);
+  color: #c7d2fe;
+  border: 1px solid rgba(199, 210, 254, 0.35);
+}
+.image-db-card-info {
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
   flex: 1;
 }
-.aspect-opt-desc {
+.image-db-card-prompt {
+  font-size: 12px;
+  color: #e2e8f0;
+  line-height: 1.4;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+.image-db-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 6px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+.image-db-card-date {
   font-size: 11px;
-  color: #8e918f;
+  color: #64748b;
+}
+.image-db-card-actions {
+  display: flex;
+  gap: 4px;
+}
+.image-db-btn-icon {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+.image-db-btn-icon:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+.image-db-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 60px 20px;
+}
+/* Lightbox modal */
+.image-lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.92);
+  backdrop-filter: blur(12px);
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  animation: modalFadeIn 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.image-lightbox.hidden {
+  display: none !important;
+}
+.image-lightbox-img {
+  max-width: 90vw;
+  max-height: 80vh;
+  object-fit: contain;
+  border-radius: 12px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+}
+.image-lightbox-bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 16px;
+}
+.image-lightbox-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  padding: 8px 18px;
+  border-radius: 20px;
+  font-size: 13px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s;
+}
+.image-lightbox-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
 }
 
 /* AI Generated Image Card in Chat */
@@ -2325,6 +2526,67 @@ header {
       <button type="button" class="btn-modal-cancel" id="btnModalCancel">Batal</button>
       <button type="button" class="btn-modal-confirm" id="btnModalConfirm">Lanjutkan</button>
     </div>
+  </div>
+</div>
+
+<!-- Modal Database & Galeri Gambar (Unggahan User & Hasil AI) -->
+<div id="imageDbModal" class="image-db-modal hidden">
+  <div class="image-db-card">
+    <div class="image-db-header">
+      <div class="image-db-title-row">
+        <span class="image-db-icon">🖼️</span>
+        <div>
+          <div class="image-db-title">Database Gambar</div>
+          <div class="image-db-subtitle">Koleksi semua gambar yang Anda kirim dan hasil kreasi gambar dari Oreo AI</div>
+        </div>
+      </div>
+      <button type="button" class="image-db-close-btn" id="btnCloseImageDb" title="Tutup Galeri">✕</button>
+    </div>
+
+    <div class="image-db-toolbar">
+      <div class="image-db-tabs">
+        <button type="button" class="image-db-tab active" data-filter="all" id="tabImgAll">
+          <span>🌟 Semua</span>
+          <span class="image-db-tab-count" id="countImgAll">0</span>
+        </button>
+        <button type="button" class="image-db-tab" data-filter="user" id="tabImgUser">
+          <span>👤 Dari Anda</span>
+          <span class="image-db-tab-count" id="countImgUser">0</span>
+        </button>
+        <button type="button" class="image-db-tab" data-filter="ai" id="tabImgAi">
+          <span>✨ Dari Oreo AI</span>
+          <span class="image-db-tab-count" id="countImgAi">0</span>
+        </button>
+      </div>
+
+      <div class="image-db-search">
+        <span>🔍</span>
+        <input type="text" id="searchImgDb" placeholder="Cari prompt atau teks..." autocomplete="off">
+      </div>
+    </div>
+
+    <div class="image-db-body" id="imageDbBody">
+      <div class="image-db-grid" id="imageDbGrid"></div>
+      <div class="image-db-empty hidden" id="imageDbEmpty">
+        <div style="font-size: 40px; margin-bottom: 12px;">🖼️</div>
+        <div style="font-weight: 600; font-size: 15px; color: #f1f5f9; margin-bottom: 6px;">Belum ada gambar tersimpan</div>
+        <div style="font-size: 13px; color: #94a3b8; max-width: 360px; line-height: 1.5;">Kirim gambar ke obrolan atau minta Oreo AI membuat gambar untuk melihat koleksi Anda di sini.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Lightbox Modal untuk Preview Gambar Ukuran Penuh -->
+<div id="imageLightboxModal" class="image-lightbox hidden">
+  <img id="lightboxImg" class="image-lightbox-img" src="" alt="Pratinjau Penuh">
+  <div class="image-lightbox-bar">
+    <button type="button" class="image-lightbox-btn" id="btnDownloadLightbox">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+      Unduh Gambar
+    </button>
+    <button type="button" class="image-lightbox-btn" id="btnCloseLightbox">
+      ✕ Tutup
+    </button>
   </div>
 </div>
 
@@ -2450,48 +2712,6 @@ header {
         <div class="popover-list" id="customModelList"></div>
       </div>
 
-      <!-- Popover Menu Rasio Aspek (Persis Gambar 4) -->
-      <div id="aspectRatioPopover" class="aspect-ratio-popover hidden">
-        <div class="aspect-popover-title">Rasio aspek</div>
-        <div class="aspect-popover-list" id="aspectRatioList">
-          <div class="aspect-option selected" data-ratio="1:1">
-            <span class="aspect-opt-icon">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"></rect></svg>
-            </span>
-            <span class="aspect-opt-text">1:1</span>
-            <span class="aspect-opt-desc">Persegi</span>
-          </div>
-          <div class="aspect-option" data-ratio="9:16">
-            <span class="aspect-opt-icon">
-              <svg width="13" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="3" width="12" height="18" rx="2"></rect></svg>
-            </span>
-            <span class="aspect-opt-text">9:16</span>
-            <span class="aspect-opt-desc">Story</span>
-          </div>
-          <div class="aspect-option" data-ratio="3:4">
-            <span class="aspect-opt-icon">
-              <svg width="14" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="3" width="14" height="18" rx="2"></rect></svg>
-            </span>
-            <span class="aspect-opt-text">3:4</span>
-            <span class="aspect-opt-desc">Potret</span>
-          </div>
-          <div class="aspect-option" data-ratio="4:3">
-            <span class="aspect-opt-icon">
-              <svg width="17" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"></rect></svg>
-            </span>
-            <span class="aspect-opt-text">4:3</span>
-            <span class="aspect-opt-desc">Lanskap</span>
-          </div>
-          <div class="aspect-option" data-ratio="16:9">
-            <span class="aspect-opt-icon">
-              <svg width="18" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="6" width="18" height="12" rx="2"></rect></svg>
-            </span>
-            <span class="aspect-opt-text">16:9</span>
-            <span class="aspect-opt-desc">Layar Lebar</span>
-          </div>
-        </div>
-      </div>
-
       <div class="dock-card" style="flex-direction:column; align-items:stretch; padding:12px 14px 10px;">
         <div style="display:flex; align-items:flex-end; gap:8px; width:100%;">
           <input type="file" id="fileInput" accept="image/*" style="display:none">
@@ -2530,16 +2750,6 @@ header {
               </svg>
             </button>
           </div>
-        </div>
-
-        <!-- Tombol Pilihan Rasio Aspek (Muncul otomatis saat mode Gambar / Image AI) -->
-        <div id="aspectRatioRow" class="aspect-ratio-dock-row" style="display:none; padding-top:8px; margin:0;">
-          <button type="button" id="aspectRatioTriggerBtn" class="aspect-ratio-btn" title="Pilih Rasio Aspek Gambar">
-            <span id="aspectRatioIcon" class="aspect-icon">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"></rect></svg>
-            </span>
-            <span id="aspectRatioLabel">Rasio aspek ▾</span>
-          </button>
         </div>
       </div>
       <div class="dock-disclaimer">
@@ -2588,7 +2798,6 @@ try {
 let idToken = null, history = [], convId = null, uid = null;
 let currentQuota = null;
 let isImageMode = false;
-let currentAspectRatio = "1:1";
 
 const $ = id => document.getElementById(id);
 
@@ -2743,76 +2952,274 @@ if($("btnSidebarCollapse")){
     $("sidebar").classList.toggle("collapsed");
   };
 }
-function switchToImageMode(){
-  isImageMode = true;
-  if($("btnNavImage")) $("btnNavImage").classList.add("active");
-  if($("btnNew")) $("btnNew").classList.remove("active");
-  if($("aspectRatioRow")) $("aspectRatioRow").style.display = "flex";
-  $("input").placeholder = "Deskripsikan gambar Anda...";
-  newChat();
-}
-
 function switchToChatMode(){
   isImageMode = false;
   if($("btnNew")) $("btnNew").classList.add("active");
-  if($("btnNavImage")) $("btnNavImage").classList.remove("active");
-  if($("aspectRatioRow")) $("aspectRatioRow").style.display = "none";
   $("input").placeholder = "Tanya apa saja ke Oreo AI...";
   newChat();
 }
 
-if($("btnNavImage")){
-  $("btnNavImage").onclick = switchToImageMode;
-}
 if($("btnNew")){
   $("btnNew").onclick = switchToChatMode;
 }
 
-// Aspect ratio popover handlers (Persis Screenshot Gambar 4)
-function openAspectRatioPopover(){
-  $("aspectRatioPopover").classList.remove("hidden");
-  $("aspectRatioTriggerBtn").classList.add("open");
-}
-function closeAspectRatioPopover(){
-  $("aspectRatioPopover").classList.add("hidden");
-  $("aspectRatioTriggerBtn").classList.remove("open");
+// === DATABASE & GALERI GAMBAR (UNGGAHAN USER & HASIL AI) ===
+let activeImageDbFilter = "all";
+
+function getAllDatabaseImages(){
+  const convs = getUserConvs();
+  const images = [];
+  const seenUrls = new Set();
+
+  Object.entries(convs).forEach(([cId, cData]) => {
+    const msgs = cData.messages || [];
+    const cDate = cData.updatedAt || cData.createdAt || Date.now();
+
+    msgs.forEach((m, idx) => {
+      // 1. Gambar yang dikirim user via file input
+      if(m.image && !seenUrls.has(m.image)){
+        seenUrls.add(m.image);
+        let promptTxt = "Gambar diunggah oleh Anda";
+        if(typeof m.content === "string" && m.content.trim()) promptTxt = m.content;
+        images.push({
+          id: `${cId}_u_${idx}`,
+          convId: cId,
+          role: "user",
+          url: m.image,
+          prompt: promptTxt,
+          date: cDate
+        });
+      }
+
+      // 2. Gambar dalam format multi-part content
+      if(Array.isArray(m.content)){
+        m.content.forEach((part, pIdx) => {
+          const pUrl = part.image_url?.url || part.image_url;
+          if(part.type === "image_url" && pUrl && !seenUrls.has(pUrl)){
+            seenUrls.add(pUrl);
+            const isUser = m.role !== "assistant";
+            images.push({
+              id: `${cId}_p_${idx}_${pIdx}`,
+              convId: cId,
+              role: isUser ? "user" : "ai",
+              url: pUrl,
+              prompt: isUser ? "Gambar diunggah pengguna" : "Gambar respon AI",
+              date: cDate
+            });
+          }
+        });
+      }
+
+      // 3. Hasil kreasi gambar AI (image_url property)
+      if(m.image_url && !seenUrls.has(m.image_url)){
+        seenUrls.add(m.image_url);
+        images.push({
+          id: `${cId}_ai_${idx}`,
+          convId: cId,
+          role: "ai",
+          url: m.image_url,
+          prompt: m.prompt || m.content || "Gambar dibuat oleh Oreo AI",
+          date: cDate
+        });
+      }
+
+      // 4. Markdown images didalam teks balasan asisten: ![alt](url)
+      if(m.role === "assistant" && typeof m.content === "string"){
+        const mdImgRegex = /!\[(.*?)\]\((https?:\/\/[^\s\)]+)\)/g;
+        let match;
+        while((match = mdImgRegex.exec(m.content)) !== null){
+          const imgUrl = match[2];
+          if(!seenUrls.has(imgUrl)){
+            seenUrls.add(imgUrl);
+            images.push({
+              id: `${cId}_ai_md_${idx}`,
+              convId: cId,
+              role: "ai",
+              url: imgUrl,
+              prompt: match[1] || m.prompt || "Gambar dikirim oleh Oreo AI",
+              date: cDate
+            });
+          }
+        }
+      }
+    });
+  });
+
+  // Urutkan dari yang paling baru
+  images.sort((a,b) => (new Date(b.date).getTime() || 0) - (new Date(a.date).getTime() || 0));
+  return images;
 }
 
-if($("aspectRatioTriggerBtn")){
-  $("aspectRatioTriggerBtn").onclick = (e) => {
-    e.stopPropagation();
-    if($("aspectRatioPopover").classList.contains("hidden")){
-      openAspectRatioPopover();
-    } else {
-      closeAspectRatioPopover();
-    }
+function renderImageDatabase(filter = activeImageDbFilter, searchQuery = ""){
+  activeImageDbFilter = filter;
+  const grid = $("imageDbGrid");
+  const empty = $("imageDbEmpty");
+  if(!grid) return;
+  grid.innerHTML = "";
+
+  const allImages = getAllDatabaseImages();
+  const userCount = allImages.filter(i => i.role === "user").length;
+  const aiCount = allImages.filter(i => i.role === "ai").length;
+
+  if($("countImgAll")) $("countImgAll").textContent = allImages.length;
+  if($("countImgUser")) $("countImgUser").textContent = userCount;
+  if($("countImgAi")) $("countImgAi").textContent = aiCount;
+
+  // Filter tab
+  let filtered = allImages;
+  if(filter === "user") filtered = filtered.filter(i => i.role === "user");
+  else if(filter === "ai") filtered = filtered.filter(i => i.role === "ai");
+
+  // Search filter
+  const q = (searchQuery || "").toLowerCase().trim();
+  if(q){
+    filtered = filtered.filter(i => (i.prompt && i.prompt.toLowerCase().includes(q)));
+  }
+
+  if(filtered.length === 0){
+    if(empty) empty.classList.remove("hidden");
+    return;
+  }
+  if(empty) empty.classList.add("hidden");
+
+  filtered.forEach(img => {
+    const card = document.createElement("div");
+    card.className = "image-db-card-item";
+
+    const isUser = img.role === "user";
+    const badgeHtml = isUser 
+      ? `<span class="image-db-badge user">👤 Anda</span>` 
+      : `<span class="image-db-badge ai">✨ Oreo AI</span>`;
+
+    const dateStr = img.date ? new Date(img.date).toLocaleDateString("id-ID", { day:"numeric", month:"short", hour:"2-digit", minute:"2-digit" }) : "";
+
+    card.innerHTML = `
+      <div class="image-db-card-img-wrap">
+        <img class="image-db-card-img" src="${img.url}" alt="${escapeHtml(img.prompt)}" loading="lazy">
+        ${badgeHtml}
+      </div>
+      <div class="image-db-card-info">
+        <div class="image-db-card-prompt" title="${escapeHtml(img.prompt)}">${escapeHtml(img.prompt)}</div>
+        <div class="image-db-card-footer">
+          <span class="image-db-card-date">${dateStr}</span>
+          <div class="image-db-card-actions">
+            <button type="button" class="image-db-btn-icon btn-view-full" title="Lihat Penuh">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            </button>
+            <button type="button" class="image-db-btn-icon btn-dl-img" title="Unduh Gambar">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            </button>
+            <button type="button" class="image-db-btn-icon btn-goto-chat" title="Buka di Chat">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+
+    // Interaksi card
+    card.querySelector(".image-db-card-img-wrap").onclick = () => openImageLightbox(img.url, img.prompt);
+    card.querySelector(".btn-view-full").onclick = () => openImageLightbox(img.url, img.prompt);
+    card.querySelector(".btn-dl-img").onclick = (e) => {
+      e.stopPropagation();
+      downloadImageDirect(img.url, `Oreo_${img.role}_${Date.now()}.png`);
+    };
+    card.querySelector(".btn-goto-chat").onclick = (e) => {
+      e.stopPropagation();
+      closeImageDbModal();
+      const convs = getUserConvs();
+      if(img.convId && convs[img.convId]){
+        openConv(img.convId, convs[img.convId]);
+      } else {
+        showToast("Obrolan gambar telah dibuka", "info");
+      }
+    };
+
+    grid.appendChild(card);
+  });
+}
+
+function openImageDbModal(){
+  if($("imageDbModal")) {
+    $("imageDbModal").classList.remove("hidden");
+    renderImageDatabase("all");
+  }
+}
+
+function closeImageDbModal(){
+  if($("imageDbModal")) $("imageDbModal").classList.add("hidden");
+}
+
+let currentLightboxImgUrl = "";
+function openImageLightbox(url, title){
+  currentLightboxImgUrl = url;
+  if($("lightboxImg")) $("lightboxImg").src = url;
+  if($("imageLightboxModal")) $("imageLightboxModal").classList.remove("hidden");
+}
+
+function closeImageLightbox(){
+  if($("imageLightboxModal")) $("imageLightboxModal").classList.add("hidden");
+}
+
+function downloadImageDirect(url, filename){
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename || `Oreo_Image_${Date.now()}.png`;
+  a.target = "_blank";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  showToast("Mengunduh gambar...", "success");
+}
+
+// Event Listeners Database Gambar
+if($("btnNavImage")){
+  $("btnNavImage").onclick = (e) => {
+    e.preventDefault();
+    openImageDbModal();
   };
 }
 
-if($("aspectRatioPopover")){
-  $("aspectRatioPopover").onclick = (e) => {
-    e.stopPropagation();
+if($("btnCloseImageDb")){
+  $("btnCloseImageDb").onclick = closeImageDbModal;
+}
+
+if($("imageDbModal")){
+  $("imageDbModal").onclick = (e) => {
+    if(e.target === $("imageDbModal")) closeImageDbModal();
   };
 }
 
-document.querySelectorAll("#aspectRatioList .aspect-option").forEach(opt => {
-  opt.onclick = () => {
-    document.querySelectorAll("#aspectRatioList .aspect-option").forEach(o => o.classList.remove("selected"));
-    opt.classList.add("selected");
-    const ratio = opt.dataset.ratio || "1:1";
-    currentAspectRatio = ratio;
-    
-    // Update label & icon
-    const optSvg = opt.querySelector(".aspect-opt-icon svg");
-    if(optSvg && $("aspectRatioIcon")){
-      $("aspectRatioIcon").innerHTML = "";
-      $("aspectRatioIcon").appendChild(optSvg.cloneNode(true));
-    }
-    $("aspectRatioLabel").textContent = `${ratio} ▾`;
-    closeAspectRatioPopover();
-    showToast(`Rasio aspek gambar: ${ratio}`, "info");
+// Filter tab clicks
+document.querySelectorAll(".image-db-tab").forEach(tab => {
+  tab.onclick = () => {
+    document.querySelectorAll(".image-db-tab").forEach(t => t.classList.remove("active"));
+    tab.classList.add("active");
+    const filter = tab.dataset.filter || "all";
+    renderImageDatabase(filter, $("searchImgDb")?.value || "");
   };
 });
+
+if($("searchImgDb")){
+  $("searchImgDb").oninput = (e) => {
+    renderImageDatabase(activeImageDbFilter, e.target.value);
+  };
+}
+
+// Lightbox listeners
+if($("btnCloseLightbox")){
+  $("btnCloseLightbox").onclick = closeImageLightbox;
+}
+if($("imageLightboxModal")){
+  $("imageLightboxModal").onclick = (e) => {
+    if(e.target === $("imageLightboxModal") || e.target.id === "btnCloseLightbox") closeImageLightbox();
+  };
+}
+if($("btnDownloadLightbox")){
+  $("btnDownloadLightbox").onclick = () => {
+    if(currentLightboxImgUrl) downloadImageDirect(currentLightboxImgUrl, `Oreo_Image_${Date.now()}.png`);
+  };
+}
 
 $("btnToggleSidebar").onclick = () => {
   $("sidebar").classList.toggle("collapsed");
@@ -3769,9 +4176,6 @@ document.addEventListener("click", () => {
   if(!$("personaPopover").classList.contains("hidden")){
     closePersonaPopover();
   }
-  if($("aspectRatioPopover") && !$("aspectRatioPopover").classList.contains("hidden")){
-    closeAspectRatioPopover();
-  }
 });
 
 $("modelSearchInput").oninput = () => {
@@ -4013,19 +4417,11 @@ async function openConv(id, data){
   convId = id; history = data.messages || [];
   if(data.mode === "image"){
     isImageMode = true;
-    if($("btnNavImage")) $("btnNavImage").classList.add("active");
     if($("btnNew")) $("btnNew").classList.remove("active");
-    if($("aspectRatioRow")) $("aspectRatioRow").style.display = "flex";
     $("input").placeholder = "Deskripsikan gambar Anda...";
-    if(data.aspectRatio){
-      currentAspectRatio = data.aspectRatio;
-      $("aspectRatioLabel").textContent = `${data.aspectRatio} ▾`;
-    }
   } else {
     isImageMode = false;
     if($("btnNew")) $("btnNew").classList.add("active");
-    if($("btnNavImage")) $("btnNavImage").classList.remove("active");
-    if($("aspectRatioRow")) $("aspectRatioRow").style.display = "none";
     $("input").placeholder = "Tanya apa saja ke Oreo AI...";
   }
 
@@ -4073,7 +4469,6 @@ async function saveConv(){
     id: convId,
     title,
     mode: isImageMode ? "image" : "chat",
-    aspectRatio: currentAspectRatio,
     model: $("modelSelect").value,
     messages: history,
     updatedAt: Date.now()
@@ -4357,7 +4752,7 @@ function addImageMsg(role, imageUrl, promptText, ratio, meta){
       <img class="ai-image-img" src="${imageUrl}" alt="${escapeHtml(promptText)}" loading="lazy">
     </div>
     <div class="ai-image-meta">
-      <span class="ai-image-tag">📐 Rasio: ${ratio || '1:1'}</span>
+      <span class="ai-image-tag">🎨 Gambar AI</span>
       <div class="ai-image-actions">
         <a href="${imageUrl}" target="_blank" class="btn-img-action" title="Buka Gambar Resolusi Penuh">🔍 Penuh</a>
         <a href="${imageUrl}" download="OreoAI_${Date.now()}.png" target="_blank" class="btn-img-action" title="Unduh Gambar">📥 Unduh</a>
@@ -4442,7 +4837,7 @@ async function send(){
   if(isImageMode && !sendingImage){
     // Mode Gambar / AI Image Generator
     addMsg("user", text);
-    const userMessageObj = { role: "user", content: text, is_image: true, aspect_ratio: currentAspectRatio };
+    const userMessageObj = { role: "user", content: text, is_image: true };
     history.push(userMessageObj);
     saveConv();
 
@@ -4458,7 +4853,7 @@ async function send(){
         },
         body: JSON.stringify({
           prompt: text,
-          aspect_ratio: currentAspectRatio,
+          aspect_ratio: "1:1",
           model: $("modelSelect").value || "auto"
         })
       });
@@ -4468,16 +4863,15 @@ async function send(){
         updateQuotaDisplay(d.quota);
       }
       if(d.ok && d.image_url){
-        const meta = `Imagen / Flux AI · ${d.aspect_ratio || currentAspectRatio} · ${d.elapsed || '1.5'}s`;
+        const meta = `Oreo Image AI · ${d.elapsed || '1.5'}s`;
         history.push({
           role: "assistant",
           content: d.content,
           image_url: d.image_url,
           prompt: d.prompt,
-          aspect_ratio: d.aspect_ratio,
           meta
         });
-        addImageMsg("ai", d.image_url, d.prompt || text, d.aspect_ratio || currentAspectRatio, meta);
+        addImageMsg("ai", d.image_url, d.prompt || text, null, meta);
         saveConv();
       } else {
         if(d.quota_exceeded){
