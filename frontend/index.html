@@ -3815,6 +3815,34 @@ header {
   color: #64748b;
 }
 
+
+.btn-toggle-model {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  color: #f1f5f9 !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  padding: 6px 14px !important;
+  border-radius: 999px !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  font-family: inherit !important;
+  outline: none !important;
+}
+.btn-toggle-model.active {
+  background: rgba(16, 185, 129, 0.15) !important;
+  border-color: rgba(16, 185, 129, 0.4) !important;
+  color: #34d399 !important;
+}
+.btn-toggle-model.inactive {
+  background: rgba(239, 68, 68, 0.15) !important;
+  border-color: rgba(239, 68, 68, 0.4) !important;
+  color: #f87171 !important;
+}
+
 </style>
 </head>
 <body>
@@ -5136,29 +5164,31 @@ function renderAdminModelsList(){
     const item = document.createElement("div");
     item.className = "admin-model-item" + (m.disabled ? " disabled" : "");
 
-    const capBadges = [];
-    if(m.capabilities?.image) capBadges.push(`<span class="admin-cap-badge image">🖼️ Gambar</span>`);
-    if(m.capabilities?.voice) capBadges.push(`<span class="admin-cap-badge voice">🎙️ Suara</span>`);
-    if(m.capabilities?.text) capBadges.push(`<span class="admin-cap-badge">📝 Teks</span>`);
-    if(m.capabilities?.code) capBadges.push(`<span class="admin-cap-badge code">💻 Coding</span>`);
-    if(m.capabilities?.reasoning) capBadges.push(`<span class="admin-cap-badge reasoning">🧠 Reasoning</span>`);
+    const badges = getModelEmojiBadges(m.id);
+    const capBadgesHtml = badges.map(b => `<span class="admin-cap-badge" title="${b.title}">${b.emoji} ${b.label}</span>`).join("");
 
     item.innerHTML = `
       <div class="admin-model-item-left">
         <div class="admin-model-name">${escapeHtml(m.name || m.id)}</div>
         <div class="admin-model-prov">${escapeHtml(m.id)} · Provider: ${escapeHtml(m.provider || "Polli/CF")}</div>
-        <div class="admin-caps-row">${capBadges.join("")}</div>
+        <div class="admin-caps-row">${capBadgesHtml}</div>
       </div>
-      <div>
-        <button type="button" class="btn-toggle-model ${m.disabled ? 'inactive' : 'active'}" data-model-id="${m.id}" data-disabled="${m.disabled ? 'true' : 'false'}">
-          ${m.disabled ? '🚫 Dinonaktifkan (Aktifkan)' : '✅ Aktif (Matikan)'}
+      <div class="admin-item-toggle-wrap">
+        <button type="button" class="btn-model-switch ${m.disabled ? 'off' : 'on'}" data-model-id="${m.id}" data-disabled="${m.disabled ? 'true' : 'false'}" title="${m.disabled ? 'Model dinonaktifkan. Klik untuk mengaktifkan kembali.' : 'Model aktif. Klik untuk menonaktifkan bagi pengguna.'}">
+          <span class="switch-status-label">${m.disabled ? 'Nonaktif' : 'Aktif'}</span>
+          <span class="switch-track">
+            <span class="switch-thumb"></span>
+          </span>
         </button>
       </div>
     `;
 
-    const toggleBtn = item.querySelector(".btn-toggle-model, .btn-model-switch");
+    const toggleBtn = item.querySelector(".btn-model-switch, .btn-toggle-model");
     if(toggleBtn){
-      toggleBtn.onclick = () => toggleModelStatus(m.id, !m.disabled);
+      toggleBtn.onclick = (e) => {
+        e.stopPropagation();
+        toggleModelStatus(m.id, !m.disabled);
+      };
     }
 
     listEl.appendChild(item);
