@@ -66,6 +66,7 @@ body {
 /* Header */
 header {
   height: 60px;
+  flex-shrink: 0;
   background: rgba(15, 19, 29, 0.85);
   backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border-subtle);
@@ -207,6 +208,7 @@ header {
 #main {
   display: none;
   flex: 1;
+  min-height: 0;
   overflow: hidden;
   position: relative;
 }
@@ -315,6 +317,7 @@ header {
 #chatBox {
   display: flex;
   flex: 1;
+  min-height: 0;
   flex-direction: column;
   overflow: hidden;
   position: relative;
@@ -323,7 +326,9 @@ header {
 
 #messages {
   flex: 1;
+  min-height: 0;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   padding: 24px 20px 20px;
   display: flex;
   flex-direction: column;
@@ -650,6 +655,7 @@ header {
   max-width: 860px;
   margin: 0 auto;
   position: relative;
+  flex-shrink: 0;
 }
 .dock-card {
   background: #181d2a;
@@ -1639,10 +1645,15 @@ header {
 
   /* Chat Box & Messages Area */
   #chatBox {
-    height: calc(100vh - 56px);
+    flex: 1 !important;
+    min-height: 0 !important;
+    height: 100% !important;
+    max-height: 100% !important;
   }
   #messages {
-    padding: 12px 12px 18px 12px !important;
+    flex: 1 !important;
+    min-height: 0 !important;
+    padding: 12px 12px 14px 12px !important;
   }
 
   /* Hero Welcome Screen */
@@ -1724,7 +1735,10 @@ header {
 
   /* Floating Dock & Input */
   #dockArea {
-    padding: 6px 10px 10px !important;
+    flex-shrink: 0 !important;
+    padding: 6px 12px max(14px, env(safe-area-inset-bottom, 14px)) !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
   }
   .dock-card {
     border-radius: 20px !important;
