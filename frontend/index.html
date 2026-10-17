@@ -1580,23 +1580,7 @@ header {
   pointer-events: auto;
 }
 
-.model-popover-backdrop {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  z-index: 1040;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.25s ease;
-}
-.model-popover-backdrop.active {
-  display: block;
-  opacity: 1;
-  pointer-events: auto;
-}
+
 
 /* === RESPONSIVE MOBILE OPTIMIZATION (GAYA MODERN GEMINI / CHATGPT) === */
 @media(max-width: 768px) {
@@ -3028,7 +3012,6 @@ header {
       </div>
 
       <!-- Popover Menu Model AI (Gaya Gemini) -->
-      <div id="modelPopoverBackdrop" class="model-popover-backdrop"></div>
       <div id="modelPopover" class="model-popover hidden">
         <div class="popover-header">
           <div class="popover-title">
@@ -4391,8 +4374,6 @@ function renderPopoverList(){
 function openModelPopover(){
   $("modelPopover").classList.remove("hidden");
   $("modelTriggerBtn").classList.add("open");
-  const mb = $("modelPopoverBackdrop");
-  if(mb) mb.classList.add("active");
   $("modelSearchInput").focus();
   renderPopoverList();
 }
@@ -4400,12 +4381,6 @@ function openModelPopover(){
 function closeModelPopover(){
   $("modelPopover").classList.add("hidden");
   $("modelTriggerBtn").classList.remove("open");
-  const mb = $("modelPopoverBackdrop");
-  if(mb) mb.classList.remove("active");
-}
-
-if($("modelPopoverBackdrop")){
-  $("modelPopoverBackdrop").onclick = closeModelPopover;
 }
 
 $("modelTriggerBtn").onclick = (e) => {
