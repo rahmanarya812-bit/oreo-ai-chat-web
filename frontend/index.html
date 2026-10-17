@@ -3237,25 +3237,77 @@ async function refreshToken(){
   else if(uid === "dev-mode") idToken = "dev-token";
 }
 
+function getStoredQuotaKey(){
+  return "oreo_quota_" + (uid || getClientId());
+}
+
+function getStoredQuota(){
+  try {
+    const raw = localStorage.getItem(getStoredQuotaKey());
+    if(!raw) return null;
+    const q = JSON.parse(raw);
+    const today = new Date().toISOString().slice(0, 10);
+    if(q.date !== today){
+      return { date: today, limit: 30, used: 0, remaining: 30, is_unlimited: false, is_exceeded: false };
+    }
+    return q;
+  } catch(e){
+    return null;
+  }
+}
+
+function saveStoredQuota(q){
+  if(!q) return;
+  try {
+    const today = new Date().toISOString().slice(0, 10);
+    const toSave = { ...q, date: q.date || today };
+    localStorage.setItem(getStoredQuotaKey(), JSON.stringify(toSave));
+  } catch(e){}
+}
+
+function initQuotaFromStorage(){
+  const q = getStoredQuota();
+  if(q){
+    updateQuotaDisplay(q, false);
+  }
+}
+
 async function loadQuota(){
+  initQuotaFromStorage();
   try {
     await refreshToken();
+    const stored = getStoredQuota();
+    const usedCount = (stored && stored.date === new Date().toISOString().slice(0, 10)) ? (stored.used || 0) : 0;
     const r = await fetch(API_BASE + "/api/quota", {
       headers: {
         "Authorization": "Bearer " + (idToken || "dev-token"),
-        "X-Client-Id": getClientId()
+        "X-Client-Id": getClientId(),
+        "X-User-Id": uid || getClientId(),
+        "X-Used-Count": String(usedCount)
       }
     });
     const d = await r.json();
     if(d.ok && d.quota){
-      updateQuotaDisplay(d.quota);
+      updateQuotaDisplay(d.quota, true);
     }
   } catch(e) {
     console.warn("Gagal memuat info kuota:", e);
   }
 }
 
-function updateQuotaDisplay(q){
+function updateQuotaDisplay(q, persist = true){
+  if(!q) return;
+  const today = new Date().toISOString().slice(0, 10);
+  const stored = getStoredQuota();
+  // Cegah kuota berkurang/reset kembali ke 30/30 saat browser di-refresh pada hari yang sama
+  if(stored && stored.date === today && stored.used > q.used && !q.is_unlimited){
+    q.used = stored.used;
+    q.remaining = Math.max(0, (q.limit || 30) - q.used);
+    q.is_exceeded = q.used >= (q.limit || 30);
+  }
+  if(persist){
+    saveStoredQuota(q);
+  }
   currentQuota = q;
   const badge = $("quotaBadge");
   const text = $("quotaText");
@@ -3292,17 +3344,19 @@ async function devResetQuota(){
     isDanger: false,
     onConfirm: async () => {
       try {
+        localStorage.removeItem(getStoredQuotaKey());
         await refreshToken();
         const r = await fetch(API_BASE + "/api/quota/reset", {
           method: "POST",
           headers: {
             "Authorization": "Bearer " + (idToken || "dev-token"),
-            "X-Client-Id": getClientId()
+            "X-Client-Id": getClientId(),
+            "X-User-Id": uid || getClientId()
           }
         });
         const d = await r.json();
         if(d.ok && d.quota){
-          updateQuotaDisplay(d.quota);
+          updateQuotaDisplay(d.quota, true);
         }
       } catch(e) {
         console.warn("Gagal reset kuota:", e);
@@ -4415,15 +4469,9 @@ function useSuggestion(text){
 
 async function openConv(id, data){
   convId = id; history = data.messages || [];
-  if(data.mode === "image"){
-    isImageMode = true;
-    if($("btnNew")) $("btnNew").classList.remove("active");
-    $("input").placeholder = "Deskripsikan gambar Anda...";
-  } else {
-    isImageMode = false;
-    if($("btnNew")) $("btnNew").classList.add("active");
-    $("input").placeholder = "Tanya apa saja ke Oreo AI...";
-  }
+  isImageMode = false;
+  if($("btnNew")) $("btnNew").classList.add("active");
+  $("input").placeholder = "Tanya apa saja ke Oreo AI...";
 
   $("messages").innerHTML = "";
   if(history.length === 0){
@@ -4834,68 +4882,7 @@ async function send(){
   inp.disabled = true;
   $("btnSend").disabled = true;
 
-  if(isImageMode && !sendingImage){
-    // Mode Gambar / AI Image Generator
-    addMsg("user", text);
-    const userMessageObj = { role: "user", content: text, is_image: true };
-    history.push(userMessageObj);
-    saveConv();
-
-    const t = showTypingIndicator("Sedang melukis gambar Anda...");
-    await refreshToken();
-    try {
-      const r = await fetch(API_BASE + "/api/image", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer " + (idToken || "dev-token"),
-          "X-Client-Id": getClientId()
-        },
-        body: JSON.stringify({
-          prompt: text,
-          aspect_ratio: "1:1",
-          model: $("modelSelect").value || "auto"
-        })
-      });
-      const d = await r.json();
-      t.remove();
-      if(d.quota){
-        updateQuotaDisplay(d.quota);
-      }
-      if(d.ok && d.image_url){
-        const meta = `Oreo Image AI · ${d.elapsed || '1.5'}s`;
-        history.push({
-          role: "assistant",
-          content: d.content,
-          image_url: d.image_url,
-          prompt: d.prompt,
-          meta
-        });
-        addImageMsg("ai", d.image_url, d.prompt || text, null, meta);
-        saveConv();
-      } else {
-        if(d.quota_exceeded){
-          addMsg("ai", `⛔ **Batas Kuota Harian Habis**\n\n${d.error}\n\n*Catatan: Kuota di-reset otomatis setiap hari pada pukul 00:00.*`);
-        } else {
-          addMsg("ai", "⚠️ " + (d.error || "Gagal membuat gambar"));
-        }
-        history.pop();
-        saveConv();
-      }
-    } catch(e) {
-      t.remove();
-      addMsg("ai", "⚠️ Error koneksi: " + e.message);
-      history.pop();
-      saveConv();
-    } finally {
-      inp.disabled = false;
-      $("btnSend").disabled = false;
-      inp.focus();
-    }
-    return;
-  }
-
-  // Regular Chat Mode
+  // Chat Mode via Model AI Terpilih (Gemini, Claude, GPT, dll)
   let userMessageObj;
   if(sendingImage){
     userMessageObj = {
@@ -4918,12 +4905,16 @@ async function send(){
   const t = showTypingIndicator();
   await refreshToken();
   try{
+    const stored = getStoredQuota();
+    const usedCount = (stored && stored.date === new Date().toISOString().slice(0, 10)) ? (stored.used || 0) : 0;
     const r = await fetch(API_BASE+"/api/chat",{
       method:"POST",
       headers:{
         "Content-Type":"application/json",
         "Authorization":"Bearer "+(idToken||"dev-token"),
-        "X-Client-Id": getClientId()
+        "X-Client-Id": getClientId(),
+        "X-User-Id": uid || getClientId(),
+        "X-Used-Count": String(usedCount)
       },
       body: JSON.stringify({
         model, 
