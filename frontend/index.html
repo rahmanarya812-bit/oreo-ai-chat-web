@@ -2900,18 +2900,22 @@ restoreCachedSession(false);
 // === MODAL KONFIRMASI ESTETIK ===
 let modalConfirmCallback = null;
 
-function showModalConfirm({ icon = "⚠️", title, desc, confirmText = "Lanjutkan", isDanger = true, onConfirm }){
+function showModalConfirm({ icon = "⚠️", title, desc, confirmText = "Lanjutkan", isDanger = true, hideCancel = false, onConfirm }){
   const modal = $("customConfirmModal");
   const iconEl = $("modalIcon");
   const iconWrap = $("modalIconWrap");
   const titleEl = $("modalTitle");
   const descEl = $("modalDesc");
   const confirmBtn = $("btnModalConfirm");
+  const cancelBtn = $("btnModalCancel");
 
   iconEl.textContent = icon;
   titleEl.textContent = title;
   descEl.textContent = desc;
   confirmBtn.textContent = confirmText;
+  if(cancelBtn){
+    cancelBtn.style.display = hideCancel ? "none" : "inline-flex";
+  }
 
   if(isDanger){
     iconWrap.className = "custom-modal-icon-wrap";
@@ -2928,6 +2932,8 @@ function showModalConfirm({ icon = "⚠️", title, desc, confirmText = "Lanjutk
 function hideModalConfirm(){
   const modal = $("customConfirmModal");
   if(modal) modal.classList.add("hidden");
+  const cancelBtn = $("btnModalCancel");
+  if(cancelBtn) cancelBtn.style.display = "inline-flex";
   modalConfirmCallback = null;
 }
 
@@ -3240,6 +3246,14 @@ async function refreshToken(){
   else if(uid === "dev-mode") idToken = "dev-token";
 }
 
+function getTodayStr(){
+  const d = new Date();
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
 function getStoredQuotaKey(){
   return "oreo_quota_" + (uid || getClientId());
 }
@@ -3249,7 +3263,7 @@ function getStoredQuota(){
     const raw = localStorage.getItem(getStoredQuotaKey());
     if(!raw) return null;
     const q = JSON.parse(raw);
-    const today = new Date().toISOString().slice(0, 10);
+    const today = getTodayStr();
     if(q.date !== today){
       return { date: today, limit: 30, used: 0, remaining: 30, is_unlimited: false, is_exceeded: false };
     }
@@ -3262,7 +3276,7 @@ function getStoredQuota(){
 function saveStoredQuota(q){
   if(!q) return;
   try {
-    const today = new Date().toISOString().slice(0, 10);
+    const today = getTodayStr();
     const toSave = { ...q, date: q.date || today };
     localStorage.setItem(getStoredQuotaKey(), JSON.stringify(toSave));
   } catch(e){}
@@ -3280,7 +3294,8 @@ async function loadQuota(){
   try {
     await refreshToken();
     const stored = getStoredQuota();
-    const usedCount = (stored && stored.date === new Date().toISOString().slice(0, 10)) ? (stored.used || 0) : 0;
+    const today = getTodayStr();
+    const usedCount = (stored && stored.date === today) ? (stored.used || 0) : 0;
     const r = await fetch(API_BASE + "/api/quota", {
       headers: {
         "Authorization": "Bearer " + (idToken || "dev-token"),
@@ -3300,7 +3315,7 @@ async function loadQuota(){
 
 function updateQuotaDisplay(q, persist = true){
   if(!q) return;
-  const today = new Date().toISOString().slice(0, 10);
+  const today = getTodayStr();
   const stored = getStoredQuota();
   // Cegah kuota berkurang/reset kembali ke 30/30 saat browser di-refresh pada hari yang sama
   if(stored && stored.date === today && stored.used > q.used && !q.is_unlimited){
@@ -3326,7 +3341,7 @@ function updateQuotaDisplay(q, persist = true){
     const remaining = q.remaining !== undefined ? q.remaining : Math.max(0, (q.limit || 30) - (q.used || 0));
     const limit = q.limit || 30;
     text.textContent = `⚡ Kuota: ${remaining}/${limit}`;
-    badge.title = `Sisa kuota harian: ${remaining} dari ${limit} pesan. Di-reset otomatis setiap hari pukul 00:00. Klik untuk info/opsi.`;
+    badge.title = `Sisa kuota harian: ${remaining} dari ${limit} pesan. Di-reset otomatis setiap hari pukul 00:00 WIB. Klik untuk info.`;
 
     if(remaining <= 0){
       badge.className = "quota-badge danger";
@@ -3338,55 +3353,30 @@ function updateQuotaDisplay(q, persist = true){
   }
 }
 
-async function devResetQuota(){
-  showModalConfirm({
-    icon: "⚡",
-    title: "Reset Kuota Harian?",
-    desc: "Ingin mengembalikan kuota pesan Anda menjadi 30/30 penuh untuk pengujian hari ini?",
-    confirmText: "Reset Kuota",
-    isDanger: false,
-    onConfirm: async () => {
-      try {
-        localStorage.removeItem(getStoredQuotaKey());
-        await refreshToken();
-        const r = await fetch(API_BASE + "/api/quota/reset", {
-          method: "POST",
-          headers: {
-            "Authorization": "Bearer " + (idToken || "dev-token"),
-            "X-Client-Id": getClientId(),
-            "X-User-Id": uid || getClientId()
-          }
-        });
-        const d = await r.json();
-        if(d.ok && d.quota){
-          updateQuotaDisplay(d.quota, true);
-        }
-      } catch(e) {
-        console.warn("Gagal reset kuota:", e);
-      }
-    }
-  });
-}
-
 $("quotaBadge").onclick = () => {
   if(!currentQuota) return;
   if(currentQuota.is_unlimited){
     showModalConfirm({
       icon: "⚡",
       title: "Kuota Unlimited",
-      desc: "Akun Anda memiliki hak akses Admin tanpa batasan kuota pesan per hari.",
+      desc: "Akun Anda memiliki akses Admin tanpa batasan kuota pesan harian.",
       confirmText: "Tutup",
       isDanger: false,
+      hideCancel: true,
       onConfirm: () => {}
     });
   } else {
+    const used = currentQuota.used || 0;
+    const limit = currentQuota.limit || 30;
+    const remaining = currentQuota.remaining !== undefined ? currentQuota.remaining : Math.max(0, limit - used);
     showModalConfirm({
       icon: "⚡",
       title: "Status Kuota Harian",
-      desc: `Pesan terpakai: ${currentQuota.used} dari ${currentQuota.limit}. Sisa: ${currentQuota.remaining} pesan.\\nReset otomatis setiap hari pukul 00:00. Ingin me-reset kuota sekarang?`,
-      confirmText: "Reset Kuota",
+      desc: `Pesan terpakai: ${used} dari ${limit}. Sisa: ${remaining} pesan.\n\nKuota harian diperbarui dan di-reset otomatis oleh sistem setiap 1 hari sekali pada pukul 00:00 WIB. Pengguna tidak dapat me-reset kuota secara manual.`,
+      confirmText: "Tutup",
       isDanger: false,
-      onConfirm: () => devResetQuota()
+      hideCancel: true,
+      onConfirm: () => {}
     });
   }
 };
@@ -4909,7 +4899,7 @@ async function send(){
   await refreshToken();
   try{
     const stored = getStoredQuota();
-    const usedCount = (stored && stored.date === new Date().toISOString().slice(0, 10)) ? (stored.used || 0) : 0;
+    const usedCount = (stored && stored.date === getTodayStr()) ? (stored.used || 0) : 0;
     const r = await fetch(API_BASE+"/api/chat",{
       method:"POST",
       headers:{

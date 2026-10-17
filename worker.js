@@ -395,8 +395,10 @@ const quotaStore = new Map();
 const DAILY_LIMIT = 30;
 
 function getTodayStr() {
+  // Waktu Indonesia Barat (WIB = UTC+7)
   const now = new Date();
-  return now.toISOString().slice(0, 10);
+  const wib = new Date(now.getTime() + (7 * 3600 * 1000));
+  return wib.toISOString().slice(0, 10);
 }
 
 function getUserQuota(userKey, clientCount = 0) {
@@ -427,19 +429,13 @@ function consumeQuota(userKey, clientCount = 0) {
     return {
       allowed: false,
       quota,
-      error: `Batas kuota harian (${DAILY_LIMIT} pesan/hari) sudah tercapai! Kuota di-reset otomatis setiap hari (00:00).`
+      error: `Batas kuota harian (${DAILY_LIMIT} pesan/hari) sudah tercapai! Kuota di-reset otomatis setiap 1 hari sekali pukul 00:00 WIB.`
     };
   }
   const entry = quotaStore.get(userKey);
   entry.count += 1;
   const updatedQuota = getUserQuota(userKey);
   return { allowed: true, quota: updatedQuota, error: null };
-}
-
-function resetQuota(userKey) {
-  const today = getTodayStr();
-  quotaStore.set(userKey, { date: today, count: 0 });
-  return getUserQuota(userKey, 0);
 }
 
 function getUserKey(request) {
@@ -502,9 +498,8 @@ export default {
       return jsonResp({ ok: true, quota: getUserQuota(userKey, clientCount) });
     }
 
-    if (url.pathname === '/api/quota/reset' && request.method === 'POST') {
-      const userKey = getUserKey(request);
-      return jsonResp({ ok: true, quota: resetQuota(userKey), message: 'Kuota harian berhasil di-reset!' });
+    if (url.pathname === '/api/quota/reset') {
+      return jsonResp({ ok: false, error: 'Reset manual kuota dinonaktifkan. Kuota harian di-reset otomatis setiap 1 hari sekali pukul 00:00 WIB.' }, 403);
     }
 
     if (url.pathname === '/api/me') {
