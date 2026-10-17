@@ -664,15 +664,25 @@ export default {
     if (url.pathname === '/api/admin/users') {
       const isAdmin = isUserAdmin(request);
       if (!isAdmin) return jsonResp({ ok: false, error: 'Akses khusus Admin ditolak' }, 403);
+      const today = getWibDateStr();
       const userList = Array.from(userRegistry.values()).map(u => {
         const q = getUserQuota(u.id, 0, u.role === 'Admin');
         return {
           ...u,
+          isAdmin: u.role === 'Admin',
+          lastActive: u.lastSeen,
+          usedCountToday: q.used,
+          totalRequests: u.messageCount || 0,
           used: q.used,
           limit: q.limit
         };
       });
-      return jsonResp({ ok: true, users: userList, total: userList.length });
+      const activeToday = userList.filter(u => {
+        if (!u.lastActive) return false;
+        const d = new Date(u.lastActive + 7 * 3600 * 1000);
+        return d.toISOString().slice(0, 10) === today;
+      }).length;
+      return jsonResp({ ok: true, users: userList, total: userList.length, activeToday });
     }
 
     if (url.pathname === '/api/admin/verify-secret' && request.method === 'POST') {
