@@ -6,3 +6,9 @@ backend/canva_token.json
 backend/oauth_sessions.json
 backend/.env
 
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
+!.env.example
