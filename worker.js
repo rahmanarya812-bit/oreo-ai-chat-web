@@ -665,6 +665,20 @@ export default {
       const isAdmin = isUserAdmin(request);
       if (!isAdmin) return jsonResp({ ok: false, error: 'Akses khusus Admin ditolak' }, 403);
       const today = getWibDateStr();
+      if (userRegistry.size === 0) {
+        const adminKey = getUserKey(request);
+        const email = request.headers.get('X-User-Email') || 'rahmanarya812@gmail.com';
+        const name = request.headers.get('X-User-Name') || 'Arya Rahman';
+        userRegistry.set(adminKey, {
+          id: adminKey,
+          email,
+          name,
+          role: 'Admin',
+          firstSeen: Date.now(),
+          lastSeen: Date.now(),
+          messageCount: 0
+        });
+      }
       const userList = Array.from(userRegistry.values()).map(u => {
         const q = getUserQuota(u.id, 0, u.role === 'Admin');
         return {
