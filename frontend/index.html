@@ -1637,12 +1637,12 @@ header {
 
     <!-- Input Bar Dock (Gaya Gemini Modern) -->
     <div id="dockArea">
-      <!-- Popover Menu Mode Keahlian AI (Canva, Developer, Copywriter, dll) -->
-      <div id="personaPopover" class="persona-popover hidden">
+      <!-- Popover Menu Mode Keahlian AI (Sembunyi: Otomatis Sesuai Pertanyaan Pengguna) -->
+      <div id="personaPopover" class="persona-popover hidden" style="display:none !important;">
         <div class="popover-header" style="padding:12px 14px 8px;">
           <div class="popover-title" style="margin:0;">
             <span>🎯 Mode Keahlian AI</span>
-            <span class="persona-item-tag">5 Persona</span>
+            <span class="persona-item-tag">Otomatis Adaptif</span>
           </div>
         </div>
         <div class="persona-list" id="personaList"></div>
@@ -1686,12 +1686,11 @@ header {
         </div>
         
         <div class="dock-actions">
-          <!-- Persona Trigger Pill -->
-          <div class="custom-persona-trigger" id="personaTriggerBtn" title="Ganti Mode Keahlian (Canva, Koding, Copywriter, dll)">
-            <span id="currentPersonaIcon">🎨</span>
-            <span id="currentPersonaLabel" class="persona-current-name">Canva Designer</span>
-            <svg class="chevron-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
-            <input type="hidden" id="personaSelect" value="canva">
+          <!-- Persona Trigger Pill (Tersembunyi: Mode Keahlian Otomatis Aktif Sesuai Permintaan) -->
+          <div class="custom-persona-trigger" id="personaTriggerBtn" style="display:none !important;">
+            <span id="currentPersonaIcon">✨</span>
+            <span id="currentPersonaLabel" class="persona-current-name">Otomatis Adaptif</span>
+            <input type="hidden" id="personaSelect" value="auto">
           </div>
 
           <!-- Model Trigger Pill -->
@@ -2779,20 +2778,26 @@ function newChat(){
   document.querySelectorAll(".conv-item").forEach(e=>e.classList.remove("active"));
 }
 
+const HERO_SUGGESTIONS = [
+  { head: "🎨 Desain Canva", sub: "Konsep Feed Carousel Instagram produk baru", prompt: "Rancang konsep desain Feed Carousel Instagram untuk promosi produk baru yang elegan dan eye-catching lengkap dengan palet warna HEX dan font Canva." },
+  { head: "💻 Koding & REST API", sub: "FastAPI Python dengan JWT Auth", prompt: "Buatkan boilerplate REST API Python menggunakan FastAPI lengkap dengan autentikasi JWT token dan schema Pydantic." },
+  { head: "✍️ Viral Copywriting", sub: "Formula AIDA & Hook Reels/TikTok", prompt: "Tuliskan copywriting promosi menggunakan framework AIDA dan 5 hook pembuka video pendek untuk produk minuman sehat." },
+  { head: "📊 Analisis Bisnis", sub: "Strategi monetisasi & model bisnis", prompt: "Rancang strategi monetisasi dan analisis target pasar untuk aplikasi asisten kecerdasan buatan serbaguna." }
+];
+
 function renderHeroSuggestions(){
   const grid = $("suggestionsGrid");
   if(!grid) return;
   grid.innerHTML = "";
-  const p = PERSONAS_DATA[currentPersona] || PERSONAS_DATA["canva"];
 
   if($("heroTitle")){
-    $("heroTitle").textContent = `${p.icon} Halo, saya ${p.name}`;
+    $("heroTitle").textContent = "🍪 Halo, saya Oreo AI";
   }
   if($("heroDesc")){
-    $("heroDesc").textContent = `${p.desc} Tanyakan langsung atau pilih inspirasi topik berikut:`;
+    $("heroDesc").textContent = "Asisten kecerdasan buatan serbaguna dengan keahlian otomatis (Desain Canva, Koding, Copywriting, Analisis Bisnis, dll). Tanyakan apa saja!";
   }
 
-  p.suggestions.forEach(s => {
+  HERO_SUGGESTIONS.forEach(s => {
     const card = document.createElement("div");
     card.className = "sug-card";
     card.innerHTML = `
@@ -2807,11 +2812,10 @@ function renderHeroSuggestions(){
 function createHeroElement(){
   const hero = document.createElement("div");
   hero.id = "heroState";
-  const p = PERSONAS_DATA[currentPersona] || PERSONAS_DATA["canva"];
   hero.innerHTML = `
     <div class="hero-glow">✨</div>
-    <h2 class="hero-title" id="heroTitle">${p.icon} Halo, saya ${p.name}</h2>
-    <p class="hero-desc" id="heroDesc">${p.desc} Tanyakan langsung atau pilih inspirasi topik berikut:</p>
+    <h2 class="hero-title" id="heroTitle">🍪 Halo, saya Oreo AI</h2>
+    <p class="hero-desc" id="heroDesc">Asisten kecerdasan buatan serbaguna dengan keahlian otomatis (Desain Canva, Koding, Copywriting, Analisis Bisnis, dll). Tanyakan apa saja!</p>
     <div class="suggestions-grid" id="suggestionsGrid"></div>
   `;
   setTimeout(() => renderHeroSuggestions(), 10);
@@ -3166,7 +3170,7 @@ async function send(){
       },
       body: JSON.stringify({
         model, 
-        persona: $("personaSelect") ? $("personaSelect").value : "canva",
+        persona: "auto",
         connected_apps: Array.from(connectedApps),
         messages: history.map(m => ({ role: m.role, content: m.content }))
       })

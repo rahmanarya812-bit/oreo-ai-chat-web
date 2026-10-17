@@ -377,8 +377,43 @@ export default {
 
         const providerKey = MODEL_TO_PROVIDER[model] || 'clouvia';
         const provider = PROVIDERS[providerKey] || PROVIDERS.clouvia;
-        const personaObj = PERSONAS[personaKey] || PERSONAS.general;
-        let sysPrompt = personaObj.system_prompt;
+        let userPromptText = "";
+        for (let i = messages.length - 1; i >= 0; i--) {
+          if (messages[i].role === 'user') {
+            const c = messages[i].content;
+            if (typeof c === 'string') userPromptText = c;
+            else if (Array.isArray(c)) {
+              const t = c.find(item => item.type === 'text');
+              if (t) userPromptText = t.text;
+            }
+            break;
+          }
+        }
+        const lowerPrompt = userPromptText.toLowerCase();
+
+        let sysPrompt = "";
+        let detectedPersona = personaKey;
+        if (personaKey && personaKey !== 'auto' && PERSONAS[personaKey]) {
+          sysPrompt = PERSONAS[personaKey].system_prompt;
+        } else {
+          // Dynamic adaptive persona detection based on user query
+          if (/(canva|desain|design|feed|banner|poster|logo|palet|warna|hex|layout|carousel|thumbnail|tipografi|font canva|grafis|flyer|brosur|kemasan)/i.test(lowerPrompt)) {
+            sysPrompt = PERSONAS.canva.system_prompt;
+            detectedPersona = "canva";
+          } else if (/(koding|coding|code|script|python|javascript|typescript|html|css|php|sql|api|function|bug|debug|error|class|git|react|fastapi|backend|frontend|query|endpoint|server)/i.test(lowerPrompt)) {
+            sysPrompt = PERSONAS.developer.system_prompt;
+            detectedPersona = "developer";
+          } else if (/(copywriting|copywriter|caption|iklan|hook|aida|headline|naskah|promo|sales|penjualan|slogan|tagline|cta|reels|tiktok)/i.test(lowerPrompt)) {
+            sysPrompt = PERSONAS.copywriter.system_prompt;
+            detectedPersona = "copywriter";
+          } else if (/(bisnis|strategi|analis|kpi|pasar|roi|revenue|monetisasi|investor|pitch deck|finansial|omset|swot)/i.test(lowerPrompt)) {
+            sysPrompt = PERSONAS.analyst.system_prompt;
+            detectedPersona = "analyst";
+          } else {
+            sysPrompt = `Kamu adalah Oreo AI, asisten kecerdasan buatan serbaguna yang ramah, berwawasan luas, akurat, dan sangat membantu. Secara cerdas sesuaikan keahlian dan gaya jawabanmu dengan apa yang diminta oleh pengguna (Desain Canva, Koding, Copywriting, Bisnis, atau Percakapan Umum) dengan format markdown yang rapi, terstruktur, dan mudah dipahami.`;
+            detectedPersona = "general";
+          }
+        }
 
         if (connectedApps.length > 0) {
           sysPrompt += `\\n\\n[Konektor Aplikasi Aktif]: Pengguna telah mengaktifkan integrasi dengan: ${connectedApps.join(', ')}. Berikan rekomendasi konten dan instruksi yang siap diintegrasikan atau dibuka di aplikasi tersebut.`;
@@ -431,7 +466,7 @@ export default {
           content: content || 'Tidak ada konten respons dari model.',
           model,
           provider: providerKey,
-          persona: personaKey,
+          persona: detectedPersona,
           elapsed,
           quota: quotaCheck.quota
         });
