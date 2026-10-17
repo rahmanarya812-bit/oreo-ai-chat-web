@@ -1,6 +1,12 @@
 # Oreo AI Chat — Web
 
-Web chat AI pribadi dengan login Google (Firebase), backend di Render, frontend di Cloudflare Pages.
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/rahmanarya812-bit/oreo-ai-chat-web)
+
+Web chat AI modern multimodal dengan kuota harian, persona keahlian, konektor integrasi aplikasi (Canva, GitHub, Sheets, dll.), backend di Render, dan frontend di Cloudflare Pages.
+
+### 🚀 1-Click Deploy Cepat
+- **Render Backend**: Klik tombol **[Deploy to Render](https://render.com/deploy?repo=https://github.com/rahmanarya812-bit/oreo-ai-chat-web)** di atas. Render akan otomatis membaca file `render.yaml` dan mengonfigurasi Web Service.
+- **Cloudflare Pages**: Buka [Cloudflare Pages Dashboard](https://dash.cloudflare.com/?to=/:account/pages/new) > Connect Git > pilih `rahmanarya812-bit/oreo-ai-chat-web` > Root folder `frontend`.
 
 ## Isi
 - `backend/` — API Flask (Python): `/api/models`, `/api/chat`, `/api/health`
