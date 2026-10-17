@@ -1315,25 +1315,35 @@ header {
   transform: rotate(180deg);
 }
 
-/* Model Popover Modal (Gaya Gemini) */
+/* Model Popover Modal (Gaya Gemini Modern) */
+.popover-drag-handle {
+  display: none;
+  width: 38px;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.25);
+  margin: 10px auto 4px;
+}
 .model-popover {
   position: absolute;
   bottom: calc(100% + 12px);
   right: 20px;
-  width: 350px;
-  height: 430px;
-  background: #141824;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 20px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.06);
-  backdrop-filter: blur(24px);
+  width: 360px;
+  max-width: calc(100vw - 32px);
+  height: 400px;
+  background: rgba(16, 20, 32, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 24px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.75), 0 0 35px rgba(99, 102, 241, 0.12);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
   display: flex;
   flex-direction: column;
   z-index: 100;
   overflow: hidden;
   opacity: 1;
   transform: translateY(0) scale(1);
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .model-popover.hidden {
   opacity: 0;
@@ -1342,15 +1352,15 @@ header {
 }
 
 .popover-header {
-  padding: 14px 14px 10px;
+  padding: 14px 16px 10px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(20, 24, 36, 0.95);
+  background: rgba(16, 20, 32, 0.96);
 }
 .popover-title {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 13px;
+  font-size: 13.5px;
   font-weight: 700;
   margin-bottom: 10px;
   color: #fff;
@@ -1359,22 +1369,44 @@ header {
   font-size: 11px;
   font-weight: 600;
   background: rgba(99, 102, 241, 0.2);
-  color: #818cf8;
+  border: 1px solid rgba(99, 102, 241, 0.35);
+  color: #a5b4fc;
   padding: 2px 8px;
-  border-radius: 12px;
+  border-radius: 999px;
+}
+.popover-close-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border: none;
+  color: #94a3b8;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  transition: all 0.18s;
+}
+.popover-close-btn:hover {
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
 }
 .search-box {
   display: flex;
   align-items: center;
-  background: #0d101a;
+  background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  padding: 8px 10px;
+  border-radius: 999px;
+  padding: 8px 12px;
   gap: 8px;
   margin-bottom: 8px;
+  transition: all 0.2s;
 }
 .search-box:focus-within {
-  border-color: rgba(99, 102, 241, 0.5);
+  border-color: rgba(99, 102, 241, 0.55);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 12px rgba(99, 102, 241, 0.2);
 }
 .search-box input {
   background: transparent;
@@ -1392,29 +1424,30 @@ header {
   display: flex;
   gap: 6px;
   overflow-x: auto;
-  padding-bottom: 2px;
+  padding: 2px 0 4px;
 }
 .filter-chips::-webkit-scrollbar { display: none; }
 .chip {
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  color: var(--text-muted);
-  border-radius: 14px;
-  padding: 4px 10px;
-  font-size: 11px;
+  color: #94a3b8;
+  border-radius: 999px;
+  padding: 4px 11px;
+  font-size: 11.5px;
   font-weight: 600;
   cursor: pointer;
   white-space: nowrap;
   transition: all 0.15s;
 }
 .chip:hover {
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.1);
   color: #fff;
 }
 .chip.active {
-  background: #3b82f6;
+  background: linear-gradient(135deg, #3b82f6, #4f46e5);
   color: #fff;
-  border-color: #3b82f6;
+  border-color: rgba(99, 102, 241, 0.5);
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.35);
 }
 
 .popover-list {
@@ -1429,32 +1462,76 @@ header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 9px 12px;
-  border-radius: 10px;
+  padding: 8px 12px;
+  border-radius: 12px;
   cursor: pointer;
   transition: all 0.15s;
-  color: var(--text-muted);
+  color: #cbd5e1;
+  border: 1px solid transparent;
 }
 .custom-model-item:hover {
-  background: rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.06);
   color: #fff;
+  border-color: rgba(255, 255, 255, 0.06);
 }
 .custom-model-item.selected {
-  background: rgba(99, 102, 241, 0.18);
+  background: rgba(99, 102, 241, 0.16);
+  border-color: rgba(99, 102, 241, 0.35);
   color: #fff;
-  font-weight: 600;
 }
 .item-left {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+  min-width: 0;
+  flex: 1;
+}
+.model-item-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  background: rgba(255, 255, 255, 0.06);
+  flex-shrink: 0;
+}
+.model-item-icon.gemini { background: rgba(59, 130, 246, 0.18); color: #93c5fd; }
+.model-item-icon.claude { background: rgba(249, 115, 22, 0.18); color: #fdba74; }
+.model-item-icon.gpt { background: rgba(16, 185, 129, 0.18); color: #6ee7b7; }
+.model-item-icon.deepseek { background: rgba(6, 182, 212, 0.18); color: #67e8f9; }
+.model-item-icon.kimi { background: rgba(168, 85, 247, 0.18); color: #d8b4fe; }
+.model-item-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
   min-width: 0;
 }
 .item-name {
   font-size: 13px;
+  font-weight: 600;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  color: #fff;
+}
+.item-sub {
+  font-size: 10.5px;
+  color: #64748b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.item-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+.model-item-cap {
+  font-size: 11px;
+  opacity: 0.85;
 }
 .item-check {
   font-size: 13px;
@@ -1772,7 +1849,10 @@ header {
     margin-top: 4px !important;
   }
 
-  /* Model Popover sebagai Bottom Sheet di Mobile */
+  /* Model Popover sebagai Bottom Sheet Ringkas & Modern di Mobile */
+  .popover-drag-handle {
+    display: block !important;
+  }
   .model-popover {
     position: fixed !important;
     bottom: 0 !important;
@@ -1781,21 +1861,28 @@ header {
     top: auto !important;
     width: 100% !important;
     max-width: 100% !important;
-    height: 74vh !important;
-    max-height: 82vh !important;
-    border-radius: 24px 24px 0 0 !important;
-    border-left: none !important;
-    border-right: none !important;
+    height: auto !important;
+    max-height: 52vh !important;
+    border-radius: 26px 26px 0 0 !important;
+    border: 1px solid rgba(255, 255, 255, 0.14) !important;
     border-bottom: none !important;
-    box-shadow: 0 -12px 40px rgba(0, 0, 0, 0.8) !important;
+    background: rgba(16, 20, 32, 0.96) !important;
+    backdrop-filter: blur(28px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(28px) saturate(180%) !important;
+    box-shadow: 0 -16px 50px rgba(0, 0, 0, 0.85) !important;
     z-index: 1050 !important;
-    transform: translateY(0) scale(1) !important;
+    transform: translateY(0) !important;
     transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease !important;
+    padding-bottom: env(safe-area-inset-bottom, 12px) !important;
   }
   .model-popover.hidden {
-    transform: translateY(100%) scale(1) !important;
+    transform: translateY(100%) !important;
     opacity: 0 !important;
     pointer-events: none !important;
+  }
+  .popover-list {
+    max-height: 230px !important;
+    overflow-y: auto !important;
   }
 
   /* Database Gambar Modal */
@@ -1843,18 +1930,25 @@ header {
     -webkit-line-clamp: 2 !important;
   }
 
-  /* Modal Konfirmasi */
+  /* Modal Konfirmasi Mobile */
   .custom-modal-card {
-    width: 90% !important;
-    max-width: 340px !important;
-    padding: 22px 18px 18px !important;
-    border-radius: 20px !important;
+    width: 100% !important;
+    max-width: 330px !important;
+    padding: 24px 20px 20px !important;
+    border-radius: 24px !important;
+  }
+  .custom-modal-icon-wrap {
+    width: 56px !important;
+    height: 56px !important;
+    font-size: 24px !important;
+    margin-bottom: 14px !important;
   }
   .custom-modal-title {
-    font-size: 16px !important;
+    font-size: 17px !important;
   }
   .custom-modal-desc {
-    font-size: 12.5px !important;
+    font-size: 13px !important;
+    margin-bottom: 20px !important;
   }
 
   /* Admin Modal & Announcement Banner Mobile */
@@ -1897,6 +1991,25 @@ header {
   }
 }
 
+@media(max-width: 640px) {
+  #userName {
+    display: none !important;
+  }
+  .user-chip {
+    padding: 3px !important;
+    background: transparent !important;
+    border-color: transparent !important;
+  }
+  .quota-badge {
+    padding: 4px 8px !important;
+    font-size: 11px !important;
+  }
+  #btnLogout {
+    padding: 5px 8px !important;
+    font-size: 11px !important;
+  }
+}
+
 @media(max-width: 480px) {
   #userName {
     display: none !important;
@@ -1927,66 +2040,70 @@ header {
   }
 }
 
-/* === Custom Modern Modal (Hapus Obrolan & Logout) === */
+/* === Custom Modern Modal (Hapus Obrolan & Logout Estetik) === */
 .custom-modal-backdrop {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.72);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  z-index: 1100;
   opacity: 1;
-  transition: opacity 0.2s ease;
+  transition: opacity 0.22s ease;
+  padding: 16px;
 }
 .custom-modal-backdrop.hidden {
   opacity: 0;
   pointer-events: none;
 }
 .custom-modal-card {
-  width: 90%;
+  width: 100%;
   max-width: 380px;
-  background: #14161d;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 22px;
-  padding: 26px 22px 22px;
+  background: linear-gradient(180deg, rgba(22, 26, 40, 0.94) 0%, rgba(13, 16, 26, 0.98) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 28px;
+  padding: 28px 24px 22px;
   text-align: center;
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.05);
-  animation: modalScaleUp 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.85), 0 0 40px rgba(99, 102, 241, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  animation: modalScaleUp 0.24s cubic-bezier(0.16, 1, 0.3, 1);
 }
 @keyframes modalScaleUp {
-  from { opacity: 0; transform: scale(0.92); }
-  to { opacity: 1; transform: scale(1); }
+  from { opacity: 0; transform: scale(0.92) translateY(8px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
 }
 .custom-modal-icon-wrap {
-  width: 54px;
-  height: 54px;
+  width: 62px;
+  height: 62px;
   margin: 0 auto 16px;
-  border-radius: 18px;
-  background: rgba(239, 68, 68, 0.12);
-  border: 1px solid rgba(239, 68, 68, 0.25);
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, rgba(239, 68, 68, 0.22), rgba(220, 38, 38, 0.08));
+  border: 1px solid rgba(239, 68, 68, 0.35);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 26px;
+  box-shadow: 0 10px 24px rgba(239, 68, 68, 0.22);
 }
 .custom-modal-icon-wrap.logout {
-  background: rgba(99, 102, 241, 0.12);
-  border-color: rgba(99, 102, 241, 0.25);
+  background: radial-gradient(circle at 35% 35%, rgba(99, 102, 241, 0.22), rgba(79, 70, 229, 0.08));
+  border-color: rgba(99, 102, 241, 0.35);
+  box-shadow: 0 10px 24px rgba(99, 102, 241, 0.22);
 }
 .custom-modal-title {
   margin: 0 0 8px;
-  font-size: 17px;
+  font-size: 18px;
   font-weight: 700;
   color: #fff;
-  letter-spacing: -0.3px;
+  letter-spacing: -0.02em;
 }
 .custom-modal-desc {
   margin: 0 0 24px;
-  font-size: 13px;
-  color: #9499ab;
-  line-height: 1.5;
+  font-size: 13.5px;
+  color: #94a3b8;
+  line-height: 1.55;
 }
 .custom-modal-actions {
   display: flex;
@@ -1996,16 +2113,16 @@ header {
   flex: 1;
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #d1d5db;
-  padding: 11px 16px;
-  border-radius: 12px;
+  color: #cbd5e1;
+  padding: 12px 18px;
+  border-radius: 14px;
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
 }
 .btn-modal-cancel:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.12);
   color: #fff;
 }
 .btn-modal-confirm {
@@ -2013,12 +2130,12 @@ header {
   background: linear-gradient(135deg, #ef4444, #dc2626);
   border: none;
   color: #fff;
-  padding: 11px 16px;
-  border-radius: 12px;
+  padding: 12px 18px;
+  border-radius: 14px;
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+  box-shadow: 0 6px 20px rgba(239, 68, 68, 0.35);
   transition: all 0.2s;
 }
 .btn-modal-confirm:hover {
@@ -2026,8 +2143,8 @@ header {
   transform: translateY(-1px);
 }
 .btn-modal-confirm.logout {
-  background: linear-gradient(135deg, #6366f1, #4f46e5);
-  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+  background: linear-gradient(135deg, #4f46e5, #6366f1);
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.35);
 }
 
 /* === Modern Sleek Buttons & Badges === */
@@ -2106,16 +2223,17 @@ header {
 }
 
 .user-chip {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 8px;
-  font-size: 13px;
-  font-weight: 500;
+  font-size: 12.5px;
+  font-weight: 600;
   color: #e2e8f0;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 4px 10px 4px 4px;
-  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 3px 12px 3px 4px;
+  border-radius: 999px;
+  transition: all 0.2s;
 }
 .user-avatar {
   width: 26px;
@@ -2128,62 +2246,66 @@ header {
   font-size: 11px;
   font-weight: 700;
   color: #fff;
+  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.4);
 }
 .btn-logout-sleek {
-  background: rgba(255, 255, 255, 0.04);
-  color: #9499ab;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 10px;
-  padding: 6px 12px;
-  font-size: 12px;
-  font-weight: 500;
+  background: rgba(255, 255, 255, 0.05);
+  color: #94a3b8;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 999px;
+  padding: 5px 12px;
+  font-size: 11.5px;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
 }
 .btn-logout-sleek:hover {
-  background: rgba(239, 68, 68, 0.12);
+  background: rgba(239, 68, 68, 0.14);
   color: #fca5a5;
-  border-color: rgba(239, 68, 68, 0.3);
+  border-color: rgba(239, 68, 68, 0.35);
+  transform: translateY(-1px);
 }
 
 .hero-cookie-badge {
-  width: 64px;
-  height: 64px;
-  border-radius: 22px;
-  background: radial-gradient(circle at 30% 30%, rgba(99, 102, 241, 0.25), rgba(139, 92, 246, 0.1));
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  width: 72px;
+  height: 72px;
+  border-radius: 24px;
+  background: radial-gradient(circle at 30% 30%, rgba(99, 102, 241, 0.3), rgba(168, 85, 247, 0.15));
+  border: 1px solid rgba(255, 255, 255, 0.14);
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 20px;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4), 0 0 24px rgba(99, 102, 241, 0.2);
+  margin-bottom: 22px;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5), 0 0 30px rgba(99, 102, 241, 0.25);
+  animation: floatCookie 4s ease-in-out infinite;
+}
+@keyframes floatCookie {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
 }
 .hero-cookie-icon {
-  font-size: 32px;
-  filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3));
+  font-size: 36px;
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.4));
 }
 .hero-title {
-  font-size: 28px !important;
+  font-size: 32px !important;
   font-weight: 700 !important;
-  letter-spacing: -0.6px !important;
-  margin-bottom: 8px !important;
-  color: #f1f3f9 !important;
-  background: none !important;
-  -webkit-text-fill-color: initial !important;
+  letter-spacing: -0.8px !important;
+  margin-bottom: 10px !important;
+  background: linear-gradient(135deg, #ffffff 10%, #93c5fd 60%, #c084fc 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  line-height: 1.25 !important;
 }
 .hero-desc {
-  font-size: 14px !important;
-  color: #8b92a5 !important;
+  font-size: 14.5px !important;
+  color: #94a3b8 !important;
   max-width: 520px !important;
-  line-height: 1.5 !important;
-  margin-bottom: 30px !important;
+  line-height: 1.6 !important;
+  margin-bottom: 28px !important;
 }
 .suggestions-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
-  width: 100%;
-  max-width: 700px;
+  display: none !important;
 }
 .sug-card {
   background: rgba(255, 255, 255, 0.03);
@@ -3718,12 +3840,16 @@ header {
         <div class="persona-list" id="personaList"></div>
       </div>
 
-      <!-- Popover Menu Model AI (Gaya Gemini) -->
+      <!-- Popover Menu Model AI (Gaya Gemini Modern Bottom Sheet) -->
       <div id="modelPopover" class="model-popover hidden">
+        <div class="popover-drag-handle"></div>
         <div class="popover-header">
           <div class="popover-title">
-            <span>✨ Model AI</span>
-            <span class="popover-count" id="modelCountBadge">153 model</span>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span>✨ Model AI</span>
+              <span class="popover-count" id="modelCountBadge">153 model</span>
+            </div>
+            <button type="button" class="popover-close-btn" id="btnCloseModelPopover" title="Tutup Menu">✕</button>
           </div>
           <div class="search-box">
             <span class="search-icon">🔍</span>
@@ -5508,12 +5634,38 @@ function renderPopoverList(){
     const el = document.createElement("div");
     const isSelected = item.id === $("modelSelect").value;
     el.className = "custom-model-item" + (isSelected ? " selected" : "");
+
+    let icon = "✨";
+    let brandClass = "general";
+    const n = item.name.toLowerCase();
+    const id = item.id.toLowerCase();
+    if(n.includes("gemini") || id.includes("gemini")) { icon = "💎"; brandClass = "gemini"; }
+    else if(n.includes("claude") || id.includes("claude")) { icon = "🧠"; brandClass = "claude"; }
+    else if(n.includes("gpt") || id.includes("gpt")) { icon = "⚡"; brandClass = "gpt"; }
+    else if(n.includes("deepseek") || id.includes("deepseek")) { icon = "🚀"; brandClass = "deepseek"; }
+    else if(n.includes("kimi") || id.includes("kimi")) { icon = "🌙"; brandClass = "kimi"; }
+    else if(n.includes("qwen") || id.includes("qwen")) { icon = "🎯"; brandClass = "qwen"; }
+
+    let capBadges = "";
+    if(/vision|gemini|gpt-5|claude|qwen|glm-5v/i.test(item.id)) {
+      capBadges += `<span class="model-item-cap" title="Support Gambar">🖼️</span>`;
+    }
+    if(/voice|audio|speech|terra|gemini-3.6/i.test(item.id)) {
+      capBadges += `<span class="model-item-cap" title="Support Suara/Voice">🎙️</span>`;
+    }
+
     el.innerHTML = `
       <div class="item-left">
-        <span style="font-size:14px;">✨</span>
-        <span class="item-name">${escapeHtml(item.name)}</span>
+        <span class="model-item-icon ${brandClass}">${icon}</span>
+        <div class="model-item-meta">
+          <span class="item-name">${escapeHtml(item.name)}</span>
+          <span class="item-sub">${escapeHtml(item.id)}</span>
+        </div>
       </div>
-      ${isSelected ? '<span class="item-check">✓</span>' : ''}
+      <div class="item-right">
+        ${capBadges}
+        ${isSelected ? '<span class="item-check">✓</span>' : ''}
+      </div>
     `;
     el.onclick = () => {
       selectModel(item.id, item.name);
@@ -5543,6 +5695,13 @@ $("modelTriggerBtn").onclick = (e) => {
     closeModelPopover();
   }
 };
+
+if($("btnCloseModelPopover")){
+  $("btnCloseModelPopover").onclick = (e) => {
+    e.stopPropagation();
+    closeModelPopover();
+  };
+}
 
 $("modelPopover").onclick = (e) => {
   e.stopPropagation();
@@ -5909,35 +6068,14 @@ function renderHeroSuggestions(){
   const grid = $("suggestionsGrid");
   if(!grid) return;
   grid.innerHTML = "";
+  grid.style.display = "none";
 
   if(isImageMode){
-    if($("heroTitle")) $("heroTitle").textContent = "Buat gambar";
-    if($("heroDesc")) $("heroDesc").textContent = "Coba template atau jelaskan ide di percakapan. Buat dengan Oreo AI.";
-
-    HERO_IMAGE_SUGGESTIONS.forEach(s => {
-      const card = document.createElement("div");
-      card.className = "sug-card";
-      card.innerHTML = `
-        <span class="sug-head">${escapeHtml(s.head)}</span>
-        <span class="sug-sub">${escapeHtml(s.sub)}</span>
-      `;
-      card.onclick = () => useSuggestion(s.prompt);
-      grid.appendChild(card);
-    });
+    if($("heroTitle")) $("heroTitle").textContent = "Buat Gambar dengan Oreo AI";
+    if($("heroDesc")) $("heroDesc").textContent = "Jelaskan konsep visual yang ingin Anda buat di kolom pesan bawah, atau unggah gambar untuk dianalisis.";
   } else {
-    if($("heroTitle")) $("heroTitle").textContent = "Ada yang bisa saya bantu hari ini?";
-    if($("heroDesc")) $("heroDesc").textContent = "Mulai percakapan baru, tanyakan konsep, analisis ide, tulis kode, atau minta bantuan apa saja.";
-
-    HERO_SUGGESTIONS.forEach(s => {
-      const card = document.createElement("div");
-      card.className = "sug-card";
-      card.innerHTML = `
-        <span class="sug-head">${escapeHtml(s.head)}</span>
-        <span class="sug-sub">${escapeHtml(s.sub)}</span>
-      `;
-      card.onclick = () => useSuggestion(s.prompt);
-      grid.appendChild(card);
-    });
+    if($("heroTitle")) $("heroTitle").textContent = "Halo, ada yang bisa saya bantu?";
+    if($("heroDesc")) $("heroDesc").textContent = "Mulai percakapan baru, tanyakan apa saja, atau jelajahi 150+ model AI tercanggih.";
   }
 }
 
@@ -5945,8 +6083,8 @@ function createHeroElement(){
   const hero = document.createElement("div");
   hero.id = "heroState";
   const icon = isImageMode ? "🎨" : "🍪";
-  const title = isImageMode ? "Buat gambar" : "Ada yang bisa saya bantu hari ini?";
-  const desc = isImageMode ? "Coba template atau jelaskan ide di percakapan. Buat dengan Oreo AI." : "Mulai percakapan baru, tanyakan konsep, analisis ide, tulis kode, atau minta bantuan apa saja.";
+  const title = isImageMode ? "Buat Gambar dengan Oreo AI" : "Halo, ada yang bisa saya bantu?";
+  const desc = isImageMode ? "Jelaskan konsep visual yang ingin Anda buat di kolom pesan bawah, atau unggah gambar untuk dianalisis." : "Mulai percakapan baru, tanyakan apa saja, atau jelajahi 150+ model AI tercanggih.";
 
   hero.innerHTML = `
     <div class="hero-cookie-badge">
@@ -5954,7 +6092,7 @@ function createHeroElement(){
     </div>
     <h2 class="hero-title" id="heroTitle">${title}</h2>
     <p class="hero-desc" id="heroDesc">${desc}</p>
-    <div class="suggestions-grid" id="suggestionsGrid"></div>
+    <div class="suggestions-grid" id="suggestionsGrid" style="display:none;"></div>
   `;
   setTimeout(() => renderHeroSuggestions(), 10);
   return hero;
