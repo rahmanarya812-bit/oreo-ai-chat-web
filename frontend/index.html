@@ -6,8 +6,25 @@
 <title>Oreo AI — Smart Chatbot</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script>
+(function(){
+  try {
+    var s = localStorage.getItem("oreo_user_session");
+    if(s){
+      var p = JSON.parse(s);
+      if(p && p.uid){
+        document.documentElement.classList.add("is-logged-in");
+      }
+    }
+  } catch(e){}
+})();
+</script>
 <style>
+html.is-logged-in #loginBox { display: none !important; }
+html.is-logged-in #main { display: flex !important; }
+html.is-logged-in #btnLogout { display: inline-flex !important; }
+html.is-logged-in #btnAuth { display: none !important; }
+
 :root {
   --bg-main: #090b10;
   --bg-sidebar: #0f131d;
@@ -2267,6 +2284,7 @@ try {
   if (!isDevConfig) {
     firebase.initializeApp(firebaseConfig);
     auth = firebase.auth();
+    auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(e => console.warn("Persistence error:", e));
     db = firebase.firestore();
     provider = new firebase.auth.GoogleAuthProvider();
   }
@@ -2279,6 +2297,37 @@ let devConvs = JSON.parse(localStorage.getItem("oreo_dev_convs") || "{}");
 let currentQuota = null;
 
 const $ = id => document.getElementById(id);
+
+// Cek sesi user tersimpan di localStorage agar tetap login saat direfresh
+function restoreCachedSession(initContent = false){
+  try {
+    const cached = JSON.parse(localStorage.getItem("oreo_user_session") || "null");
+    if(cached && cached.uid){
+      uid = cached.uid;
+      idToken = cached.idToken || "dev-token";
+      document.documentElement.classList.add("is-logged-in");
+      if($("loginBox")) $("loginBox").style.display = "none";
+      if($("main")) $("main").style.display = "flex";
+      if($("btnAuth")) $("btnAuth").style.display = "none";
+      if($("btnLogout")) $("btnLogout").style.display = "inline";
+      const name = cached.name || "Pengguna";
+      if($("userName")) $("userName").textContent = name;
+      if($("userAvatar")) $("userAvatar").textContent = name.substring(0, 2).toUpperCase();
+      if(initContent){
+        if(typeof renderHeroSuggestions === "function") renderHeroSuggestions();
+        if(typeof loadModels === "function") loadModels();
+        if(typeof loadConvs === "function") loadConvs();
+        if(typeof loadQuota === "function") loadQuota();
+      }
+      return true;
+    }
+  } catch(e){
+    console.warn("restoreCachedSession error:", e);
+  }
+  return false;
+}
+restoreCachedSession(false);
+
 // === MODAL KONFIRMASI ESTETIK ===
 let modalConfirmCallback = null;
 
@@ -2905,6 +2954,13 @@ if($("connSearchInput")) $("connSearchInput").oninput = renderConnectors;
 function enterDevMode(){
   uid = "dev-mode";
   idToken = "dev-token";
+  localStorage.setItem("oreo_user_session", JSON.stringify({
+    uid: "dev-mode",
+    name: "Dev Tester",
+    email: "dev@oreo.ai",
+    idToken: "dev-token"
+  }));
+  document.documentElement.classList.add("is-logged-in");
   $("loginBox").style.display = "none";
   $("main").style.display = "flex";
   $("btnAuth").style.display = "none";
@@ -2922,27 +2978,68 @@ if(auth) {
   auth.onAuthStateChanged(async u => {
     if(u){
       uid = u.uid;
+      try { idToken = await u.getIdToken(); } catch(e){ idToken = "dev-token"; }
+      const name = u.displayName || u.email || "Pengguna";
+      localStorage.setItem("oreo_user_session", JSON.stringify({
+        uid: u.uid,
+        name: name,
+        email: u.email || "",
+        idToken: idToken
+      }));
+      document.documentElement.classList.add("is-logged-in");
       $("loginBox").style.display="none"; $("main").style.display="flex";
       $("btnAuth").style.display="none"; $("btnLogout").style.display="inline";
-      const name = u.displayName || u.email || "Pengguna";
       $("userName").textContent = name;
       $("userAvatar").textContent = name.substring(0,2).toUpperCase();
       renderHeroSuggestions();
       await refreshToken(); loadModels(); loadConvs(); loadQuota(); newChat();
-    }else if(uid !== "dev-mode"){
-      uid = null;
-      $("loginBox").style.display="flex"; $("main").style.display="none";
-      $("btnAuth").style.display="inline"; $("btnLogout").style.display="none";
-      $("userName").textContent="Tamu";
-      $("userAvatar").textContent="?";
-      $("quotaBadge").style.display="none";
+    } else {
+      const cached = JSON.parse(localStorage.getItem("oreo_user_session") || "null");
+      if(cached && cached.uid){
+        // Pertahankan sesi yang tersimpan di localStorage, jangan kick pengguna
+        console.log("Mempertahankan sesi aktif:", cached.name);
+      } else if(uid !== "dev-mode"){
+        uid = null;
+        idToken = null;
+        document.documentElement.classList.remove("is-logged-in");
+        $("loginBox").style.display="flex"; $("main").style.display="none";
+        $("btnAuth").style.display="inline"; $("btnLogout").style.display="none";
+        $("userName").textContent="Tamu";
+        $("userAvatar").textContent="?";
+        $("quotaBadge").style.display="none";
+      }
     }
   });
 }
 
 $("btnLogin2").onclick = () => {
   if(auth && provider) {
-    auth.signInWithPopup(provider).catch(err => {
+    auth.signInWithPopup(provider).then(async result => {
+      const u = result.user;
+      if(u){
+        uid = u.uid;
+        try { idToken = await u.getIdToken(); } catch(e){ idToken = "dev-token"; }
+        const name = u.displayName || u.email || "Pengguna";
+        localStorage.setItem("oreo_user_session", JSON.stringify({
+          uid: u.uid,
+          name: name,
+          email: u.email || "",
+          idToken: idToken
+        }));
+        document.documentElement.classList.add("is-logged-in");
+        $("loginBox").style.display = "none";
+        $("main").style.display = "flex";
+        $("btnAuth").style.display = "none";
+        $("btnLogout").style.display = "inline";
+        $("userName").textContent = name;
+        $("userAvatar").textContent = name.substring(0, 2).toUpperCase();
+        renderHeroSuggestions();
+        loadModels();
+        loadConvs();
+        loadQuota();
+        newChat();
+      }
+    }).catch(err => {
       console.error("Firebase Login Error:", err);
       if(err.code === "auth/popup-closed-by-user") return;
       let msg = "Login Google Gagal: " + (err.message || err.code);
@@ -2967,12 +3064,17 @@ $("btnLogout").onclick = () => {
     confirmText: "Ya, Keluar",
     isDanger: false,
     onConfirm: () => {
-      if(auth) auth.signOut();
+      localStorage.removeItem("oreo_user_session");
+      document.documentElement.classList.remove("is-logged-in");
+      if(auth) {
+        try { auth.signOut(); } catch(e){}
+      }
       uid = null; idToken = null;
       $("loginBox").style.display="flex"; $("main").style.display="none";
       $("btnAuth").style.display="inline"; $("btnLogout").style.display="none";
       $("userName").textContent="Tamu";
       $("userAvatar").textContent="?";
+      $("quotaBadge").style.display="none";
     }
   });
 };
@@ -3314,18 +3416,26 @@ async function loadModels(){
 function convsRef(){ return db ? db.collection("users").doc(uid).collection("conversations") : null; }
 
 async function loadConvs(){
-  const list = $("convList"); list.innerHTML="";
-  if(!db || uid === "dev-mode") {
+  const list = $("convList"); if(list) list.innerHTML="";
+  try {
+    if(!db || uid === "dev-mode") {
+      const sorted = Object.entries(devConvs).sort((a,b)=> (b[1].updatedAt||0) - (a[1].updatedAt||0));
+      sorted.forEach(([id, d])=>{
+        renderConvItem(id, d);
+      });
+      return;
+    }
+    const snap = await convsRef().orderBy("updatedAt","desc").limit(30).get();
+    snap.forEach(doc=>{
+      renderConvItem(doc.id, doc.data());
+    });
+  } catch(e) {
+    console.warn("loadConvs fallback to local:", e);
     const sorted = Object.entries(devConvs).sort((a,b)=> (b[1].updatedAt||0) - (a[1].updatedAt||0));
     sorted.forEach(([id, d])=>{
       renderConvItem(id, d);
     });
-    return;
   }
-  const snap = await convsRef().orderBy("updatedAt","desc").limit(30).get();
-  snap.forEach(doc=>{
-    renderConvItem(doc.id, doc.data());
-  });
 }
 
 function renderConvItem(id, data){
@@ -3787,6 +3897,11 @@ $("input").onkeydown = e => {
     send();
   }
 };
+
+// Pulihkan data dan inisialisasi aplikasi jika sudah ada sesi tersimpan
+if(restoreCachedSession(true)){
+  newChat();
+}
 </script>
 </body>
 </html>
