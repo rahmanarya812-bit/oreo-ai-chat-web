@@ -4887,6 +4887,27 @@ function getAuthHeaders(extra = {}){
 
 
 // Fungsi sinkronisasi Profil User di Footer Sidebar (Persis Gambar 2)
+
+// Fungsi sinkronisasi pengguna ke database permanen Firebase Firestore
+async function syncUserToFirestore(u){
+  if(!db || !u || !u.uid || u.uid === "dev-mode") return;
+  try {
+    const isAdm = (u.email && (u.email.toLowerCase() === "rahmanarya812@gmail.com" || u.email.toLowerCase().includes("rahmanarya"))) || isCurrentUserAdmin;
+    await db.collection("users").doc(u.uid).set({
+      uid: u.uid,
+      name: u.displayName || u.name || u.email || "Pengguna",
+      email: u.email || "",
+      photoURL: u.photoURL || "",
+      role: isAdm ? "Admin" : "User",
+      isAdmin: isAdm,
+      lastActive: Date.now()
+    }, { merge: true });
+    console.log("User successfully synced to Firestore:", u.email || u.uid);
+  } catch(err){
+    console.warn("Firestore syncUser error:", err);
+  }
+}
+
 function updateSidebarUserProfile(name, email, isAdmin){
   if(!$("sidebarUserFooter")) return;
   $("sidebarUserFooter").style.display = "flex";
@@ -5239,33 +5260,95 @@ async function loadAdminUsers(){
   listEl.innerHTML = '<div style="text-align:center; padding:24px; color:#94a3b8; font-size:13px;">⏳ Memuat riwayat aktivitas pengguna...</div>';
   
   try {
-    const r = await fetch(API_BASE + "/api/admin/users", {
-      headers: getAuthHeaders()
-    });
-    const text = await r.text();
-    let d = null;
+    let serverUsers = [];
     try {
-      d = JSON.parse(text);
-    } catch(parseErr) {
-      listEl.innerHTML = '<div style="text-align:center; padding:24px; color:#f87171; font-size:13px;">⚠️ Respon server tidak valid (' + r.status + '). Silakan coba sesaat lagi.</div>';
-      return;
-    }
-
-    if(!d.ok){
-      if(r.status === 401 || r.status === 403 || (d.error && d.error.includes("Admin"))){
+      const r = await fetch(API_BASE + "/api/admin/users", {
+        headers: getAuthHeaders()
+      });
+      const text = await r.text();
+      let d = null;
+      try { d = JSON.parse(text); } catch(pe){}
+      if(d && d.ok && Array.isArray(d.users)){
+        serverUsers = d.users;
+      } else if(r.status === 401 || r.status === 403 || (d && d.error && d.error.includes("Admin"))){
         listEl.innerHTML = '<div style="text-align:center; padding:32px 18px; color:#fde68a; font-size:13.5px; line-height:1.6;">' +
           '🔒 <strong>Akses Admin Diperlukan</strong><br>' +
           '<span style="color:#94a3b8; font-size:12.5px;">Untuk melihat riwayat aktivitas pengguna, masukkan PIN Rahasia Admin di tab <strong>🔑 Hak Akses & PIN</strong> lalu klik Verifikasi PIN.</span>' +
         '</div>';
-      } else {
-        listEl.innerHTML = '<div style="text-align:center; padding:24px; color:#f87171; font-size:13px;">⚠️ ' + escapeHtml(d.error || "Gagal memuat pengguna") + '</div>';
+        return;
       }
-      return;
+    } catch(err){
+      console.warn("Server admin/users fetch error:", err);
     }
 
-    const users = d.users || [];
-    const totalUsers = d.total || users.length;
-    const activeToday = d.activeToday || 0;
+    // Ambil juga data pengguna permanen dari Firebase Firestore
+    let firestoreUsers = [];
+    if(db){
+      try {
+        const snap = await db.collection("users").get();
+        snap.forEach(doc => {
+          const data = doc.data();
+          if(data && (data.email || data.name || data.uid)){
+            firestoreUsers.push({
+              id: doc.id,
+              name: data.name || "Pengguna",
+              email: data.email || "",
+              photoURL: data.photoURL || "",
+              role: data.role || (data.isAdmin ? "Admin" : "User"),
+              isAdmin: data.role === "Admin" || data.isAdmin,
+              lastActive: data.lastActive || data.lastSeen || Date.now(),
+              totalRequests: data.totalRequests || 0,
+              usedCountToday: data.usedCountToday || 0
+            });
+          }
+        });
+      } catch(fsErr){
+        console.warn("Firestore load users error:", fsErr);
+      }
+    }
+
+    // Gabungkan (merge) pengguna dari Server & Firestore
+    const userMap = new Map();
+    // 1. Masukkan Firestore users terlebih dahulu
+    firestoreUsers.forEach(u => {
+      const key = (u.email || u.id).toLowerCase();
+      userMap.set(key, u);
+    });
+    // 2. Timpa/lengkapi dengan server live data jika ada
+    serverUsers.forEach(u => {
+      const key = (u.email || u.id).toLowerCase();
+      if(userMap.has(key)){
+        const existing = userMap.get(key);
+        userMap.set(key, { ...existing, ...u, lastActive: Math.max(existing.lastActive || 0, u.lastActive || 0) });
+      } else {
+        userMap.set(key, u);
+      }
+    });
+
+    // 3. Pastikan Admin utama selalu tercatat
+    const adminEmailKey = "rahmanarya812@gmail.com";
+    if(!userMap.has(adminEmailKey)){
+      userMap.set(adminEmailKey, {
+        id: "admin-root",
+        name: "Arya Rahman",
+        email: "rahmanarya812@gmail.com",
+        role: "Admin",
+        isAdmin: true,
+        lastActive: Date.now(),
+        usedCountToday: 0,
+        totalRequests: 0,
+        limit: "Unlimited"
+      });
+    }
+
+    const users = Array.from(userMap.values()).sort((a,b) => (b.lastActive || 0) - (a.lastActive || 0));
+    const today = getTodayStr();
+    const activeToday = users.filter(u => {
+      if(!u.lastActive) return false;
+      const d = new Date(u.lastActive + 7 * 3600 * 1000);
+      return d.toISOString().slice(0, 10) === today;
+    }).length;
+    const totalUsers = users.length;
     const totalChats = users.reduce((acc, u) => acc + (u.totalRequests || 0), 0);
 
     if($("adminStatTotalUsers")) $("adminStatTotalUsers").textContent = totalUsers;
@@ -5274,7 +5357,7 @@ async function loadAdminUsers(){
     if($("adminUserCountBadge")) $("adminUserCountBadge").textContent = totalUsers;
 
     if(users.length === 0){
-      listEl.innerHTML = `<div style="text-align:center; padding:32px; color:#94a3b8; font-size:13px;">Belum ada riwayat aktivitas pengguna yang tercatat.</div>`;
+      listEl.innerHTML = '<div style="text-align:center; padding:32px; color:#94a3b8; font-size:13px;">Belum ada riwayat aktivitas pengguna yang tercatat.</div>';
       return;
     }
 
@@ -5286,7 +5369,7 @@ async function loadAdminUsers(){
       const initials = (u.name || u.email || "User").substring(0,2).toUpperCase();
       const lastActiveStr = u.lastActive ? new Date(u.lastActive).toLocaleString("id-ID", { dateStyle:"medium", timeStyle:"short" }) : "-";
       const isUnlimited = u.isAdmin;
-      const quotaStr = isUnlimited ? "Unlimited (Admin)" : `${u.usedCountToday || 0} / 30 pesan`;
+      const quotaStr = isUnlimited ? "Unlimited (Admin)" : (u.usedCountToday || 0) + " / 30 pesan";
 
       item.innerHTML = `
         <div class="admin-user-info">
@@ -5309,7 +5392,7 @@ async function loadAdminUsers(){
       listEl.appendChild(item);
     });
   } catch(e){
-    listEl.innerHTML = `<div style="text-align:center; padding:24px; color:#f87171; font-size:13px;">⚠️ Error koneksi: ${escapeHtml(e.message)}</div>`;
+    listEl.innerHTML = '<div style="text-align:center; padding:24px; color:#f87171; font-size:13px;">⚠️ Error memuat pengguna: ' + escapeHtml(e.message) + '</div>';
   }
 }
 
@@ -6026,6 +6109,7 @@ if(auth) {
       if($("headerUserInfo")) $("headerUserInfo").style.display="inline-flex";
       $("userName").textContent = name;
       updateSidebarUserProfile(name, u.email || "", isCurrentUserAdmin);
+      syncUserToFirestore(u);
       $("userAvatar").textContent = name.substring(0,2).toUpperCase();
       renderHeroSuggestions();
       await refreshToken(); loadModels(); loadConvs(); loadQuota(); newChat();
@@ -6033,6 +6117,7 @@ if(auth) {
       const cached = JSON.parse(localStorage.getItem("oreo_user_session") || "null");
       if(cached && cached.uid){
         updateSidebarUserProfile(cached.name, cached.email, isCurrentUserAdmin);
+        syncUserToFirestore(cached);
         // Pertahankan sesi yang tersimpan di localStorage, jangan kick pengguna
         console.log("Mempertahankan sesi aktif:", cached.name);
         updateSidebarUserProfile(cached.name, cached.email || "", isCurrentUserAdmin);
