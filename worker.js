@@ -377,7 +377,7 @@ const PERSONAS = {
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Client-Id, X-User-Id, X-Used-Count',
+  'Access-Control-Allow-Headers': '*',
 };
 
 function jsonResp(data, status = 200) {
@@ -465,6 +465,10 @@ function getTodayStr() {
   const now = new Date();
   const wib = new Date(now.getTime() + (7 * 3600 * 1000));
   return wib.toISOString().slice(0, 10);
+}
+
+function getWibDateStr() {
+  return getTodayStr();
 }
 
 function getUserQuota(userKey, clientCount = 0, isAdmin = false) {
@@ -662,41 +666,47 @@ export default {
 
     // Admin Users monitoring
     if (url.pathname === '/api/admin/users') {
-      const isAdmin = isUserAdmin(request);
-      if (!isAdmin) return jsonResp({ ok: false, error: 'Akses khusus Admin ditolak' }, 403);
-      const today = getWibDateStr();
-      if (userRegistry.size === 0) {
-        const adminKey = getUserKey(request);
-        const email = request.headers.get('X-User-Email') || 'rahmanarya812@gmail.com';
-        const name = request.headers.get('X-User-Name') || 'Arya Rahman';
-        userRegistry.set(adminKey, {
-          id: adminKey,
-          email,
-          name,
-          role: 'Admin',
-          firstSeen: Date.now(),
-          lastSeen: Date.now(),
-          messageCount: 0
+      try {
+        const isAdmin = isUserAdmin(request);
+        if (!isAdmin) return jsonResp({ ok: false, error: 'Akses khusus Admin ditolak' }, 403);
+        recordUserActivity(request);
+        const today = getTodayStr();
+        if (userRegistry.size === 0) {
+          const adminKey = getUserKey(request);
+          const email = request.headers.get('X-User-Email') || 'rahmanarya812@gmail.com';
+          const name = request.headers.get('X-User-Name') || 'Arya Rahman';
+          userRegistry.set(adminKey, {
+            id: adminKey,
+            email,
+            name,
+            role: 'Admin',
+            firstSeen: Date.now(),
+            lastSeen: Date.now(),
+            messageCount: 0
+          });
+        }
+        const userList = Array.from(userRegistry.values()).map(u => {
+          const q = getUserQuota(u.id, 0, u.role === 'Admin');
+          return {
+            ...u,
+            isAdmin: u.role === 'Admin',
+            lastActive: u.lastSeen,
+            usedCountToday: q.used,
+            totalRequests: u.messageCount || 0,
+            used: q.used,
+            limit: q.limit
+          };
         });
+        const activeToday = userList.filter(u => {
+          if (!u.lastActive) return false;
+          const d = new Date(u.lastActive + 7 * 3600 * 1000);
+          return d.toISOString().slice(0, 10) === today;
+        }).length;
+        return jsonResp({ ok: true, users: userList, total: userList.length, activeToday });
+      } catch(err) {
+        console.error('Error in /api/admin/users:', err);
+        return jsonResp({ ok: false, error: 'Terjadi kesalahan server: ' + (err.message || err) }, 500);
       }
-      const userList = Array.from(userRegistry.values()).map(u => {
-        const q = getUserQuota(u.id, 0, u.role === 'Admin');
-        return {
-          ...u,
-          isAdmin: u.role === 'Admin',
-          lastActive: u.lastSeen,
-          usedCountToday: q.used,
-          totalRequests: u.messageCount || 0,
-          used: q.used,
-          limit: q.limit
-        };
-      });
-      const activeToday = userList.filter(u => {
-        if (!u.lastActive) return false;
-        const d = new Date(u.lastActive + 7 * 3600 * 1000);
-        return d.toISOString().slice(0, 10) === today;
-      }).length;
-      return jsonResp({ ok: true, users: userList, total: userList.length, activeToday });
     }
 
     if (url.pathname === '/api/admin/verify-secret' && request.method === 'POST') {
