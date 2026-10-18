@@ -4857,6 +4857,7 @@ inputEl.addEventListener("input", function() {
 
 // === AUTH & HAK AKSES SISTEM (ADMIN VS REGULAR USER) ===
 let isCurrentUserAdmin = false;
+let isCurrentAdmin = false;
 
 function getCurrentUserSession(){
   try {
@@ -4936,6 +4937,7 @@ if($("sidebarUserProfileBtn")) $("sidebarUserProfileBtn").onclick = openAdminSet
 
 function setAdminMode(isAdmin){
   isCurrentUserAdmin = !!isAdmin;
+  isCurrentAdmin = !!isAdmin;
   
   // 1. Badge Admin di Header & Sidebar - HANYA tampil jika isAdmin === true
   const wraps = document.querySelectorAll("#adminBadgeWrap");
@@ -6023,17 +6025,17 @@ if(auth) {
       $("btnAuth").style.display="none"; $("btnLogout").style.display="inline";
       if($("headerUserInfo")) $("headerUserInfo").style.display="inline-flex";
       $("userName").textContent = name;
-      updateSidebarUserProfile(name, u.email || "", isCurrentAdmin);
+      updateSidebarUserProfile(name, u.email || "", isCurrentUserAdmin);
       $("userAvatar").textContent = name.substring(0,2).toUpperCase();
       renderHeroSuggestions();
       await refreshToken(); loadModels(); loadConvs(); loadQuota(); newChat();
     } else {
       const cached = JSON.parse(localStorage.getItem("oreo_user_session") || "null");
       if(cached && cached.uid){
-        updateSidebarUserProfile(cached.name, cached.email, isCurrentAdmin);
+        updateSidebarUserProfile(cached.name, cached.email, isCurrentUserAdmin);
         // Pertahankan sesi yang tersimpan di localStorage, jangan kick pengguna
         console.log("Mempertahankan sesi aktif:", cached.name);
-        updateSidebarUserProfile(cached.name, cached.email || "", isCurrentAdmin);
+        updateSidebarUserProfile(cached.name, cached.email || "", isCurrentUserAdmin);
       } else if(uid !== "dev-mode"){
         uid = null;
         idToken = null;
@@ -6071,7 +6073,7 @@ $("btnLogin2").onclick = () => {
         $("btnLogout").style.display = "inline";
         if($("headerUserInfo")) $("headerUserInfo").style.display="inline-flex";
         $("userName").textContent = name;
-        updateSidebarUserProfile(name, u.email || "", isCurrentAdmin);
+        updateSidebarUserProfile(name, u.email || "", isCurrentUserAdmin);
         $("userAvatar").textContent = name.substring(0, 2).toUpperCase();
         renderHeroSuggestions();
         loadModels();
